@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jketterl/receiverbook/issues"
   },
-  "homepage": "https://github.com/jketterl/receiverbook#readme"
+  "homepage": "https://github.com/jketterl/receiverbook#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
