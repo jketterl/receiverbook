@@ -3,6 +3,7 @@ const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const config = require('./config');
 const sessionMiddleware = require('./app/middleware/session');
+const bodyParser = require('body-parser');
 
 const AppRouter = require('./app/routes');
 
@@ -27,6 +28,8 @@ Promise.all([
     app.set('view engine', 'ejs');
     app.set('views', './views');
     app.use(expressLayouts);
+
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     app.use('/', new AppRouter());
 

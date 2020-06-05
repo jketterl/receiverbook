@@ -10,6 +10,10 @@ class MyController {
     newReceiver(req, res) {
         res.render('my/newReceiver');
     }
+    processNewReceiver(req, res) {
+        console.info(req.body);
+        res.redirect('/my/receivers');
+    }
 }
 
 module.exports = MyController;

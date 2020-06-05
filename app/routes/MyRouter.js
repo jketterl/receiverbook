@@ -9,6 +9,7 @@ class MyRouter extends express.Router {
         const controller = new MyController();
         this.get('/receivers', controller.receivers);
         this.get('/receivers/new', controller.newReceiver);
+        this.post('/receivers/new', controller.processNewReceiver);
     }
 }
 
