@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const config = require('../config');
-const url = require('url');
 require('./models');
 
 module.exports.setup = async () => {

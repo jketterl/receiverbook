@@ -1,4 +1,11 @@
 <h1>Add a new receiver</h1>
+<% if (typeof(errors) !== 'undefined') {
+    errors.forEach((error) => { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% });
+} %>
 <form class="mt-5" method="POST">
     <div class="form-group">
         <label for="name">Name</label>
