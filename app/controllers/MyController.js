@@ -26,7 +26,7 @@ class MyController {
 
         axios.get(statusUrl.toString()).then((response) => {
             const receiver = new Receiver({
-                name: req.body.name,
+                label: response.data.receiver.name,
                 url: receiverUrl.toString(),
                 owner: req.user
             });

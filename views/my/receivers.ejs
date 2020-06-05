@@ -4,11 +4,13 @@
         <tr>
             <th>Name</th>
             <th>URL</th>
-            <th>Status<th>
+            <th>Status</th>
         </tr>
         <% receivers.forEach((receiver) => { %>
             <tr>
-                <td>oi!</td>
+                <td><%= receiver.label %></td>
+                <td><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a>
+                <td></td>
             </tr>
         <% }); %>
     <% } else { %>
