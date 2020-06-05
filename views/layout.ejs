@@ -6,10 +6,17 @@
     </HEAD>
     <BODY>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <div class="navbar-brand">
+            <div class="navbar-brand mr-auto">
                 <a href="https://www.receiverbook.de">
                     Receiverbook
                 </a>
+            </div>
+            <div class="navbar-nav">
+                <%if (typeof(session) === 'undefined') { %>
+                    <a href="/session/login">Login</a>
+                <% } else { %>
+                    <%= session.username %>
+                <% } %>
             </div>
         </nav>
         <div class="container">
