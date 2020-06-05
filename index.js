@@ -6,7 +6,11 @@ const sessionMiddleware = require('./app/middleware/session');
 
 const AppRouter = require('./app/routes');
 
-require('./app/passport').setup().then((passport) => {
+Promise.all([
+    require('./app/passport').setup(),
+    require('./app/mongoose').setup()
+]).then((values) => {
+    const [passport, mongoose] = values;
     const app = express();
 
     app.use(session({

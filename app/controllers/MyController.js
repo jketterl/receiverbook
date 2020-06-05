@@ -1,6 +1,11 @@
+const mongoose = require('mongoose');
+
 class MyController {
     receivers(req, res) {
-        res.render('my/receivers');
+        const Receiver = mongoose.model('Receiver');
+        Receiver.find({owner: req.user}).then((receivers) => {
+            res.render('my/receivers');
+        })
     }
 }
 
