@@ -1,0 +1,20 @@
+<h1>My receivers</h1>
+<table class="table">
+    <% if (receivers.length) { %>
+        <tr>
+            <th>Name</th>
+            <th>URL</th>
+            <th>Status<th>
+        </tr>
+        <% receivers.forEach((receiver) => { %>
+            <tr>
+                <td>oi!</td>
+            </tr>
+        <% }); %>
+    <% } else { %>
+        <tr><td>No receivers found</td></tr>
+    <% } %>
+<table>
+<div class="actions col-3">
+    <a class="btn btn-primary" href="/my/receivers/new">Add a new receiver</a>
+<div>

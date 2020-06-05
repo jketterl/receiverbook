@@ -8,6 +8,7 @@ class MyRouter extends express.Router {
         this.use(authenticatedUser);
         const controller = new MyController();
         this.get('/receivers', controller.receivers);
+        this.get('/receivers/new', controller.newReceiver);
     }
 }
 
