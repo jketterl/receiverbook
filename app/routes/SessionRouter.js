@@ -7,6 +7,7 @@ class SessionRouter extends express.Router {
         const controller = new SessionController();
         this.get('/login', controller.login);
         this.get('/receiveLogin', controller.receiveLogin, controller.loginComplete);
+        this.get('/logout', controller.logout);
     }
 }
 

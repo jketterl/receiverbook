@@ -11,6 +11,10 @@ class SessionController {
     loginComplete(req, res) {
         res.redirect('/');
     }
+    logout(req, res) {
+        req.logout();
+        res.redirect('/');
+    }
 }
 
 module.exports = SessionController;
