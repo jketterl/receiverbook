@@ -11,32 +11,49 @@ class MyController {
     newReceiver(req, res) {
         res.render('my/newReceiver');
     }
-    processNewReceiver(req, res) {
+    async processNewReceiver(req, res) {
         const Receiver = mongoose.model('Receiver');
         const receiverUrl = new URL(req.body.url);
         // sanitize
         receiverUrl.hash = '';
         receiverUrl.search = '';
 
-        const statusUrl = new URL(receiverUrl);
+        // follow any redirects
+        let resolvedUrl;
+        try {
+            const response = await axios.get(receiverUrl.toString())
+            resolvedUrl = new URL(response.request.res.responseUrl);
+        } catch (error) {
+            return res.render('my/newReceiver', {errors: ["Unable to contact the receiver. Please make sure your receiver is online and reachable from the Internet!"]})
+        }
+
+        const existing = await Receiver.find({ url: resolvedUrl.toString() })
+        if (existing.length) {
+            return res.render('my/newReceiver', {errors: ["Receiver URL already exists in database."]})
+        }
+
+        const statusUrl = new URL(resolvedUrl);
         if (!statusUrl.pathname.endsWith('/')) {
             statusUrl.pathname += '/';
         }
         statusUrl.pathname += 'status.json';
 
-        axios.get(statusUrl.toString()).then((response) => {
-            const receiver = new Receiver({
-                label: response.data.receiver.name,
-                url: receiverUrl.toString(),
-                owner: req.user
-            });
-            receiver.save().then(() => {
-                res.redirect('/my/receivers');
-            })
-        }).catch((error) => {
+        let statusResponse;
+        try {
+            statusResponse = await axios.get(statusUrl.toString())
+        } catch (error) {
             console.error(error);
-            res.render('my/newReceiver', {errors: ["Unable to contact the receiver. Please make sure your receiver is online and reachable from the Internet!"]})
+            return res.render('my/newReceiver', {errors: ["Unable to get the receiver status. Please make sure your receiver is online and reachable from the Internet!"]})
+        }
+
+        const receiver = new Receiver({
+            label: statusResponse.data.receiver.name,
+            url: resolvedUrl.toString(),
+            owner: req.user
         });
+        await receiver.save()
+        res.redirect('/my/receivers');
+
     }
     editReceiver(req, res) {
         const Receiver = mongoose.model('Receiver');
