@@ -34,24 +34,16 @@ class MyController {
         }
 
         const receiverService = new ReceiverService();
-        await receiverService.detectReceiverType(resolvedUrl.toString());
+        const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
 
-        const statusUrl = new URL(resolvedUrl);
-        if (!statusUrl.pathname.endsWith('/')) {
-            statusUrl.pathname += '/';
-        }
-        statusUrl.pathname += 'status.json';
-
-        let statusResponse;
-        try {
-            statusResponse = await axios.get(statusUrl.toString())
-        } catch (error) {
-            console.error(error);
-            return res.render('my/newReceiver', {errors: ["Unable to get the receiver status. Please make sure your receiver is online and reachable from the Internet!"]})
+        if (!detectionResult.openwebrx) {
+            return res.render('my/newReceiver', {errors: ["Could not detect an OpenWebRX receiver at the given URL. Other receiver types will be supported soon!"]})
         }
 
         const receiver = new Receiver({
-            label: statusResponse.data.receiver.name,
+            label: detectionResult.openwebrx.name,
+            type: 'openwebrx',
+            version: detectionResult.openwebrx.version,
             url: resolvedUrl.toString(),
             owner: req.user
         });

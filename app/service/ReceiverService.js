@@ -61,12 +61,13 @@ class ReceiverService {
         }
     }
     async detectReceiverType(url) {
-        const result = Object.fromEntries(await Promise.all(Object.entries(this.detectors).map(async ([type, detectorCls]) => {
-            const detector = new detectorCls();
-            return [type, await detector.matches(url)];
-        })));
-
-        console.info(result);
+        const resultArray = await Promise.all(
+            Object.entries(this.detectors).map(async ([type, detectorCls]) => {
+                const detector = new detectorCls();
+                return [type, await detector.matches(url)];
+            })
+        );
+        return Object.fromEntries(resultArray.filter(e => e[1]));
     }
 }
 
