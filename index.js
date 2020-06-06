@@ -31,7 +31,7 @@ Promise.all([
         cookie: {},
         store: store,
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: false
     }));
 
     app.use(passport.initialize());
