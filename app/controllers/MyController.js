@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
+const ReceiverService = require('../service/ReceiverService');
 
 class MyController {
     receivers(req, res) {
@@ -31,6 +32,9 @@ class MyController {
         if (existing.length) {
             return res.render('my/newReceiver', {errors: ["Receiver URL already exists in database."]})
         }
+
+        const receiverService = new ReceiverService();
+        await receiverService.detectReceiverType(resolvedUrl.toString());
 
         const statusUrl = new URL(resolvedUrl);
         if (!statusUrl.pathname.endsWith('/')) {

@@ -28,6 +28,7 @@
     "jwk-to-pem": "^2.0.3",
     "mongoose": "^5.9.18",
     "passport": "^0.4.1",
-    "passport-oauth2": "^1.5.0"
+    "passport-oauth2": "^1.5.0",
+    "semver": "^7.3.2"
   }
 }
