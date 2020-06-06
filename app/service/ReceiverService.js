@@ -26,7 +26,7 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
                 }
             }
         } catch (err) {
-            console.error('Error detecting OpenWebRX receiver: ', err);
+            //console.error('Error detecting OpenWebRX receiver: ', err);
         }
 
         try {
@@ -34,11 +34,12 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             statusUrl.pathname += 'status';
             const statusResponse = await axios.get(statusUrl.toString())
 
+            // TODO: parse response body (hint: it's not json)
             return {
                 name: statusResponse.receiver.name
             }
         } catch (err) {
-            console.error('Error detecting OpenWebRX receiver (old style): ', err);
+            //console.error('Error detecting OpenWebRX receiver (old style): ', err);
         }
 
         return false
@@ -54,10 +55,46 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
     }
 }
 
+class WebSdrReceiverDetector extends ReceiverDetector {
+    async matches(baseUrl) {
+        const normalized = new URL(baseUrl);
+        if (!normalized.pathname.endsWith('/')) {
+            normalized.pathname += '/';
+        }
+
+        try {
+            const statusUrl = new URL(normalized);
+            statusUrl.pathname += '~~orgstatus';
+            const statusResponse = await axios.get(statusUrl.toString())
+            const parsed = this.parseResponse(statusResponse.data);
+            return {
+                name: parsed['Description']
+            }
+        } catch (err) {
+            //console.error('Error detecting Websdr receiver: ', err);
+        }
+
+        return false
+    }
+    parseResponse(response) {
+        const parsed = response.split('\n').map((line) => {
+            const items = line.split(': ');
+            return [items[0], items.slice(1).join(': ')];
+        });
+
+        const bands = parsed.filter(b => b[0] === 'Band').map(b => b[1]);
+
+        const composed = Object.fromEntries(parsed.filter(b => b[0] !== 'Band'))
+        composed.Bands = bands;
+        return composed;
+    }
+}
+
 class ReceiverService {
     constructor(){
         this.detectors = {
-            'openwebrx': OpenWebRxReceiverDetector
+            'openwebrx': OpenWebRxReceiverDetector,
+            'websdr': WebSdrReceiverDetector
         }
     }
     async detectReceiverType(url) {
@@ -67,7 +104,11 @@ class ReceiverService {
                 return [type, await detector.matches(url)];
             })
         );
-        return Object.fromEntries(resultArray.filter(e => e[1]));
+        const matches = resultArray.filter(e => e[1])
+        if (!matches.length) return false;
+        const firstResult = matches[0][1]
+        firstResult.type = matches[0][0]
+        return firstResult
     }
 }
 

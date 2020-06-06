@@ -1,3 +1,14 @@
+<%
+function getReceiverType(receiver) {
+    switch (receiver.type) {
+        case 'openwebrx':
+            return 'OpenWebRX';
+        case 'websdr':
+            return 'WebSDR';
+    }
+    return 'Other';
+}
+%>
 <h1>Receiver list</h1>
 <table class="table mt-5">
     <% receivers.forEach((receiver) => { %>
@@ -5,7 +16,7 @@
             <td>
                 <h5><%= receiver.label %></h5>
                 <div><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a></div>
-                <div>OpenWebRX</div>
+                <div><%= getReceiverType(receiver) %></div>
             </td>
         </tr>
     <% }); %>

@@ -36,14 +36,10 @@ class MyController {
         const receiverService = new ReceiverService();
         const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
 
-        if (!detectionResult.openwebrx) {
-            return res.render('my/newReceiver', {errors: ["Could not detect an OpenWebRX receiver at the given URL. Other receiver types will be supported soon!"]})
-        }
-
         const receiver = new Receiver({
-            label: detectionResult.openwebrx.name,
-            type: 'openwebrx',
-            version: detectionResult.openwebrx.version,
+            label: detectionResult.name,
+            type: detectionResult.type,
+            version: detectionResult.version,
             url: resolvedUrl.toString(),
             owner: req.user
         });
