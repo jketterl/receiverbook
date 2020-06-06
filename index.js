@@ -46,5 +46,7 @@ Promise.all([
 
     app.use('/', new AppRouter());
 
+    app.use('/isonline', (req, res) => res.send('ONLINE'));
+
     app.listen(3000, () => console.info("Application started"));
 });
