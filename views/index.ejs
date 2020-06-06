@@ -18,7 +18,7 @@ function getReceiverType(receiver) {
             <td>
                 <h5><%= receiver.label %></h5>
                 <div><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a></div>
-                <div><%= getReceiverType(receiver) %></div>
+                <div><%= getReceiverType(receiver) %> <%= receiver.version %></div>
             </td>
         </tr>
     <% }); %>
