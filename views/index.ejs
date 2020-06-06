@@ -1,1 +1,12 @@
-<div>Hello radio world!</div>
+<h1>Receiver list</h1>
+<table class="table mt-5">
+    <% receivers.forEach((receiver) => { %>
+        <tr>
+            <td>
+                <h5><%= receiver.label %></h5>
+                <div><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a></div>
+                <div>OpenWebRX</div>
+            </td>
+        </tr>
+    <% }); %>
+</table>

@@ -1,6 +1,11 @@
+const mongoose = require('mongoose');
+
 class IndexController {
     index(req, res) {
-        res.render('index');
+        const Receiver = mongoose.model('Receiver');
+        Receiver.find().then((receivers) => {
+            res.render('index', { receivers });
+        })
     }
 }
 
