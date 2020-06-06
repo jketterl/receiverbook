@@ -43,12 +43,21 @@ class MyController {
             return res.render('my/newReceiver', {errors: ["Unable to detect the receiver type"]})
         }
 
+        let location;
+        if (detectionResult.location) {
+            location = {
+                type: 'Point',
+                coordinates: detectionResult.location
+            }
+        }
+
         const receiver = new Receiver({
             label: detectionResult.name,
             type: detectionResult.type,
             version: detectionResult.version,
             url: resolvedUrl.toString(),
-            owner: req.user
+            owner: req.user,
+            location
         });
         await receiver.save()
         res.redirect('/my/receivers');

@@ -5,7 +5,16 @@ const Receiver = mongoose.model('Receiver', {
     type: String,
     version: String,
     url: String,
-    owner: String
+    owner: String,
+    location: {
+        type:{
+            type: String,
+            enum: ['Point']
+        },
+        coordinates: {
+            type: [Number]
+        }
+    }
 });
 
 module.exports = Receiver;

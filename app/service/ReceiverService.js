@@ -1,5 +1,6 @@
 const axios = require('axios');
 const semver = require('semver');
+const Maidenhead = require('maidenhead');
 
 class ReceiverDetector {
     async matches(baseUrl) {
@@ -10,6 +11,12 @@ class ReceiverDetector {
             const items = line.split('=');
             return [items[0], items.slice(1).join(': ')];
         }));
+    }
+    parseCoordinates(gpsString) {
+        const matches = /^\(([0-9.]+), ([0-9.]+)\)$/.exec(gpsString)
+        if (!matches) return false;
+        // longitude first!!
+        return[matches[2], matches[1]]
     }
 }
 
@@ -24,11 +31,14 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status.json';
             const statusResponse = await axios.get(statusUrl.toString())
-            const version = this.parseVersion(statusResponse.data.version)
+            const data = statusResponse.data;
+            const version = this.parseVersion(data.version)
             if (version) {
                 return {
-                    name: statusResponse.data.receiver.name,
-                    version
+                    name: data.receiver.name,
+                    version,
+                    // longitude first !!
+                    location: [data.receiver.gps.lon, data.receiver.gps.lat]
                 }
             }
         } catch (err) {
@@ -41,10 +51,12 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             const statusResponse = await axios.get(statusUrl.toString())
             const parsed = this.parseResponse(statusResponse.data);
             const version = this.parseVersion(parsed.sw_version);
+            const location = this.parseCoordinates(parsed.gps);
             if (version) {
                 return {
                     name: parsed.name,
-                    version
+                    version,
+                    location
                 }
             }
         } catch (err) {
@@ -77,8 +89,10 @@ class WebSdrReceiverDetector extends ReceiverDetector {
             statusUrl.pathname += '~~orgstatus';
             const statusResponse = await axios.get(statusUrl.toString())
             const parsed = this.parseResponse(statusResponse.data);
+            const location = this.parseLocator(parsed['Qth'])
             return {
-                name: parsed['Description']
+                name: parsed['Description'],
+                location
             }
         } catch (err) {
             //console.error('Error detecting Websdr receiver: ', err);
@@ -98,6 +112,15 @@ class WebSdrReceiverDetector extends ReceiverDetector {
         composed.Bands = bands;
         return composed;
     }
+    parseLocator(locatorString) {
+        const locator = new Maidenhead();
+        locator.locator = locatorString;
+        if (locator.lat && locator.lon) {
+            // longitude first!!
+            return [locator.lon, locator.lat];
+        }
+        return false;
+    }
 }
 
 class KiwiSdrRecevierDetector extends ReceiverDetector {
@@ -113,14 +136,16 @@ class KiwiSdrRecevierDetector extends ReceiverDetector {
             const statusResponse = await axios.get(statusUrl.toString())
             const parsed = this.parseResponse(statusResponse.data);
             const version = this.parseVersion(parsed.sw_version);
+            const location = this.parseCoordinates(parsed.gps);
             if (version) {
                 return {
                     name: parsed.name,
-                    version
+                    version,
+                    location
                 }
             }
         } catch (err) {
-            console.error('Error detecting KiwSDR receiver: ', err);
+            //console.error('Error detecting KiwSDR receiver: ', err);
         }
     }
     parseVersion(versionString) {
