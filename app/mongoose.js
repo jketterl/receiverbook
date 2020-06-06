@@ -7,5 +7,8 @@ module.exports.setup = async () => {
     mongoUrl.username = config.mongo.user;
     mongoUrl.password = config.mongo.password;
     await mongoose.connect(mongoUrl.toString(), { useNewUrlParser: true, useUnifiedTopology: true })
-    return mongoose
+    return {
+        mongoose: mongoose,
+        mongoUrl: mongoUrl
+    }
 }
