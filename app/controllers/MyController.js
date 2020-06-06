@@ -25,7 +25,10 @@ class MyController {
             const response = await axios.get(receiverUrl.toString())
             resolvedUrl = new URL(response.request.res.responseUrl);
         } catch (error) {
-            return res.render('my/newReceiver', {errors: ["Unable to contact the receiver. Please make sure your receiver is online and reachable from the Internet!"]})
+            //console.error(error)
+            //return res.render('my/newReceiver', {errors: ["Unable to contact the receiver. Please make sure your receiver is online and reachable from the Internet!"]})
+            // ignore this error since kiwisdr websdr webservers send back invalid responses
+            resolvedUrl = receiverUrl;
         }
 
         const existing = await Receiver.find({ url: resolvedUrl.toString() })
@@ -35,6 +38,10 @@ class MyController {
 
         const receiverService = new ReceiverService();
         const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
+
+        if (!detectionResult) {
+            return res.render('my/newReceiver', {errors: ["Unable to detect the receiver type"]})
+        }
 
         const receiver = new Receiver({
             label: detectionResult.name,

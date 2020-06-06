@@ -4,12 +4,14 @@
         <tr>
             <th>Name</th>
             <th>URL</th>
+            <th>Type</th>
             <th>Status</th>
         </tr>
         <% receivers.forEach((receiver) => { %>
             <tr>
                 <td><a href="/my/receivers/<%= receiver.id %>"><%= receiver.label %></a></td>
                 <td><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a>
+                <td><%= receiver.type %></a>
                 <td></td>
             </tr>
         <% }); %>

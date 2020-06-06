@@ -5,6 +5,12 @@ class ReceiverDetector {
     async matches(baseUrl) {
         return false;
     }
+    parseResponse(response) {
+        return Object.fromEntries(response.split('\n').map((line) => {
+            const items = line.split('=');
+            return [items[0], items.slice(1).join(': ')];
+        }));
+    }
 }
 
 class OpenWebRxReceiverDetector extends ReceiverDetector {
@@ -33,10 +39,13 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status';
             const statusResponse = await axios.get(statusUrl.toString())
-
-            // TODO: parse response body (hint: it's not json)
-            return {
-                name: statusResponse.receiver.name
+            const parsed = this.parseResponse(statusResponse.data);
+            const version = this.parseVersion(parsed.sw_version);
+            if (version) {
+                return {
+                    name: parsed.name,
+                    version
+                }
             }
         } catch (err) {
             //console.error('Error detecting OpenWebRX receiver (old style): ', err);
@@ -46,8 +55,9 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
     }
     parseVersion(versionString) {
         const matches = /^v(.*)$/.exec(versionString)
+        if (!matches) return false;
         try {
-            return semver.coerce(versionString).toString();
+            return semver.coerce(matches[1]).toString();
         } catch (err) {
             console.error(err)
             return false;
@@ -90,11 +100,47 @@ class WebSdrReceiverDetector extends ReceiverDetector {
     }
 }
 
+class KiwiSdrRecevierDetector extends ReceiverDetector {
+    async matches(baseUrl) {
+        const normalized = new URL(baseUrl);
+        if (!normalized.pathname.endsWith('/')) {
+            normalized.pathname += '/';
+        }
+
+        try {
+            const statusUrl = new URL(normalized);
+            statusUrl.pathname += 'status';
+            const statusResponse = await axios.get(statusUrl.toString())
+            const parsed = this.parseResponse(statusResponse.data);
+            const version = this.parseVersion(parsed.sw_version);
+            if (version) {
+                return {
+                    name: parsed.name,
+                    version
+                }
+            }
+        } catch (err) {
+            console.error('Error detecting KiwSDR receiver: ', err);
+        }
+    }
+    parseVersion(versionString) {
+        const matches = /^KiwiSDR_v(.*)$/.exec(versionString)
+        if (!matches) return false;
+        try {
+            return semver.coerce(matches[1]).toString();
+        } catch (err) {
+            console.error(err)
+            return false;
+        }
+    }
+}
+
 class ReceiverService {
     constructor(){
         this.detectors = {
             'openwebrx': OpenWebRxReceiverDetector,
-            'websdr': WebSdrReceiverDetector
+            'websdr': WebSdrReceiverDetector,
+            'kiwisdr': KiwiSdrRecevierDetector
         }
     }
     async detectReceiverType(url) {
