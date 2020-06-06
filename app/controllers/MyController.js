@@ -38,6 +38,19 @@ class MyController {
             res.render('my/newReceiver', {errors: ["Unable to contact the receiver. Please make sure your receiver is online and reachable from the Internet!"]})
         });
     }
+    editReceiver(req, res) {
+        const Receiver = mongoose.model('Receiver');
+        Receiver.findOne({owner: req.user, _id: req.params.id}).then((receiver) => {
+            if (!receiver) return res.status(404).send('receiver not found');
+            res.render('my/editReceiver', { receiver });
+        });
+    }
+    deleteReceiver(req, res) {
+        const Receiver = mongoose.model('Receiver');
+        Receiver.deleteOne({owner: req.user, _id: req.params.id}).then(() => {
+            res.redirect('/my/receivers');
+        });
+    }
 }
 
 module.exports = MyController;

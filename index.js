@@ -15,6 +15,8 @@ Promise.all([
     const [passport, mongo_params] = values;
     const app = express();
 
+    app.locals.rootUrl = config.rootUrl;
+
     const store = new MongoDBStore({
         uri: mongo_params.mongoUrl.toString(),
         collection: 'sessions'

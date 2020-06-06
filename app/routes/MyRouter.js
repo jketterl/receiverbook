@@ -10,6 +10,8 @@ class MyRouter extends express.Router {
         this.get('/receivers', controller.receivers);
         this.get('/receivers/new', controller.newReceiver);
         this.post('/receivers/new', controller.processNewReceiver);
+        this.get('/receivers/:id', controller.editReceiver);
+        this.get('/receivers/:id/delete', controller.deleteReceiver);
     }
 }
 
