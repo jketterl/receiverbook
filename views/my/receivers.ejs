@@ -11,10 +11,10 @@
         <% receivers.forEach((receiver) => { %>
             <tr>
                 <td><a href="/my/receivers/<%= receiver.id %>"><%= receiver.label %></a></td>
-                <td><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a>
+                <td><a href="<%= receiver.url %>" target="_blank"><i class="fas fa-external-link-alt"></i> <%= receiver.url %></a>
                 <td><%= receiver.type %></a>
                 <td><%= receiver.version %></a>
-                <td></td>
+                <td><%= receiver.status %> <i class="fas fa-info-circle"></i></td>
             </tr>
         <% }); %>
     <% } else { %>

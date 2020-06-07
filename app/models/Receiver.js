@@ -14,6 +14,11 @@ const Receiver = mongoose.model('Receiver', {
         coordinates: {
             type: [Number]
         }
+    },
+    status: {
+        type: String,
+        enum: ['new', 'pending', 'online', 'offline'],
+        default: 'new'
     }
 });
 

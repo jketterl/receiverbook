@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 class IndexController {
     index(req, res) {
         const Receiver = mongoose.model('Receiver');
-        Receiver.find().then((receivers) => {
+        Receiver.find({status: 'online'}).then((receivers) => {
             res.render('index', { receivers });
         })
     }
