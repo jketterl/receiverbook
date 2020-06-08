@@ -11,6 +11,7 @@ class AppRouter extends express.Router {
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
         this.use('/static', express.static('assets'));
+        this.use('/static/mdi', express.static('node_modules/@mdi/font'));
     }
 }
 

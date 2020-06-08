@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jketterl/receiverbook#readme",
   "dependencies": {
+    "@mdi/font": "^5.3.45",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "connect-mongodb-session": "^2.3.2",
