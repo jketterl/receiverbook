@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
+const KeyService = require('../service/KeyService');
 
-const Receiver = mongoose.model('Receiver', {
+function generateKey() {
+    keyService = new KeyService();
+    return keyService.generateKey().toString();
+}
+
+const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
     version: String,
@@ -19,7 +25,16 @@ const Receiver = mongoose.model('Receiver', {
         type: String,
         enum: ['new', 'pending', 'online', 'offline'],
         default: 'new'
+    },
+    key: {
+        type: String,
+        default: generateKey,
+        required: true
     }
 });
 
-module.exports = Receiver;
+receiverSchema.methods.regenerateId = () => {
+    this.key = generateId();
+};
+
+mongoose.model('Receiver', receiverSchema);
