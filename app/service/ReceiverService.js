@@ -6,6 +6,24 @@ class ReceiverDetector {
     async matches(baseUrl) {
         return false;
     }
+    async updateReceiver(receiver) {
+        console.info("updating " + receiver.label);
+        const status = await this.matches(receiver.url);
+        if (receiver.status === 'pending' || receiver.status === 'new') {
+            // TODO check for receiver auth here
+            receiver.status = 'pending';
+        } else {
+            if (status) {
+                receiver.status = 'online';
+                receiver.name = status.name;
+                receiver.version = status.version;
+                receiver.location = status.location;
+            } else {
+                receiver.status = 'offline';
+            }
+        }
+        await receiver.save();
+    }
     parseResponse(response) {
         return Object.fromEntries(response.split('\n').map((line) => {
             const items = line.split('=');
@@ -180,6 +198,11 @@ class ReceiverService {
         const firstResult = matches[0][1]
         firstResult.type = matches[0][0]
         return firstResult
+    }
+    async updateReceiver(receiver) {
+        const detectorCls = this.detectors[receiver.type];
+        const detector = new detectorCls();
+        await detector.updateReceiver(receiver);
     }
 }
 

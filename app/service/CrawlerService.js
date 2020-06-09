@@ -1,7 +1,10 @@
+const mongoose = require('mongoose');
+const ReceiverService = require('./ReceiverService');
+
 class CrawlerService {
     constructor() {
-        // 30 minute interval
-        this.interval = 1 * 60 * 1000;
+        // 60 minute interval
+        this.interval = 60 * 60 * 1000;
     }
     run() {
         this.schedule();
@@ -18,11 +21,19 @@ class CrawlerService {
             })
         }, remaining);
     }
-    collectAll() {
-        return new Promise( (resolve) => {
-            console.info('would now collect all');
-            process.nextTick(resolve);
-        });
+    async collectAll() {
+        console.info('now updating all receivers...');
+        const Receiver = mongoose.model('Receiver');
+        const receivers = await Receiver.find({})
+        const receiverService = new ReceiverService();
+        for (const receiver of receivers) {
+            try {
+                await receiverService.updateReceiver(receiver);
+            } catch (err) {
+                console.error(`error while updating ${receiver.label}`)
+            }
+        }
+        console.info('update complete.')
     }
 }
 
