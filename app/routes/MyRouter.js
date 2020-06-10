@@ -12,6 +12,7 @@ class MyRouter extends express.Router {
         this.post('/receivers/new', controller.processNewReceiver);
         this.get('/receivers/:id', controller.editReceiver);
         this.get('/receivers/:id/delete', controller.deleteReceiver);
+        this.get('/receivers/:id/regenerate_key', controller.regenerateKey);
     }
 }
 

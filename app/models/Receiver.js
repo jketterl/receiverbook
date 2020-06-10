@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const KeyService = require('../service/KeyService');
+const semver = require('semver')
 
 function generateKey() {
     keyService = new KeyService();
@@ -33,8 +34,13 @@ const receiverSchema = new mongoose.Schema({
     }
 });
 
-receiverSchema.methods.regenerateId = () => {
-    this.key = generateId();
+receiverSchema.methods.regenerateKey = function(){
+    this.key = generateKey();
+};
+
+receiverSchema.methods.hasVersion = function(version){
+    return semver.gte(semver.parse(this.version), semver.parse(version));
+    return true;
 };
 
 mongoose.model('Receiver', receiverSchema);

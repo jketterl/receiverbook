@@ -10,3 +10,11 @@ pre.block {
 	padding: 10px;
 	border-radius: 5px;
 }
+
+hr {
+    background-color: gray;
+}
+
+a.btn {
+    text-decoration: none;
+}

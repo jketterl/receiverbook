@@ -1,17 +1,35 @@
 <h1><%= receiver.label %></h1>
-<% if (receiver.type === 'openwebrx') { %>
+<% if (receiver.type === 'openwebrx' && receiver.hasVersion('0.19.1')) { %>
     <div class="mt-5">
         <h3>Receiver key</h3>
         <div>
-            Please add the following code to your <pre style="display:inline;">config_webrx.py</pre>:
+            Please add the following line to your <pre style="display:inline;">config_webrx.py</pre>:
         <div>
 <pre class="block mt-2">
 receiver_keys += "<%=receiver.key %>"
 </pre>
+        <div class="alert alert-warning">
+            <div>
+                Please keep your receiver key secret. Anybody who obtains your receiver key can take over your
+                receiver listings.
+            </div>
+            <div>
+                You can regenerate your receiver key with the button below in case it has been compromised:
+            </div>
+            <div class="actions mt-2">
+                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                    Generate a new receiver key
+                </a>
+            </div>
+        </div>
     </div>
 <% } %>
-<div class="actions mt-5">
-    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete receiver</a>
+<hr>
+<div class="alert alert-danger">
+    You can remove your receiver listing from this site by pressing the following button:
+    <div class="actions mt-2">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal">Delete receiver</a>
+    </div>
 </div>
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

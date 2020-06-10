@@ -76,6 +76,14 @@ class MyController {
             res.redirect('/my/receivers');
         });
     }
+    async regenerateKey(req, res) {
+        const Receiver = mongoose.model('Receiver');
+        const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id});
+        if (!receiver) return res.status(404).send("receiver not found");
+        receiver.regenerateKey();
+        await receiver.save();
+        res.redirect(`/my/receivers/${receiver.id}`);
+    }
 }
 
 module.exports = MyController;
