@@ -29,7 +29,7 @@ class KeyService {
             return false;
         }
         const signatureString = `${challenge.challenge}:${signature.time}`
-        const hash = crypto.createHash('sha256')
+        const hash = crypto.createHmac('sha256', Buffer.from(key.secret, 'hex'))
             .update(signatureString)
             .digest('hex');
         return hash === signature.signature;

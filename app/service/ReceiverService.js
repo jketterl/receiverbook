@@ -20,7 +20,12 @@ class ReceiverDetector {
             }
         } else {
             if (status) {
-                receiver.status = 'online';
+                if (status.validated) {
+                    receiver.status = 'online';
+                } else {
+                    // switch back to pending if validation failed
+                    receiver.status = 'pending';
+                }
             } else {
                 receiver.status = 'offline';
             }
