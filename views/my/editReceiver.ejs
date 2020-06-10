@@ -1,5 +1,16 @@
 <h1><%= receiver.label %></h1>
-<div class="actions">
+<% if (receiver.type === 'openwebrx') { %>
+    <div class="mt-5">
+        <h3>Receiver key</h3>
+        <div>
+            Please add the following code to your <pre style="display:inline;">config_webrx.py</pre>:
+        <div>
+<pre class="block mt-2">
+receiver_keys += "<%=receiver.key %>"
+</pre>
+    </div>
+<% } %>
+<div class="actions mt-5">
     <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete receiver</a>
 </div>
 <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
