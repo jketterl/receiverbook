@@ -1,14 +1,15 @@
 const axios = require('axios');
 const semver = require('semver');
 const Maidenhead = require('maidenhead');
+const KeyService = require('./KeyService');
 
 class ReceiverDetector {
-    async matches(baseUrl) {
+    async matches(baseUrl, key) {
         return false;
     }
     async updateReceiver(receiver) {
         console.info("updating " + receiver.label);
-        const status = await this.matches(receiver.url);
+        const status = await this.matches(receiver.url, receiver.key);
         if (receiver.status === 'pending' || receiver.status === 'new') {
             // TODO check for receiver auth here
             receiver.status = 'pending';
@@ -39,16 +40,23 @@ class ReceiverDetector {
 }
 
 class OpenWebRxReceiverDetector extends ReceiverDetector {
-    async matches(baseUrl) {
+    async matches(baseUrl, key) {
         const normalized = new URL(baseUrl);
         if (!normalized.pathname.endsWith('/')) {
             normalized.pathname += '/';
         }
 
+        const headers = {};
+        if (key) {
+            const keyService = new KeyService();
+            const challenge = keyService.getChallenge(key);
+            headers['Authorization'] = keyService.getAuthorizationHeader(challenge);
+        }
+
         try {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status.json';
-            const statusResponse = await axios.get(statusUrl.toString())
+            const statusResponse = await axios.get(statusUrl.toString(), { headers })
             const data = statusResponse.data;
             const version = this.parseVersion(data.version)
             if (version) {
@@ -96,7 +104,7 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
 }
 
 class WebSdrReceiverDetector extends ReceiverDetector {
-    async matches(baseUrl) {
+    async matches(baseUrl, key) {
         const normalized = new URL(baseUrl);
         if (!normalized.pathname.endsWith('/')) {
             normalized.pathname += '/';
@@ -142,7 +150,7 @@ class WebSdrReceiverDetector extends ReceiverDetector {
 }
 
 class KiwiSdrRecevierDetector extends ReceiverDetector {
-    async matches(baseUrl) {
+    async matches(baseUrl, key) {
         const normalized = new URL(baseUrl);
         if (!normalized.pathname.endsWith('/')) {
             normalized.pathname += '/';
