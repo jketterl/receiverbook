@@ -8,7 +8,7 @@ class ReceiverDetector {
         return false;
     }
     async updateReceiver(receiver) {
-        console.info("updating " + receiver.label);
+        console.info(`updating "${receiver.label}"`);
         const keyService = new KeyService();
         const status = await this.matches(receiver.url, keyService.parse(receiver.key));
         if (receiver.status === 'pending' || receiver.status === 'new') {

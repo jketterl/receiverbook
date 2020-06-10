@@ -9,17 +9,14 @@ class CrawlerService {
     run() {
         this.schedule();
     }
-    schedule(when) {
-        const now = new Date().getTime();
-        let remaining = 0;
-        if (when) {
-            remaining = when - now;
-        }
+    schedule(delay=0) {
         setTimeout(() => {
+            const startTime = new Date().getTime()
             this.collectAll().finally( () => {
-                this.schedule(now + this.interval)
+                const now = new Date().getTime()
+                this.schedule(Math.max(0, startTime + this.interval - now))
             })
-        }, remaining);
+        }, delay);
     }
     async collectAll() {
         console.info('now updating all receivers...');
