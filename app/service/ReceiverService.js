@@ -12,18 +12,25 @@ class ReceiverDetector {
         const keyService = new KeyService();
         const status = await this.matches(receiver.url, keyService.parse(receiver.key));
         if (receiver.status === 'pending' || receiver.status === 'new') {
-            // TODO check for receiver auth here
-            receiver.status = 'pending';
+            if (status && status.validated) {
+                // switch receiver online if validated
+                receiver.status = 'online'
+            } else {
+                receiver.status = 'pending';
+            }
         } else {
             if (status) {
                 receiver.status = 'online';
-                receiver.name = status.name;
-                receiver.version = status.version;
-                receiver.location = status.location;
             } else {
                 receiver.status = 'offline';
             }
         }
+        if (status) {
+            receiver.name = status.name;
+            receiver.version = status.version;
+            receiver.location = status.location;
+        }
+
         await receiver.save();
     }
     parseResponse(response) {
@@ -60,8 +67,9 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             statusUrl.pathname += 'status.json';
             const statusResponse = await axios.get(statusUrl.toString(), { headers })
             const sh = statusResponse.headers
-            if ('signature' in sh && 'time' in sh) {
-                keyService.validateSignature({signature: sh.signature, time: sh.time}, challenge, key);
+            let validated = false
+            if (key && 'signature' in sh && 'time' in sh) {
+                validated = keyService.validateSignature({signature: sh.signature, time: sh.time}, challenge, key);
             }
             const data = statusResponse.data;
             const version = this.parseVersion(data.version)
@@ -70,11 +78,12 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
                     name: data.receiver.name,
                     version,
                     // longitude first !!
-                    location: [data.receiver.gps.lon, data.receiver.gps.lat]
+                    location: [data.receiver.gps.lon, data.receiver.gps.lat],
+                    validated
                 }
             }
         } catch (err) {
-            console.error('Error detecting OpenWebRX receiver: ', err);
+            //console.error('Error detecting OpenWebRX receiver: ', err);
         }
 
         try {
