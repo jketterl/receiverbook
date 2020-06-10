@@ -30,7 +30,7 @@ class CrawlerService {
             try {
                 await receiverService.updateReceiver(receiver);
             } catch (err) {
-                console.error(`error while updating ${receiver.label}`)
+                console.error(`error while updating ${receiver.label}`, err)
             }
         }
         console.info('update complete.')

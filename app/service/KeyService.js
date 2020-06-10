@@ -16,11 +16,18 @@ class KeyService {
         return new Key(matches[1], matches[2], matches[3]);
     }
     generateChallenge(key) {
-        const challengeString = crypto.randomBytes(16).toString(hex);
+        const challengeString = crypto.randomBytes(16).toString('hex');
         return new KeyChallenge(key.source, key.id, challengeString);
     }
-    generateAuthorizationHeader(challenge) {
+    getAuthorizationHeader(challenge) {
         return `ReceiverId ${challenge.toString()}`;
+    }
+    validateSignature(signature, challenge, key) {
+        const signatureString = `${challenge.challenge}:${signature.time}`
+        const hash = crypto.createHash('sha256')
+            .update(signatureString)
+            .digest('hex');
+        return hash === signature.signature;
     }
 }
 

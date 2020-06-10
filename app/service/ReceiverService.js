@@ -9,7 +9,8 @@ class ReceiverDetector {
     }
     async updateReceiver(receiver) {
         console.info("updating " + receiver.label);
-        const status = await this.matches(receiver.url, receiver.key);
+        const keyService = new KeyService();
+        const status = await this.matches(receiver.url, keyService.parse(receiver.key));
         if (receiver.status === 'pending' || receiver.status === 'new') {
             // TODO check for receiver auth here
             receiver.status = 'pending';
@@ -47,9 +48,10 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
         }
 
         const headers = {};
+        const keyService = new KeyService();
+        let challenge;
         if (key) {
-            const keyService = new KeyService();
-            const challenge = keyService.getChallenge(key);
+            challenge = keyService.generateChallenge(key);
             headers['Authorization'] = keyService.getAuthorizationHeader(challenge);
         }
 
@@ -57,6 +59,10 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status.json';
             const statusResponse = await axios.get(statusUrl.toString(), { headers })
+            const sh = statusResponse.headers
+            if ('signature' in sh && 'time' in sh) {
+                keyService.validateSignature({signature: sh.signature, time: sh.time}, challenge, key);
+            }
             const data = statusResponse.data;
             const version = this.parseVersion(data.version)
             if (version) {
@@ -68,7 +74,7 @@ class OpenWebRxReceiverDetector extends ReceiverDetector {
                 }
             }
         } catch (err) {
-            //console.error('Error detecting OpenWebRX receiver: ', err);
+            console.error('Error detecting OpenWebRX receiver: ', err);
         }
 
         try {
