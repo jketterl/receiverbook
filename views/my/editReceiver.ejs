@@ -1,28 +1,51 @@
 <h1><%= receiver.label %></h1>
-<% if (receiver.type === 'openwebrx' && receiver.hasVersion('0.19.1')) { %>
-    <div class="mt-5">
-        <h3>Receiver key</h3>
-        <div>
-            Please add the following line to your <pre style="display:inline;">config_webrx.py</pre>:
-        <div>
+<% if (receiver.type === 'openwebrx') { %>
+    <%if (receiver.hasVersion('0.19.1')) { %>
+        <div class="mt-5">
+            <h3>OpenWebRX receiver authentication</h3>
+            <p class="mt-3">
+                We need to authenticate you as the operator of this receiver listing. For this purpose
+                please add the following line to your <span class="inline-code">config_webrx.py</span>:
+            </p>
 <pre class="block mt-2">
 receiver_keys += ["<%=receiver.key %>"]
 </pre>
-        <div class="alert alert-warning">
-            <div>
-                Please keep your receiver key secret. Anybody who obtains your receiver key can take over your
-                receiver listings.
-            </div>
-            <div>
-                You can regenerate your receiver key with the button below in case it has been compromised:
-            </div>
-            <div class="actions mt-2">
-                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
-                    Generate a new receiver key
-                </a>
+            <p>
+                Please restart OpenWebRX after editing the configuration.
+                (<span class="inline-code">sudo systemctl restart openwebrx</span> on most installations)
+            </p>
+            <p>
+                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
+                will be listed automatically once authentication is complete.
+            </p>
+            <div class="alert alert-warning">
+                <div>
+                    Please keep your receiver key secret. Anybody who obtains your receiver key can potentially
+                    take over your receiver listings.
+                </div>
+                <div>
+                    You can regenerate your receiver key with the button below in case it has been compromised:
+                </div>
+                <div class="actions mt-2">
+                    <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                        Generate a new receiver key
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    <% } else { %>
+        <div class="mt-5">
+            <h3>OpenWebRX receiver authentication</h3>
+            <p class="mt-3">
+                Your receiver version does not allow us to automatically autenticate you as the receiver owner.
+                Please update your Receiver to at lease version 0.19.1 to be able to be listed.
+            </p>
+            <p>
+                Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage for instructions.
+            </p>
+        </div>
+    <% } %>
+<% } else { %>
 <% } %>
 <hr>
 <div class="alert alert-danger">
