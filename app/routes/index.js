@@ -8,6 +8,7 @@ class AppRouter extends express.Router {
         super();
         const indexController = new IndexController();
         this.get('/', indexController.index);
+        this.get('/impressum', indexController.impressum);
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
         this.use('/static', express.static('assets'));
