@@ -8,7 +8,7 @@ class KeyError extends Error {}
 class KeyService {
     generateKey() {
         const key = crypto.randomBytes(16).toString('hex');
-        const secret = crypto.randomBytes(32).toString('hex');
+        const secret = this.generateSecret();
         return new Key('receiverbook', key, secret);
     }
     parse(keyString) {
@@ -33,6 +33,9 @@ class KeyService {
             .update(signature.time, 'utf8')
             .digest('hex');
         return hash === signature.signature;
+    }
+    generateSecret() {
+        return crypto.randomBytes(32).toString('hex');
     }
 }
 

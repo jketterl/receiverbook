@@ -4,7 +4,12 @@ const semver = require('semver')
 
 function generateKey() {
     keyService = new KeyService();
-    return keyService.generateKey().toString();
+    if (this.type === 'openwebrx') {
+        return keyService.generateKey().toString();
+    }
+    if (this.type === 'websdr') {
+        return keyService.generateSecret();
+    }
 }
 
 const receiverSchema = new mongoose.Schema({
@@ -29,8 +34,7 @@ const receiverSchema = new mongoose.Schema({
     },
     key: {
         type: String,
-        default: generateKey,
-        required: true
+        default: generateKey
     }
 });
 

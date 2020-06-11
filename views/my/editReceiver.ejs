@@ -1,7 +1,7 @@
 <h1><%= receiver.label %></h1>
-<% if (receiver.type === 'openwebrx') { %>
-    <%if (receiver.hasVersion('0.19.1')) { %>
-        <div class="mt-5">
+<div class="mt-5">
+    <% if (receiver.type === 'openwebrx') { %>
+        <%if (receiver.hasVersion('0.19.1')) { %>
             <h3>OpenWebRX receiver authentication</h3>
             <p class="mt-3">
                 We need to authenticate you as the operator of this receiver listing. For this purpose
@@ -32,9 +32,7 @@ receiver_keys += ["<%=receiver.key %>"]
                     </a>
                 </div>
             </div>
-        </div>
-    <% } else { %>
-        <div class="mt-5">
+        <% } else { %>
             <h3>OpenWebRX receiver authentication</h3>
             <p class="mt-3">
                 Your receiver version does not allow us to automatically autenticate you as the receiver owner.
@@ -43,21 +41,23 @@ receiver_keys += ["<%=receiver.key %>"]
             <p>
                 Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage for instructions.
             </p>
-        </div>
-    <% } %>
-<% } else { %>
-    <div class="mt-5">
-        <% if (receiver.type === 'websdr') { %>
-            <h3>WebSDR authentication</h3>
-        <% } else if (receiver.type === 'kiwisdr') { %>
-            <h3>KiwiSDR authentication</h3>
         <% } %>
+    <% } else if (receiver.type === 'websdr') { %>
+        <h3>WebSDR authentication</h3>
+        <p class="mt-3">
+            Please paste the following code at the top of your <span class="inline-code">pub2/websdr-head.html</span> file:
+        </p>
+<pre class="block">
+&lt;meta name="receiverbook-secret" content="<%= receiver.key %>"&gt;
+</pre>
+    <% } else { %>
+        <h3>Receiver authentication</h3>
         <p class="mt-3">
             We currently have no means to authenticate you as the operator of this receiver. Please check back
             in the future as we update our software.
         </p>
-    </div>
-<% } %>
+    <% } %>
+</div>
 <hr>
 <div class="alert alert-danger">
     You can remove your receiver listing from this site by pressing the following button:
