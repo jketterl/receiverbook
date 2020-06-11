@@ -24,6 +24,10 @@ a.btn {
     text-decoration: none;
 }
 
+.twitter-button iframe {
+    vertical-align: middle;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -40,6 +44,6 @@ body {
   bottom: 0;
   width: 100%;
   height: 60px; /* Set the fixed height of the footer here */
-  line-height: 60px; /* Vertically center the text there */
+  line-height: 59px; /* Vertically center the text there */
   text-align: center;
 }
