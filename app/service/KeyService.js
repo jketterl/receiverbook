@@ -28,9 +28,9 @@ class KeyService {
         if (moment().diff(timestamp, 'minutes') > 5) {
             return false;
         }
-        const signatureString = `${challenge.challenge}:${signature.time}`
         const hash = crypto.createHmac('sha256', Buffer.from(key.secret, 'hex'))
-            .update(signatureString)
+            .update(Buffer.from(challenge.challenge, 'hex'))
+            .update(signature.time, 'utf8')
             .digest('hex');
         return hash === signature.signature;
     }
