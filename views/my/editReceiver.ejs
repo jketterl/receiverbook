@@ -46,6 +46,17 @@ receiver_keys += ["<%=receiver.key %>"]
         </div>
     <% } %>
 <% } else { %>
+    <div class="mt-5">
+        <% if (receiver.type === 'websdr') { %>
+            <h3>WebSDR authentication</h3>
+        <% } else if (receiver.type === 'kiwisdr') { %>
+            <h3>KiwiSDR authentication</h3>
+        <% } %>
+        <p class="mt-3">
+            We currently have no means to authenticate you as the operator of this receiver. Please check back
+            in the future as we update our software.
+        </p>
+    </div>
 <% } %>
 <hr>
 <div class="alert alert-danger">
