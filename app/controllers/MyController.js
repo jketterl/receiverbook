@@ -60,7 +60,7 @@ class MyController {
             location
         });
         await receiver.save()
-        res.redirect('/my/receivers');
+        res.redirect(`/my/receivers/${receiver.id}`);
 
     }
     editReceiver(req, res) {
