@@ -2,6 +2,7 @@ const ReceiverAdapter = require('./ReceiverAdapter');
 const Maidenhead = require('maidenhead');
 const axios = require('axios');
 const { JSDOM } = require('jsdom');
+const UserService = require('../UserService');
 
 class WebSdrAdapter extends ReceiverAdapter {
     async matches(baseUrl, key) {
@@ -31,7 +32,13 @@ class WebSdrAdapter extends ReceiverAdapter {
         statusUrl.pathname += '~~orgstatus';
         const statusResponse = await axios.get(statusUrl.toString())
         const parsed = this.parseResponse(statusResponse.data);
-        const location = this.parseLocator(parsed['Qth'])
+        let location;
+        if ('Qth' in parsed) {
+            location = this.parseLocator(parsed['Qth'])
+        }
+        if ('Email' in parsed) {
+            const email = this.parseEmail(parsed['Email'])
+        }
         return {
             name: parsed['Description'],
             location
@@ -67,6 +74,13 @@ class WebSdrAdapter extends ReceiverAdapter {
             return [locator.lon, locator.lat];
         }
         return false;
+    }
+    parseEmail(inputString) {
+        if (inputString.indexOf('@') >= 0) {
+            return inputString;
+        }
+        const chars = Buffer.from(inputString, 'utf-8').map(i => i ^ 1);
+        return chars.toString('utf-8');
     }
 }
 
