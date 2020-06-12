@@ -8,11 +8,13 @@ class SessionController {
             failureRedirect: '/session/failure'
         });
     }
-    loginComplete(req, res) {
+    async loginComplete(req, res) {
+        await req.session.save();
         res.redirect('/');
     }
-    logout(req, res) {
+    async logout(req, res) {
         req.logout();
+        await req.session.save();
         res.redirect('/');
     }
 }
