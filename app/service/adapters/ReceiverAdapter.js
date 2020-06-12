@@ -58,7 +58,7 @@ class ReceiverAdapter {
     async validateEMail(receiver, email) {
         const userService = new UserService();
         const user = await userService.getUserDetails(receiver.owner);
-        return user.email === email;
+        return user.email_verified && user.email === email;
     }
 }
 
