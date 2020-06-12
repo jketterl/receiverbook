@@ -39,7 +39,8 @@ const receiverSchema = new mongoose.Schema({
 });
 
 receiverSchema.methods.regenerateKey = function(){
-    this.key = generateKey();
+    this.key = generateKey.call(this, []);
+    this.status = 'pending';
 };
 
 receiverSchema.methods.hasVersion = function(version){

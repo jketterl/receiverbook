@@ -1,19 +1,59 @@
 <h1><%= receiver.label %></h1>
 <div class="mt-5">
-    <% if (receiver.type === 'openwebrx') { %>
-        <%if (receiver.hasVersion('0.19.1')) { %>
+    <% if (receiver.status === 'online') { %>
+        <h3>Receiver Status</h3>
+        <p class="mt-3 alert alert-success">
+            Your receiver is currently online and publicly listed on this site.
+        </p>
+        <% if (receiver.type === 'openwebrx' || receiver.type === 'websdr') { %>
+            <div class="actions mt-2">
+                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                    Generate a new receiver key
+                </a>
+            </div>
+        <% } %>
+    <% } else { %>
+        <% if (receiver.type === 'openwebrx') { %>
             <h3>OpenWebRX receiver authentication</h3>
             <p class="mt-3">
-                We need to authenticate you as the operator of this receiver listing. For this purpose
-                please add the following line to your <span class="inline-code">config_webrx.py</span>:
+                We need to authenticate you as the operator of this receiver listing. There is currently two
+                methods available:
             </p>
+            <ul>
+                <li>
+                    <h4>E-Mail validation</h4>
+                    <p class="mt-3">
+                        If the <span class="inline-code">receiver_admin</span> setting in your receiver
+                        configuration is set to the same address you used to sign up here, your receiver
+                        should be verified automatically within the next hour.
+                    </p>
+                </li>
+                <li>
+                    <h4>Key verification</h4>
+                    <%if (receiver.hasVersion('0.19.1')) { %>
+                        <p class="mt-3">
+                            You can verify confirm your receiver by configuring it with a receiver key, which
+                            we can verify automatically. To do so, please add the following line to your
+                            <span class="inline-code">config_webrx.py</span>:
+                        </p>
 <pre class="block mt-2">
 receiver_keys += ["<%=receiver.key %>"]
 </pre>
-            <p>
-                Please restart OpenWebRX after editing the configuration.
-                (<span class="inline-code">sudo systemctl restart openwebrx</span> on most installations)
-            </p>
+                        <p>
+                            Please restart OpenWebRX after editing the configuration.
+                            (<span class="inline-code">sudo systemctl restart openwebrx</span> on most installations)
+                        </p>
+                    <% } else { %>
+                        <p class="mt-3">
+                            Your receiver version does not support receiver key verification.
+                            Please update your Receiver to version or above 0.19.1 to be able to be listed.
+                        </p>
+                        <p>
+                            Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage</> for instructions.
+                        </p>
+                    <% } %>
+                </li>
+            </ul>
             <p>
                 We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
                 will be listed automatically once authentication is complete.
@@ -32,30 +72,58 @@ receiver_keys += ["<%=receiver.key %>"]
                     </a>
                 </div>
             </div>
-        <% } else { %>
-            <h3>OpenWebRX receiver authentication</h3>
+        <% } else if (receiver.type === 'websdr') { %>
+            <h3>WebSDR authentication</h3>
             <p class="mt-3">
-                Your receiver version does not allow us to automatically autenticate you as the receiver owner.
-                Please update your Receiver to at lease version 0.19.1 to be able to be listed.
+                We need to authenticate you as the operator of this receiver listing. There is currently two
+                methods available:
+            </p>
+            <ul>
+                <li>
+                    <h4>E-Mail validation</h4>
+                    <p class="mt-3">
+                        If the <span class="inline-code">org email</span> setting in your receiver
+                        configuration is set to the same address you used to sign up here, your receiver
+                        should be verified automatically within the next hour.
+                    </p>
+                </li>
+                <li>
+                    <h4>Confirmation code</h4>
+                    <p class="mt-3">
+                        Please paste the following code at the top of your <span class="inline-code">pub2/websdr-head.html</span> file:
+                    </p>
+<pre class="block">
+&lt;meta name="receiverbook-confirmation" content="<%= receiver.key %>"&gt;
+</pre>
+                    <div class="actions mt-2">
+                        <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                            Generate a new confirmation code
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            <p>
+                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
+                will be listed automatically once authentication is complete.
+            </p>
+        <% } else if (receiver.type === 'kiwisdr') { %>
+            <h3>KiwiSDR authentication</h3>
+            <p class="mt-3">
+                We need to authenticate you as the operator of this receiver listing. For KiwiSDR listings, we can
+                currently only verify your receiver if the receiver admin E-Mail address matches the one you used
+                to sign up here.
             </p>
             <p>
-                Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage for instructions.
+                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
+                will be listed automatically once authentication is complete.
+            </p>
+        <% } else { %>
+            <h3>Receiver authentication</h3>
+            <p class="mt-3">
+                We currently have no means to authenticate you as the operator of this receiver. Please check back
+                in the future as we update our software.
             </p>
         <% } %>
-    <% } else if (receiver.type === 'websdr') { %>
-        <h3>WebSDR authentication</h3>
-        <p class="mt-3">
-            Please paste the following code at the top of your <span class="inline-code">pub2/websdr-head.html</span> file:
-        </p>
-<pre class="block">
-&lt;meta name="receiverbook-secret" content="<%= receiver.key %>"&gt;
-</pre>
-    <% } else { %>
-        <h3>Receiver authentication</h3>
-        <p class="mt-3">
-            We currently have no means to authenticate you as the operator of this receiver. Please check back
-            in the future as we update our software.
-        </p>
     <% } %>
 </div>
 <hr>

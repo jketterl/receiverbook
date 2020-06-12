@@ -1,5 +1,6 @@
 const ReceiverAdapter = require('./ReceiverAdapter');
 const axios = require('axios');
+const semver = require('semver');
 
 class KiwiSdrAdapter extends ReceiverAdapter {
     async matches(baseUrl, key) {
@@ -18,7 +19,7 @@ class KiwiSdrAdapter extends ReceiverAdapter {
             if (version) {
                 return {
                     name: parsed.name,
-                    email: parse.op_email,
+                    email: parsed.op_email,
                     version,
                     location
                 }

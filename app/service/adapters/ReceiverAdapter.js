@@ -10,6 +10,7 @@ class ReceiverAdapter {
         if (receiver.status === 'pending' || receiver.status === 'new') {
             if (status && status.validated) {
                 // switch receiver online if validated
+                console.info(`"${receiver.label}" has passed verification, setting online`)
                 receiver.status = 'online'
             } else {
                 receiver.status = 'pending';
@@ -20,6 +21,7 @@ class ReceiverAdapter {
                     receiver.status = 'online';
                 } else {
                     // switch back to pending if validation failed
+                    console.info(`"${receiver.label}" has failed verifiation, setting pending`)
                     receiver.status = 'pending';
                 }
             } else {

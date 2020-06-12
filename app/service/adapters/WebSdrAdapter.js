@@ -48,7 +48,7 @@ class WebSdrAdapter extends ReceiverAdapter {
     async getAuth(normalized, key) {
         const response = await axios.get(normalized.toString());
         const dom = new JSDOM(response.data);
-        const tags = dom.window.document.querySelectorAll('meta[name=receiverbook-secret]');
+        const tags = dom.window.document.querySelectorAll('meta[name=receiverbook-confirmation]');
         if (tags) {
             const results = Array.prototype.map.call(tags, tag => tag.content === key);
             return results.reduce((acc, v) => acc || v, false);
