@@ -1,10 +1,12 @@
+const UserService = require('../UserService');
+
 class ReceiverAdapter {
     async matches(baseUrl, key) {
         return false;
     }
     async updateReceiver(receiver) {
         console.info(`updating "${receiver.label}"`);
-        const status = await this.matches(receiver.url, receiver.key);
+        const status = await this.getReceiverData(receiver);
         if (receiver.status === 'pending' || receiver.status === 'new') {
             if (status && status.validated) {
                 // switch receiver online if validated
@@ -32,6 +34,13 @@ class ReceiverAdapter {
 
         await receiver.save();
     }
+    async getReceiverData(receiver) {
+        const status = await this.matches(receiver.url, receiver.key);
+        if (status.email) {
+            status.validated = status.validated || await this.validateEMail(receiver, status.email);
+        }
+        return status;
+    }
     parseResponse(response) {
         return Object.fromEntries(response.split('\n').map((line) => {
             const items = line.split('=');
@@ -43,6 +52,11 @@ class ReceiverAdapter {
         if (!matches) return false;
         // longitude first!!
         return[matches[2], matches[1]]
+    }
+    async validateEMail(receiver, email) {
+        const userService = new UserService();
+        const user = await userService.getUserDetails(receiver.owner);
+        return user.email === email;
     }
 }
 

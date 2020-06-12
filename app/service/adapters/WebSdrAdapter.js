@@ -2,7 +2,6 @@ const ReceiverAdapter = require('./ReceiverAdapter');
 const Maidenhead = require('maidenhead');
 const axios = require('axios');
 const { JSDOM } = require('jsdom');
-const UserService = require('../UserService');
 
 class WebSdrAdapter extends ReceiverAdapter {
     async matches(baseUrl, key) {
@@ -36,12 +35,14 @@ class WebSdrAdapter extends ReceiverAdapter {
         if ('Qth' in parsed) {
             location = this.parseLocator(parsed['Qth'])
         }
+        let email;
         if ('Email' in parsed) {
-            const email = this.parseEmail(parsed['Email'])
+            email = this.parseEmail(parsed['Email'])
         }
         return {
             name: parsed['Description'],
-            location
+            location,
+            email
         }
     }
     async getAuth(normalized, key) {

@@ -41,7 +41,7 @@ class OpenWebRxAdapter extends ReceiverAdapter {
                 }
             }
         } catch (err) {
-            //console.error('Error detecting OpenWebRX receiver: ', err);
+            console.error('Error detecting OpenWebRX receiver: ', err);
         }
 
         try {
