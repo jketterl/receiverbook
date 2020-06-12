@@ -18,12 +18,13 @@ class KiwiSdrAdapter extends ReceiverAdapter {
             if (version) {
                 return {
                     name: parsed.name,
+                    email: parse.op_email,
                     version,
                     location
                 }
             }
         } catch (err) {
-            //console.error('Error detecting KiwSDR receiver: ', err);
+            console.error('Error detecting KiwSDR receiver: ', err);
         }
     }
     parseVersion(versionString) {

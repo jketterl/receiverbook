@@ -34,6 +34,7 @@ class OpenWebRxAdapter extends ReceiverAdapter {
             if (version) {
                 return {
                     name: data.receiver.name,
+                    email: data.receiver.admin,
                     version,
                     // longitude first !!
                     location: [data.receiver.gps.lon, data.receiver.gps.lat],
