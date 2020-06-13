@@ -31,7 +31,14 @@ class ReceiverAdapter {
         if (status) {
             receiver.label = status.name;
             receiver.version = status.version;
-            receiver.location = status.location;
+            let location;
+            if (status.location) {
+                location = {
+                    type: 'Point',
+                    coordinates: status.location
+                }
+            }
+            receiver.location = location;
         }
 
         await receiver.save();
@@ -53,7 +60,7 @@ class ReceiverAdapter {
         const matches = /^\(([-0-9.]+), ([-0-9.]+)\)$/.exec(gpsString)
         if (!matches) return false;
         // longitude first!!
-        return[matches[2], matches[1]]
+        return[parseFloat(matches[2]), parseFloat(matches[1])]
     }
     async validateEMail(receiver, email) {
         const userService = new UserService();
