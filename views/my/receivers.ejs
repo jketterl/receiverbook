@@ -10,7 +10,7 @@
         </tr>
         <% receivers.forEach((receiver) => { %>
             <tr>
-                <td><a href="/my/receivers/<%= receiver.id %>"><%= receiver.label %></a></td>
+                <td><a href="/my/receivers/<%= receiver.id %>"><%= receiver.label ? receiver.label : 'Unnamed receiver' %></a></td>
                 <td><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a>
                 <td><%= receiver.type %></a>
                 <td><%= receiver.version %></a>
