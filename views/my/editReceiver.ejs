@@ -1,4 +1,4 @@
-<h1><%= receiver.label %></h1>
+<h1><%= receiver.label ? receiver.label : 'Unnamed receiver' %></h1>
 <div class="mt-5">
     <% if (receiver.status === 'online') { %>
         <h3>Receiver Status</h3>
