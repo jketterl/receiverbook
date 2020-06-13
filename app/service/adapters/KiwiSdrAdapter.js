@@ -25,7 +25,7 @@ class KiwiSdrAdapter extends ReceiverAdapter {
                 }
             }
         } catch (err) {
-            console.error('Error detecting KiwSDR receiver: ', err);
+            console.error('Error detecting KiwSDR receiver: ', err.stack);
         }
     }
     parseVersion(versionString) {

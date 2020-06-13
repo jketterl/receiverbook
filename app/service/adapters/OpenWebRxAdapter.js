@@ -42,7 +42,7 @@ class OpenWebRxAdapter extends ReceiverAdapter {
                 }
             }
         } catch (err) {
-            console.error('Error detecting OpenWebRX receiver: ', err);
+            console.error('Error detecting OpenWebRX receiver: ', err.stack);
         }
 
         try {
@@ -60,7 +60,7 @@ class OpenWebRxAdapter extends ReceiverAdapter {
                 }
             }
         } catch (err) {
-            //console.error('Error detecting OpenWebRX receiver (old style): ', err);
+            console.error('Error detecting OpenWebRX receiver (old style): ', err.stack);
         }
 
         return false

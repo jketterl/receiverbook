@@ -21,7 +21,7 @@ class WebSdrAdapter extends ReceiverAdapter {
             status.validated = auth;
             return status
         } catch (err) {
-            console.error('Error detecting Websdr receiver: ', err);
+            console.error('Error detecting Websdr receiver: ', err.stack);
         }
 
         return false
