@@ -50,14 +50,14 @@ class ReceiverAdapter {
         }));
     }
     parseCoordinates(gpsString) {
-        const matches = /^\(([0-9.]+), ([0-9.]+)\)$/.exec(gpsString)
+        const matches = /^\(([-0-9.]+), ([-0-9.]+)\)$/.exec(gpsString)
         if (!matches) return false;
         // longitude first!!
         return[matches[2], matches[1]]
     }
     async validateEMail(receiver, email) {
         const userService = new UserService();
-        const user = await userService.getUserDetails(receiver.owner);
+        const user = await userService.getUserDetails(receiver.owner);q
         return user.email_verified && user.email === email;
     }
 }
