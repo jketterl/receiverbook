@@ -1,6 +1,7 @@
 const OpenWebRxAdapter = require('./adapters/OpenWebRxAdapter');
 const WebSdrAdapter = require('./adapters/WebSdrAdapter');
 const KiwiSdrAdapter = require('./adapters/KiwiSdrAdapter');
+const mongoose = require('mongoose');
 
 class ReceiverService {
     constructor(){
@@ -9,6 +10,10 @@ class ReceiverService {
             'websdr': WebSdrAdapter,
             'kiwisdr': KiwiSdrAdapter
         }
+    }
+    async getPublicReceivers() {
+        const Receiver = mongoose.model('Receiver');
+        return await Receiver.find({status: 'online'})
     }
     async detectReceiverType(url) {
         const resultArray = await Promise.all(

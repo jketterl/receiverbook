@@ -1,11 +1,10 @@
-const mongoose = require('mongoose');
+const ReceiverService = require('../service/ReceiverService');
 
 class IndexController {
-    index(req, res) {
-        const Receiver = mongoose.model('Receiver');
-        Receiver.find({status: 'online'}).then((receivers) => {
-            res.render('index', { receivers });
-        })
+    async index(req, res) {
+        const receiverService = new ReceiverService();
+        const receivers = await receiverService.getPublicReceivers();
+        res.render('index', { receivers });
     }
     impressum(req, res) {
         res.render('impressum');
