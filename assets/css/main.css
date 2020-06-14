@@ -48,7 +48,8 @@ body {
   text-align: center;
 }
 
-/* Layout modifications for the map page */
+/* Layout modifications for the map page
+-------------------------------------------------- */
 
 body.map {
     display: flex;
@@ -69,8 +70,16 @@ body.map .content-container {
 body.map .content-container {
     max-width: initial;
     margin: 0 !important;
+    color: black;
 }
 
 body.map .footer {
     position: initial;
+}
+
+/* Map layouts
+-------------------------------------------------- */
+
+.infobox {
+    text-align: center;
 }

@@ -48,4 +48,17 @@ receiverSchema.methods.hasVersion = function(version){
     return true;
 };
 
+receiverSchema.methods.getPresentationType = function () {
+    switch (this.type) {
+        case 'openwebrx':
+            return 'OpenWebRX';
+        case 'websdr':
+            return 'WebSDR';
+        case 'kiwisdr':
+            return 'KiwiSDR';
+    }
+    return 'Other';
+}
+
+
 mongoose.model('Receiver', receiverSchema);

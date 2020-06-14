@@ -2,12 +2,13 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= google_maps_api_key %>"></script>
 <script src="/static/js/map.js"></script>
 <script>
-    receivers = <%- JSON.stringify(receivers.map(r => {
-        return {
-            title: r.label,
-            lng: r.location.coordinates[0],
-            lat: r.location.coordinates[1]
-        };
+    receivers = <%- JSON.stringify(receivers.map(inp => {
+        var out = {};
+        ['label', 'location', 'version', 'url'].forEach(function(key){
+            out[key] = inp[key];
+        });
+        out['type'] = inp.getPresentationType();
+        return out;
     })) %>;
     $(function(){
         $('.content-container').addReceivers(receivers);

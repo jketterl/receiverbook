@@ -1,16 +1,3 @@
-<%
-function getReceiverType(receiver) {
-    switch (receiver.type) {
-        case 'openwebrx':
-            return 'OpenWebRX';
-        case 'websdr':
-            return 'WebSDR';
-        case 'kiwisdr':
-            return 'KiwiSDR';
-    }
-    return 'Other';
-}
-%>
 <h1>Receiver list</h1>
 <table class="table mt-5">
     <% receivers.forEach((receiver) => { %>
@@ -18,7 +5,7 @@ function getReceiverType(receiver) {
             <td>
                 <h5><%= receiver.label %></h5>
                 <div><a href="<%= receiver.url %>" target="_blank"><%= receiver.url %></a></div>
-                <div><%= getReceiverType(receiver) %> <%= receiver.version %></div>
+                <div><%= receiver.getPresentationType() %> <%= receiver.version %></div>
             </td>
         </tr>
     <% }); %>

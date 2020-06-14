@@ -6,11 +6,29 @@ $.fn.addReceivers = function(receivers) {
         }));
     };
     var map = this.data('map');
+    var infowindow;
     receivers.forEach(function(r) {
+        var position = {
+            lng: r.location.coordinates[0],
+            lat: r.location.coordinates[1]
+        };
         var marker = new google.maps.Marker({
-            position: {lat: r.lat, lng: r.lng},
+            position: position,
             map: map,
-            title: r.title
+            title: r.label
+        });
+        var info = '<div class="infobox">' +
+            '<a href="' + r.url + '" target="_blank">' +
+                '<h5>' + r.label + '</h5>' +
+            '</a>' +
+            '<div>' + r.type + ' ' + r.version + '</div>' +
+        '</div>';
+        marker.addListener('click', function(){
+            if (!infowindow) {
+                infowindow = new google.maps.InfoWindow();
+            }
+            infowindow.setContent(info);
+            infowindow.open(map, marker);
         });
     });
 }
