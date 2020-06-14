@@ -69,7 +69,7 @@ class OpenWebRxAdapter extends ReceiverAdapter {
         const matches = /^v(.*)$/.exec(versionString)
         if (!matches) return false;
         try {
-            return semver.coerce(matches[1]).toString();
+            return (semver.parse(matches[1]) || semver.coerce(matches[1])).toString();
         } catch (err) {
             console.error(err)
             return false;
