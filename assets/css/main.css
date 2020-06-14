@@ -47,3 +47,30 @@ body {
   line-height: 59px; /* Vertically center the text there */
   text-align: center;
 }
+
+/* Layout modifications for the map page */
+
+body.map {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+body.map nav,
+body.map .footer {
+    flex: none;
+}
+
+body.map .content-container {
+    flex: 1 1 auto;
+}
+
+body.map .content-container {
+    max-width: initial;
+    margin: 0 !important;
+}
+
+body.map .footer {
+    position: initial;
+}

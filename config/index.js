@@ -13,5 +13,10 @@ module.exports = {
         url: process.env['MONGO_URL'],
         user: process.env['MONGO_USER'],
         password: process.env['MONGO_PASSWORD']
+    },
+    google: {
+        maps: {
+            apiKey: process.env['GOOGLE_MAPS_API_KEY']
+        }
     }
 };

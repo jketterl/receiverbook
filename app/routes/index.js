@@ -1,6 +1,7 @@
 const express = require('express');
 const SessionRouter = require('./SessionRouter');
 const IndexController = require('../controllers/IndexController');
+const MapController = require('../controllers/MapController');
 const MyRouter = require('./MyRouter');
 
 class AppRouter extends express.Router {
@@ -9,6 +10,8 @@ class AppRouter extends express.Router {
         const indexController = new IndexController();
         this.get('/', indexController.index);
         this.get('/impressum', indexController.impressum);
+        const mapController = new MapController();
+        this.get('/map', mapController.index);
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
         this.use('/static', express.static('assets'));
