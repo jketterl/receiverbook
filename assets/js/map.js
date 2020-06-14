@@ -1,8 +1,8 @@
 $.fn.addReceivers = function(receivers) {
     if (!this.data('map')) {
         this.data('map', new google.maps.Map($('.map .content-container')[0], {
-            center: { lat: 0, lng: 0 },
-            zoom: 5
+            center: { lat: 30, lng: 0 },
+            zoom: 3
         }));
     };
     var map = this.data('map');
