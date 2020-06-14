@@ -19,7 +19,7 @@ $.fn.addReceivers = function(receivers) {
         });
         var info = '<div class="infobox">' +
             '<a href="' + r.url + '" target="_blank">' +
-                '<h5>' + r.label + '</h5>' +
+                '<h5><i class="mdi mdi-open-in-new"></i> ' + r.label + '</h5>' +
             '</a>' +
             '<div>' + r.type + (r.version ? ' ' + r.version : '') + '</div>' +
         '</div>';
