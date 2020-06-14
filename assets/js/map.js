@@ -21,7 +21,7 @@ $.fn.addReceivers = function(receivers) {
             '<a href="' + r.url + '" target="_blank">' +
                 '<h5>' + r.label + '</h5>' +
             '</a>' +
-            '<div>' + r.type + ' ' + r.version + '</div>' +
+            '<div>' + r.type + (r.version ? ' ' + r.version : '') + '</div>' +
         '</div>';
         marker.addListener('click', function(){
             if (!infowindow) {
