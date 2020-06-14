@@ -5,7 +5,8 @@ class MapController {
     async index(req, res) {
         const receiverService = new ReceiverService();
         const receivers = await receiverService.getPublicReceivers();
-        return res.render('map', { receivers, google_maps_api_key: config.google.maps.apiKey });
+        const receiversWithLocation = receivers.filter(r = r.location && r.location.coordinates);
+        return res.render('map', { receivers: receiversWithLocation, google_maps_api_key: config.google.maps.apiKey });
     }
 }
 

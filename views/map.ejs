@@ -1,5 +1,17 @@
 <%- contentFor('head') %>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= google_maps_api_key %>"></script>
 <script src="/static/js/map.js"></script>
+<script>
+    receivers = <%- JSON.stringify(receivers.map(r => {
+        return {
+            title: r.label,
+            lng: r.location.coordinates[0],
+            lat: r.location.coordinates[1]
+        };
+    })) %>;
+    $(function(){
+        $('.content-container').addReceivers(receivers);
+    });
+</script>
 <%- contentFor('body-class') %>
 map
