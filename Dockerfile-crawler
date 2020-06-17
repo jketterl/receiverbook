@@ -5,6 +5,4 @@ WORKDIR /opt/receiverbook
 
 RUN [ "npm", "install" ]
 
-EXPOSE 3000
-
 CMD [ "crawler.js" ]
