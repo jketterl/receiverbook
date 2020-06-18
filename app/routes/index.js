@@ -3,6 +3,7 @@ const SessionRouter = require('./SessionRouter');
 const IndexController = require('../controllers/IndexController');
 const MapController = require('../controllers/MapController');
 const MyRouter = require('./MyRouter');
+const compression = require('compression');
 
 class AppRouter extends express.Router {
     constructor() {
@@ -18,8 +19,8 @@ class AppRouter extends express.Router {
         });
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
-        this.use('/static', express.static('assets'));
-        this.use('/static/mdi', express.static('node_modules/@mdi/font'));
+        this.use('/static', compression(), express.static('assets'));
+        this.use('/static/mdi', compression(), express.static('node_modules/@mdi/font'));
     }
 }
 
