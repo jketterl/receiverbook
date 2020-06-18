@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <HTML>
     <HEAD>
-        <title>Receiverbook</title>
+        <title>Receiverbook online receiver directory</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="theme-color" content="#222" />
+        <meta name="description" content="Receiverbook online directory for web-based receivers, community and exchange for ham radio operators, DXers and SWLs." />
+
         <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/mdi/css/materialdesignicons.min.css" />
@@ -10,50 +15,55 @@
         <%- defineContent('head')%>
     </HEAD>
     <BODY class="<%- defineContent('body-class') %>">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
             <div class="navbar-brand">
                 <a href="<%= rootUrl %>">
                     Receiverbook
                 </a>
             </div>
-            <div class="navbar-nav">
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Online Receivers
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="/">List view</a>
-                        <a class="dropdown-item" href="/map">Map view</a>
-                    </div>
-                </div>
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Receiver software
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="https://www.openwebrx.de" target="_blank"><i class="mdi mdi-open-in-new"></i> OpenWebRX</a>
-                        <a class="dropdown-item" href="http://www.websdr.org/" target="_blank"><i class="mdi mdi-open-in-new"></i> WebSDR</a>
-                        <a class="dropdown-item" href="http://www.kiwisdr.com/" target="_blank"><i class="mdi mdi-open-in-new"></i> KiwiSDR</a>
-                    </div>
-                </div>
-            </div>
-            <div class="navbar-nav ml-auto">
-                <%if (typeof(session) === 'undefined') { %>
-                    <a href="/session/login">Login / Register</a>
-                <% } else { %>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="navbar-nav">
                     <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="mdi mdi-account"></i> <%= session.username %>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Online Receivers
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
-                            <a class="dropdown-item">My profile</a>
-                            <a class="dropdown-item" href="/my/receivers">My receivers</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/session/logout">Logout</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/">List view</a>
+                            <a class="dropdown-item" href="/map">Map view</a>
                         </div>
-                    <div>
-                <% } %>
-            </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Receiver software
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="https://www.openwebrx.de" target="_blank"><i class="mdi mdi-open-in-new"></i> OpenWebRX</a>
+                            <a class="dropdown-item" href="http://www.websdr.org/" target="_blank"><i class="mdi mdi-open-in-new"></i> WebSDR</a>
+                            <a class="dropdown-item" href="http://www.kiwisdr.com/" target="_blank"><i class="mdi mdi-open-in-new"></i> KiwiSDR</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-nav ml-auto">
+                    <%if (typeof(session) === 'undefined') { %>
+                        <a href="/session/login">Login / Register</a>
+                    <% } else { %>
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="mdi mdi-account"></i> <%= session.username %>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+                                <a class="dropdown-item">My profile</a>
+                                <a class="dropdown-item" href="/my/receivers">My receivers</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/session/logout">Logout</a>
+                            </div>
+                        <div>
+                    <% } %>
+                </div>
+            <div>
         </nav>
         <div class="content-container container mt-5">
             <%- body %>
