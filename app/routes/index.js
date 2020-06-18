@@ -12,6 +12,10 @@ class AppRouter extends express.Router {
         this.get('/impressum', indexController.impressum);
         const mapController = new MapController();
         this.get('/map', mapController.index);
+        this.get('/robots.txt', (req, res) => {
+            res.type('text/plain');
+            res.send('User-Agent: *\nDisallow:');
+        });
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
         this.use('/static', express.static('assets'));
