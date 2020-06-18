@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<HTML>
+<HTML class="<%- defineContent('html-class') %>">
     <HEAD>
         <title>Receiverbook online receiver directory</title>
         <meta charset="utf-8" />
@@ -14,7 +14,7 @@
         <script src="/static/js/bootstrap.min.js"></script>
         <%- defineContent('head')%>
     </HEAD>
-    <BODY class="<%- defineContent('body-class') %>">
+    <BODY>
         <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
             <div class="navbar-brand">
                 <a href="<%= rootUrl %>">
@@ -69,10 +69,12 @@
             <%- body %>
         </div>
         <footer class="footer">
-            <span>Built with <a href="https://getbootstrap.com/"><i class="mdi mdi-bootstrap"></i>Bootstrap</a></span> |
-            <span><a href="https://bootswatch.com/darkly/">Darkly theme by Thomas Park</a></span> |
-            <span><a class="footer-item" href="/impressum">Impressum</a></span> |
-            <span class="twitter-button"><a href="https://twitter.com/dd5jfk?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @dd5jfk</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+            <div class="center">
+                <span>Built with <a href="https://getbootstrap.com/"><i class="mdi mdi-bootstrap"></i>Bootstrap</a></span> |
+                <span><a href="https://bootswatch.com/darkly/">Darkly theme by Thomas Park</a></span> |
+                <span><a class="footer-item" href="/impressum">Impressum</a></span> |
+                <span class="twitter-button"><a href="https://twitter.com/dd5jfk?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @dd5jfk</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+            </div>
         </footer>
     </BODY>
 </HTML>
