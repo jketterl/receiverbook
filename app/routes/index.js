@@ -19,8 +19,11 @@ class AppRouter extends express.Router {
         });
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
-        this.use('/static', compression(), express.static('assets'));
-        this.use('/static/mdi', compression(), express.static('node_modules/@mdi/font'));
+        const staticOptions = {
+           maxAge: 3600000
+        };
+        this.use('/static', compression(), express.static('assets', staticOptions));
+        this.use('/static/mdi', compression(), express.static('node_modules/@mdi/font', staticOptions));
     }
 }
 
