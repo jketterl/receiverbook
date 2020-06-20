@@ -42,7 +42,8 @@ class WebSdrAdapter extends ReceiverAdapter {
         return {
             name: parsed['Description'],
             location,
-            email
+            email,
+            bands: parsed['Bands']
         }
     }
     async getAuth(normalized, key) {
@@ -61,7 +62,7 @@ class WebSdrAdapter extends ReceiverAdapter {
             return [items[0], items.slice(1).join(': ')];
         });
 
-        const bands = parsed.filter(b => b[0] === 'Band').map(b => b[1]);
+        const bands = parsed.filter(b => b[0] === 'Band').map(this.parseBand);
 
         const composed = Object.fromEntries(parsed.filter(b => b[0] !== 'Band'))
         composed.Bands = bands;
@@ -75,6 +76,16 @@ class WebSdrAdapter extends ReceiverAdapter {
             return [locator.lon, locator.lat];
         }
         return false;
+    }
+    parseBand(bandInfo) {
+        const [_, bandString] = bandInfo;
+        const elements = bandString.split(' ');
+        return {
+            center_freq: parseFloat(elements[1]) * 1E3,
+            sample_rate: parseFloat(elements[2]) * 1E3,
+            name: elements.slice(3).join(' '),
+            type: 'centered'
+        }
     }
     parseEmail(inputString) {
         if (inputString.indexOf('@') >= 0) {
