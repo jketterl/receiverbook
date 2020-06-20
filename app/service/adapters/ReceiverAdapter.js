@@ -39,6 +39,7 @@ class ReceiverAdapter {
                 }
             }
             receiver.location = location;
+            receiver.bands = status.bands;
         }
 
         await receiver.save();

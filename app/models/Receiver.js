@@ -12,6 +12,13 @@ function generateKey() {
     }
 }
 
+const BandSchema = new mongoose.Schema({
+    name: String
+}, {
+    discriminatorKey: 'type',
+    _id: false
+});
+
 const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
@@ -35,8 +42,25 @@ const receiverSchema = new mongoose.Schema({
     key: {
         type: String,
         default: generateKey
-    }
+    },
+    bands: [BandSchema]
 });
+
+const docArray = receiverSchema.path('bands');
+
+const RangeSchema = docArray.discriminator('range', new mongoose.Schema({
+    start_freq: Number,
+    end_freq: Number
+}, {
+    _id: false
+}));
+
+const CenteredSchema = docArray.discriminator('centered', new mongoose.Schema({
+    center_freq: Number,
+    sample_rate: Number
+}, {
+    _id: false
+}));
 
 receiverSchema.methods.regenerateKey = function(){
     this.key = generateKey.call(this, []);

@@ -30,7 +30,8 @@ class OpenWebRxAdapter extends ReceiverAdapter {
                 validated = keyService.validateSignature({signature: sh.signature, time: sh.time}, challenge, parsedKey);
             }
             const data = statusResponse.data;
-            const version = this.parseVersion(data.version)
+            const version = this.parseVersion(data.version);
+            const bands = data.sdrs.flatMap(sdr => sdr.profiles).map(sdr => Object.assign(sdr, {'type': 'centered'}));
             if (version) {
                 return {
                     name: data.receiver.name,
@@ -38,7 +39,8 @@ class OpenWebRxAdapter extends ReceiverAdapter {
                     version,
                     // longitude first !!
                     location: [data.receiver.gps.lon, data.receiver.gps.lat],
-                    validated
+                    validated,
+                    bands
                 }
             }
         } catch (err) {

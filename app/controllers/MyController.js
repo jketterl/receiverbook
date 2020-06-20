@@ -57,7 +57,8 @@ class MyController {
             version: detectionResult.version,
             url: resolvedUrl.toString(),
             owner: req.user,
-            location
+            location,
+            bands: detectionResult.bands
         });
         await receiver.save()
         res.redirect(`/my/receivers/${receiver.id}`);
