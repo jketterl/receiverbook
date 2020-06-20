@@ -16,12 +16,14 @@ class KiwiSdrAdapter extends ReceiverAdapter {
             const parsed = this.parseResponse(statusResponse.data);
             const version = this.parseVersion(parsed.sw_version);
             const location = this.parseCoordinates(parsed.gps);
+            const bands = this.parseBands(parsed.bands);
             if (version) {
                 return {
                     name: parsed.name,
                     email: parsed.op_email,
                     version,
-                    location
+                    location,
+                    bands
                 }
             }
         } catch (err) {
@@ -36,6 +38,14 @@ class KiwiSdrAdapter extends ReceiverAdapter {
         } catch (err) {
             console.error(err)
             return false;
+        }
+    }
+    parseBands(bandString) {
+        const matches = /^([0-9]+)-([0-9]+)$/.exec(bandString)
+        return {
+            type: 'range',
+            start_freq: matches[1],
+            end_freq: matches[2]
         }
     }
 }
