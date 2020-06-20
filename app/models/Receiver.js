@@ -19,6 +19,22 @@ const BandSchema = new mongoose.Schema({
     _id: false
 });
 
+BandSchema.methods.asRange = function() {
+    switch (this.type) {
+        case 'centered':
+            const srh = this.sample_rate / 2;
+            return {
+                start: this.center_freq - srh,
+                end: this.center_freq + srh
+            };
+        case 'range':
+            return {
+                start: this.start_freq,
+                end: this.end_freq
+            };
+    }
+};
+
 const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
@@ -48,19 +64,23 @@ const receiverSchema = new mongoose.Schema({
 
 const docArray = receiverSchema.path('bands');
 
-const RangeSchema = docArray.discriminator('range', new mongoose.Schema({
+const RangeSchema = new mongoose.Schema({
     start_freq: Number,
     end_freq: Number
 }, {
     _id: false
-}));
+});
 
-const CenteredSchema = docArray.discriminator('centered', new mongoose.Schema({
-    center_freq: Number,
-    sample_rate: Number
+docArray.discriminator('range', RangeSchema);
+
+const CenteredSchema = new mongoose.Schema({
+   center_freq: Number,
+   sample_rate: Number
 }, {
-    _id: false
-}));
+   _id: false
+});
+
+docArray.discriminator('centered', CenteredSchema);
 
 receiverSchema.methods.regenerateKey = function(){
     this.key = generateKey.call(this, []);
@@ -71,18 +91,5 @@ receiverSchema.methods.hasVersion = function(version){
     return semver.gte(semver.parse(this.version), semver.parse(version));
     return true;
 };
-
-receiverSchema.methods.getPresentationType = function () {
-    switch (this.type) {
-        case 'openwebrx':
-            return 'OpenWebRX';
-        case 'websdr':
-            return 'WebSDR';
-        case 'kiwisdr':
-            return 'KiwiSDR';
-    }
-    return 'Other';
-}
-
 
 mongoose.model('Receiver', receiverSchema);
