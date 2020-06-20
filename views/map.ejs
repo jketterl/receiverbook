@@ -5,10 +5,9 @@
     $(function(){
         var receivers = <%- JSON.stringify(receivers.map(inp => {
             var out = {};
-            ['label', 'location', 'version', 'url'].forEach(function(key){
+            ['label', 'location', 'version', 'url', 'type'].forEach(function(key){
                 out[key] = inp[key];
             });
-            out['type'] = inp.getPresentationType();
             return out;
         })) %>;
         $('.content-container').addReceivers(receivers);
