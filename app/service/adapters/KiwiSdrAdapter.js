@@ -42,11 +42,14 @@ class KiwiSdrAdapter extends ReceiverAdapter {
     }
     parseBands(bandString) {
         const matches = /^([0-9]+)-([0-9]+)$/.exec(bandString)
-        return {
-            type: 'range',
-            start_freq: matches[1],
-            end_freq: matches[2]
+        if (matches) {
+            return {
+                type: 'range',
+                start_freq: matches[1],
+                end_freq: matches[2]
+            }
         }
+        return []
     }
 }
 
