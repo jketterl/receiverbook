@@ -70,7 +70,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         avatarUrl.pathname += 'static/gfx/openwebrx-avatar.png'
         const headers = {};
         if (receiver.avatar_ctime) {
-            //headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
+            headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
         }
 
         let response
@@ -86,6 +86,10 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                 return;
             }
             console.error('Error while downloading receiver avatar: ', err.stack);
+        }
+
+        if (!response || !response.data) {
+            return
         }
 
         const s3 = new S3();
