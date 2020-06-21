@@ -1,6 +1,15 @@
 const UserService = require('../UserService');
+const axios = require('axios');
 
 class ReceiverAdapter {
+    axios() {
+        if (!this.axiosInstance) {
+            this.axiosInstance = axios.create({
+                timeout: 10000
+            });
+        }
+        return this.axiosInstance;
+    }
     async matches(baseUrl, key) {
         return false;
     }
@@ -50,18 +59,6 @@ class ReceiverAdapter {
             status.validated = status.validated || await this.validateEMail(receiver, status.email);
         }
         return status;
-    }
-    parseResponse(response) {
-        return Object.fromEntries(response.split('\n').map((line) => {
-            const items = line.split('=');
-            return [items[0], items.slice(1).join(': ')];
-        }));
-    }
-    parseCoordinates(gpsString) {
-        const matches = /^\(([-0-9.]+), ([-0-9.]+)\)$/.exec(gpsString)
-        if (!matches) return false;
-        // longitude first!!
-        return[parseFloat(matches[2]), parseFloat(matches[1])]
     }
     async validateEMail(receiver, email) {
         const userService = new UserService();

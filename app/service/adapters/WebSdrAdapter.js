@@ -1,6 +1,5 @@
 const ReceiverAdapter = require('./ReceiverAdapter');
 const Maidenhead = require('maidenhead');
-const axios = require('axios');
 const { JSDOM } = require('jsdom');
 
 class WebSdrAdapter extends ReceiverAdapter {
@@ -24,12 +23,12 @@ class WebSdrAdapter extends ReceiverAdapter {
             console.error('Error detecting Websdr receiver: ', err.stack);
         }
 
-        return false
+        return false;
     }
     async getStatus(normalized) {
         const statusUrl = new URL(normalized);
         statusUrl.pathname += '~~orgstatus';
-        const statusResponse = await axios.get(statusUrl.toString())
+        const statusResponse = await this.axios().get(statusUrl.toString())
         const parsed = this.parseResponse(statusResponse.data);
         let location;
         if ('Qth' in parsed) {
@@ -47,7 +46,7 @@ class WebSdrAdapter extends ReceiverAdapter {
         }
     }
     async getAuth(normalized, key) {
-        const response = await axios.get(normalized.toString());
+        const response = await this.axios().get(normalized.toString());
         const dom = new JSDOM(response.data);
         const tags = dom.window.document.querySelectorAll('meta[name=receiverbook-confirmation]');
         if (tags) {
