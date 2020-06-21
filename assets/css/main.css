@@ -36,9 +36,20 @@ a.btn {
 }
 
 .receiver-list .receiver-image {
-    flex: 0 0 100px;
-    width: 100px;
+    flex: 0 0 50px;
     margin-right: 0.75rem;
+}
+
+@media(min-width: 576px) {
+    .receiver-list .receiver-image {
+        flex-basis: 75px;
+    }
+}
+
+@media(min-width: 768px) {
+    .receiver-list .receiver-image {
+        flex-basis: 100px;
+    }
 }
 
 .receiver-list .receiver-image img {
@@ -46,6 +57,9 @@ a.btn {
     background-color: rgba(154, 154, 154, .5);
     border-radius: 10px;
     padding: 5px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .receiver-list .recevier-details {
