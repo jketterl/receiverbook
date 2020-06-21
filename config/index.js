@@ -20,6 +20,9 @@ module.exports = {
         }
     },
     avatars: {
-        bucketName: process.env['AVATARS_BUCKET_NAME']
+        bucket: {
+            name: process.env['AVATARS_BUCKET_NAME'],
+            region: process.env['AVATARS_BUCKET_REGION']
+        }
     }
 };
