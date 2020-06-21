@@ -28,6 +28,10 @@ a.btn {
     vertical-align: middle;
 }
 
+.receiver-list .list-group-item {
+    background-color: initial;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
