@@ -38,20 +38,23 @@ class ReceiverAdapter {
             }
         }
         if (status) {
-            receiver.label = status.name;
-            receiver.version = status.version;
-            let location;
-            if (status.location) {
-                location = {
-                    type: 'Point',
-                    coordinates: status.location
-                }
-            }
-            receiver.location = location;
-            receiver.bands = status.bands;
+            this.applyCrawlingResult(receiver, status);
         }
 
         await receiver.save();
+    }
+    applyCrawlingResult(receiver, data) {
+        receiver.label = data.name;
+        receiver.version = data.version;
+        let location;
+        if (data.location) {
+            location = {
+                type: 'Point',
+                coordinates: data.location
+            }
+        }
+        receiver.location = location;
+        receiver.bands = data.bands;
     }
     async getReceiverData(receiver) {
         const status = await this.matches(receiver.url, receiver.key);
