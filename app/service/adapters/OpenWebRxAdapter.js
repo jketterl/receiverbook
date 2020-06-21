@@ -86,10 +86,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                 return;
             }
             console.error('Error while downloading receiver avatar: ', err.stack);
-        }
-
-        if (!response || !response.data) {
-            return
+            return;
         }
 
         const s3 = new S3();
