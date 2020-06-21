@@ -31,6 +31,9 @@ class MyController {
             resolvedUrl = receiverUrl;
         }
 
+        // OpenWebRX classic wants us to upgrade our browser. Little hack to omit that part...
+        resolvedUrl.pathname = resolvedUrl.pathname.replace(/upgrade.html$/, '');
+
         const existing = await Receiver.find({ url: resolvedUrl.toString() })
         if (existing.length) {
             return res.render('my/newReceiver', {errors: ["Receiver URL already exists in database."]})
