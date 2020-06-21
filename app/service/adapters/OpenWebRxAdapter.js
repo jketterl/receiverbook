@@ -1,13 +1,11 @@
 const OpenWebRXClassicAdapter = require('./OpenWebRXClassicAdapter');
 const KeyService = require('../KeyService');
 const semver = require('semver');
+const moment = require('moment');
 
 class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     async matches(baseUrl, key) {
-        const normalized = new URL(baseUrl);
-        if (!normalized.pathname.endsWith('/')) {
-            normalized.pathname += '/';
-        }
+        const normalized = this.normalizeUrl(baseUrl);
 
         const headers = {};
         const keyService = new KeyService();
@@ -60,6 +58,22 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     }
     getType() {
         return "OpenWebRX (classic)"
+    }
+    async downloadAvatar(receiver) {
+        if (!receiver.hasVersion('0.18.0')) {
+            return await super.downloadAvatar(receiver);
+        }
+
+        const avatarUrl = this.normalizeUrl(receiver.url);
+        avatarUrl.pathname += 'static/gfx/openwebrx-avatar.png'
+        const headers = {};
+        if (receiver.avatar_ctime) {
+            headers["If-Modified-Since"] = receiver.date.toUTCString();
+        }
+        const response = await this.axios().get(avatarUrl.toString(), { headers });
+        if (response.headers && response.headers['last-modified']) {
+            return moment(response.headers['last-modified']).toDate();
+        }
     }
 }
 

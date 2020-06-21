@@ -59,7 +59,8 @@ const receiverSchema = new mongoose.Schema({
         type: String,
         default: generateKey
     },
-    bands: [BandSchema]
+    bands: [BandSchema],
+    avatar_ctime: Date
 });
 
 const docArray = receiverSchema.path('bands');

@@ -18,5 +18,8 @@ module.exports = {
         maps: {
             apiKey: process.env['GOOGLE_MAPS_API_KEY']
         }
+    },
+    avatars: {
+        bucketName: process.env['AVATARS_BUCKET_NAME']
     }
 };

@@ -4,10 +4,7 @@ const { JSDOM } = require('jsdom');
 
 class WebSdrAdapter extends ReceiverAdapter {
     async matches(baseUrl, key) {
-        const normalized = new URL(baseUrl);
-        if (!normalized.pathname.endsWith('/')) {
-            normalized.pathname += '/';
-        }
+        const normalized = this.normalizeUrl(baseUrl);
 
         var calls = [
             this.getStatus(normalized)

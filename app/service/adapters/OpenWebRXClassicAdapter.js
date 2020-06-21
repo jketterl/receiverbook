@@ -14,10 +14,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         return[parseFloat(matches[2]), parseFloat(matches[1])]
     }
     async matches(baseUrl, key) {
-        const normalized = new URL(baseUrl);
-        if (!normalized.pathname.endsWith('/')) {
-            normalized.pathname += '/';
-        }
+        const normalized = this.normalizeUrl(baseUrl);
 
         try {
             const statusUrl = new URL(normalized);

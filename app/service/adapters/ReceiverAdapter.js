@@ -10,6 +10,13 @@ class ReceiverAdapter {
         }
         return this.axiosInstance;
     }
+    normalizeUrl(url) {
+        const normalized = new URL(url);
+        if (!normalized.pathname.endsWith('/')) {
+            normalized.pathname += '/';
+        }
+        return normalized
+    }
     async matches(baseUrl, key) {
         return false;
     }
@@ -41,6 +48,13 @@ class ReceiverAdapter {
             this.applyCrawlingResult(receiver, status);
         }
 
+        if (receiver.status == 'online') {
+            const ctime = await this.downloadAvatar(receiver);
+            if (ctime) {
+                receiver.avatar_ctime = ctime;
+            }
+        }
+
         await receiver.save();
     }
     applyCrawlingResult(receiver, data) {
@@ -67,6 +81,9 @@ class ReceiverAdapter {
         const userService = new UserService();
         const user = await userService.getUserDetails(receiver.owner);
         return user.email_verified && user.email === email;
+    }
+    async downloadAvatar(receiver) {
+        return false;
     }
 }
 
