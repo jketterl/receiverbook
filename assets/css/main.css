@@ -32,6 +32,14 @@ a.btn {
     background-color: initial;
 }
 
+.receiver-list.list-group-flush > .list-group-item:last-child {
+    border-bottom-width: 1px;
+}
+
+.receiver-list.list-group-flush > .list-group-item:first-child {
+    border-top-width: 1px;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
