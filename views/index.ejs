@@ -2,13 +2,20 @@
 <ul class="list-group list-group-flush receiver-list mt-5">
     <% receivers.forEach((receiver) => { %>
         <li class="list-group-item">
-            <h5><%= receiver.label %></h5>
-            <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a></div>
-            <div><%= receiver.type %> <%= receiver.version %></div>
-            <div>
-                <% receiver.bands.forEach(band => { %>
-                    <span class="badge badge-info"><%= band %></span>
-                <% }) %>
+            <div class="receiver-image">
+                <% if (receiver.avatar_ctime) { %>
+                    <img alt="<%= receiver.label %> avatar" src="/images/<%= receiver._id %>/avatar.png">
+                <% } %>
+            </div>
+            <div class="receiver-details">
+                <h5><%= receiver.label %></h5>
+                <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a></div>
+                <div><%= receiver.type %> <%= receiver.version %></div>
+                <div>
+                    <% receiver.bands.forEach(band => { %>
+                        <span class="badge badge-info"><%= band %></span>
+                    <% }) %>
+                </div>
             </div>
         </li>
     <% }); %>

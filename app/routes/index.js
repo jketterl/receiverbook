@@ -4,6 +4,7 @@ const IndexController = require('../controllers/IndexController');
 const MapController = require('../controllers/MapController');
 const MyRouter = require('./MyRouter');
 const compression = require('compression');
+const ImageRouter = require('./ImageRouter');
 
 class AppRouter extends express.Router {
     constructor() {
@@ -19,6 +20,7 @@ class AppRouter extends express.Router {
         });
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
+        this.use('/images', new ImageRouter());
         const staticOptions = {
            maxAge: 3600000
         };
