@@ -36,7 +36,7 @@ a.btn {
 }
 
 .receiver-list .receiver-image {
-    flex-grow: 0;
+    flex: 0 0 100px;
     width: 100px;
     margin-right: 0.75rem;
 }
