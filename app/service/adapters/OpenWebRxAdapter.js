@@ -99,6 +99,8 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
 
         if (response.headers && response.headers['last-modified']) {
             return moment(response.headers['last-modified']).toDate();
+        } else {
+            return new Date();
         }
     }
 }
