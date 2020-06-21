@@ -50,6 +50,11 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         }
         return []
     }
+    async downloadAvatar(receiver) {
+        const avatarUrl = this.normalizeUrl(receiver.url);
+        avatarUrl.pathname += 'gfx/openwebrx-avatar.png'
+        return await this.downloadAndStore(avatarUrl, `${receiver.id}-avatar.png`);
+    }
 }
 
 module.exports = OpenWebRXClassicAdapter;

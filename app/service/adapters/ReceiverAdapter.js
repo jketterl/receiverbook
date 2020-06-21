@@ -1,5 +1,8 @@
 const UserService = require('../UserService');
 const axios = require('axios');
+const { S3 } = require('aws-sdk');
+const config = require('../../../config');
+const moment = require('moment');
 
 class ReceiverAdapter {
     axios() {
@@ -84,6 +87,37 @@ class ReceiverAdapter {
     }
     async downloadAvatar(receiver) {
         return false;
+    }
+    async downloadAndStore(avatarUrl, s3Path, headers={}) {
+        let response
+        try {
+            response = await this.axios().get(avatarUrl.toString(), {
+                responseType: 'stream',
+                headers
+            });
+        } catch (err) {
+            if (err.response && err.response.status == 304) {
+                // avatar has not been changed
+                console.info('avatar image not changed');
+                return;
+            }
+            console.error('Error while downloading receiver avatar: ', err.stack);
+            return;
+        }
+
+        const s3 = new S3();
+        await s3.upload({
+            Bucket: config.avatars.bucket.name,
+            Region: config.avatars.bucket.region,
+            Body: response.data,
+            Key: s3Path
+        }).promise();
+
+        if (response.headers && response.headers['last-modified']) {
+            return moment(response.headers['last-modified']).toDate();
+        } else {
+            return new Date();
+        }
     }
 }
 

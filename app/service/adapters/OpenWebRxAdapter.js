@@ -1,9 +1,6 @@
 const OpenWebRXClassicAdapter = require('./OpenWebRXClassicAdapter');
 const KeyService = require('../KeyService');
 const semver = require('semver');
-const moment = require('moment');
-const { S3 } = require('aws-sdk');
-const config = require('../../../config');
 
 class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     async matches(baseUrl, key) {
@@ -72,36 +69,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         if (receiver.avatar_ctime) {
             headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
         }
-
-        let response
-        try {
-            response = await this.axios().get(avatarUrl.toString(), {
-                responseType: 'stream',
-                headers
-            });
-        } catch (err) {
-            if (err.response && err.response.status == 304) {
-                // avatar has not been changed
-                console.info('avatar image not changed');
-                return;
-            }
-            console.error('Error while downloading receiver avatar: ', err.stack);
-            return;
-        }
-
-        const s3 = new S3();
-        await s3.upload({
-            Bucket: config.avatars.bucket.name,
-            Region: config.avatars.bucket.region,
-            Body: response.data,
-            Key: `${receiver.id}-avatar.png`
-        }).promise();
-
-        if (response.headers && response.headers['last-modified']) {
-            return moment(response.headers['last-modified']).toDate();
-        } else {
-            return new Date();
-        }
+        return await this.downloadAndStore(avatarUrl, `${receiver.id}-avatar.png`, headers);
     }
 }
 
