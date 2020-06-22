@@ -58,18 +58,14 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     getType() {
         return "OpenWebRX (classic)"
     }
-    async downloadAvatar(receiver) {
+    getAvatarUrl(receiver) {
         if (!receiver.hasVersion('0.18.0')) {
-            return await super.downloadAvatar(receiver);
+            return super.getAvatarUrl(receiver);
         }
 
         const avatarUrl = this.normalizeUrl(receiver.url);
         avatarUrl.pathname += 'static/gfx/openwebrx-avatar.png'
-        const headers = {};
-        if (receiver.avatar_ctime) {
-            headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
-        }
-        return await this.downloadAndStore(avatarUrl, `${receiver.id}-avatar.png`, headers);
+        return avatarUrl;
     }
 }
 

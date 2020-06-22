@@ -85,10 +85,20 @@ class ReceiverAdapter {
         const user = await userService.getUserDetails(receiver.owner);
         return user.email_verified && user.email === email;
     }
-    async downloadAvatar(receiver) {
+    getAvatarUrl(receiver) {
         return false;
     }
-    async downloadAndStore(avatarUrl, s3Path, headers={}) {
+    async downloadAvatar(receiver) {
+        const avatarUrl = this.getAvatarUrl(receiver);
+        if (!avatarUrl) {
+            return
+        }
+
+        const headers = {};
+        if (receiver.avatar_ctime) {
+            headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
+        }
+
         let response
         try {
             response = await this.axios().get(avatarUrl.toString(), {
@@ -110,7 +120,7 @@ class ReceiverAdapter {
             Bucket: config.avatars.bucket.name,
             Region: config.avatars.bucket.region,
             Body: response.data,
-            Key: s3Path
+            Key: `${receiver.id}-avatar.png`
         }).promise();
 
         if (response.headers && response.headers['last-modified']) {
