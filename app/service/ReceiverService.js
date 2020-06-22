@@ -6,7 +6,7 @@ const BandService = require('./BandService');
 
 class ReceiverService {
     constructor(){
-        this.detectors = {
+        this.adapters = {
             'openwebrx': OpenWebRxAdapter,
             'websdr': WebSdrAdapter,
             'kiwisdr': KiwiSdrAdapter
@@ -35,7 +35,7 @@ class ReceiverService {
     }
     async detectReceiverType(url) {
         const resultArray = await Promise.all(
-            Object.entries(this.detectors).map(async ([type, detectorCls]) => {
+            Object.entries(this.adapters).map(async ([type, detectorCls]) => {
                 const detector = new detectorCls();
                 return [type, await detector.matches(url)];
             })
@@ -46,14 +46,19 @@ class ReceiverService {
         firstResult.type = matches[0][0]
         return firstResult
     }
+    getAdapter(receiver) {
+        const adatperCls = this.adapters[receiver.type];
+        return new adatperCls();
+    }
     async updateReceiver(receiver) {
-        const detectorCls = this.detectors[receiver.type];
-        const detector = new detectorCls();
-        await detector.updateReceiver(receiver);
+        await this.getAdapter(receiver).updateReceiver(receiver);
     }
     getPresentationBands(receiver) {
         const bandService = new BandService();
         return bandService.getMatchingBands(receiver.bands).map(b => b.name);
+    }
+    applyCrawlingResult(receiver, result) {
+        return this.getAdapter(receiver).applyCrawlingResult(receiver, result);
     }
 }
 

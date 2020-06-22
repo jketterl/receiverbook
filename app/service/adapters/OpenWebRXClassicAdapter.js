@@ -30,7 +30,8 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
                     email: parsed.op_email,
                     version,
                     location,
-                    bands
+                    bands,
+                    avatar_ctime: parsed.avatar_ctime
                 }
             }
         } catch (err) {
@@ -50,7 +51,14 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         }
         return []
     }
-    getAvatarUrl(receiver) {
+    getAvatarUrl(receiver, status) {
+        if (status.avatar_ctime && receiver.avatar_ctime) {
+            const ref = new Date(parseInt(status.avatar_ctime));
+            if (ref <= receiver.avatar_ctime) {
+                console.info('skipping avatar download since avatar_ctime indicates we have the latest');
+                return false;
+            }
+        }
         const avatarUrl = this.normalizeUrl(receiver.url);
         avatarUrl.pathname += 'gfx/openwebrx-avatar.png'
         return avatarUrl;

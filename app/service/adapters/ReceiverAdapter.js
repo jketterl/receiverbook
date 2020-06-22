@@ -52,7 +52,7 @@ class ReceiverAdapter {
         }
 
         if (receiver.status == 'online') {
-            const ctime = await this.downloadAvatar(receiver);
+            const ctime = await this.downloadAvatar(receiver, status);
             if (ctime) {
                 receiver.avatar_ctime = ctime;
             }
@@ -88,8 +88,8 @@ class ReceiverAdapter {
     getAvatarUrl(receiver) {
         return false;
     }
-    async downloadAvatar(receiver) {
-        const avatarUrl = this.getAvatarUrl(receiver);
+    async downloadAvatar(receiver, status) {
+        const avatarUrl = this.getAvatarUrl(receiver, status);
         if (!avatarUrl) {
             return
         }
@@ -108,7 +108,7 @@ class ReceiverAdapter {
         } catch (err) {
             if (err.response && err.response.status == 304) {
                 // avatar has not been changed
-                console.info('avatar image not changed');
+                console.info('received 304: avatar image not changed');
                 return;
             }
             console.error('Error while downloading receiver avatar: ', err.stack);
