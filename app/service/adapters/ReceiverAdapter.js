@@ -5,13 +5,12 @@ const config = require('../../../config');
 const moment = require('moment');
 
 class ReceiverAdapter {
-    axios() {
-        if (!this.axiosInstance) {
-            this.axiosInstance = axios.create({
-                timeout: 10000
-            });
-        }
-        return this.axiosInstance;
+    async getUrl(url, options={}) {
+        const timeout = 10000;
+        const source = axios.CancelToken.source();
+        options.cancelToken = source.token;
+        setTimeout(() => source.cancel("Connection Timeout"), timeout);
+        return await axios.create({ timeout }).get(url, options);
     }
     normalizeUrl(url) {
         const normalized = new URL(url);
@@ -101,7 +100,7 @@ class ReceiverAdapter {
 
         let response
         try {
-            response = await this.axios().get(avatarUrl.toString(), {
+            response = await this.getUrl(avatarUrl.toString(), {
                 responseType: 'stream',
                 headers
             });

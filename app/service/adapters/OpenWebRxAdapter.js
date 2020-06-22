@@ -19,7 +19,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         try {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status.json';
-            const statusResponse = await this.axios().get(statusUrl.toString(), { headers })
+            const statusResponse = await this.getUrl(statusUrl.toString(), { headers })
             const sh = statusResponse.headers
             let validated = false
             if (parsedKey && 'signature' in sh && 'time' in sh) {
@@ -40,7 +40,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                 }
             }
         } catch (err) {
-            console.error('Error detecting OpenWebRX receiver: ', err.stack);
+            console.error('Error detecting OpenWebRX receiver: ', err.stack || err.message);
         }
 
         return await super.matches(baseUrl, key);

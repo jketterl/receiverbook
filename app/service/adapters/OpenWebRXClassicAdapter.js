@@ -19,7 +19,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         try {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status';
-            const statusResponse = await this.axios().get(statusUrl.toString())
+            const statusResponse = await this.getUrl(statusUrl.toString())
             const parsed = this.parseResponse(statusResponse.data);
             const version = this.parseVersion(parsed.sw_version);
             const location = this.parseCoordinates(parsed.gps);
@@ -35,7 +35,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
                 }
             }
         } catch (err) {
-            console.error(`Error detecting ${this.getType()} receiver: `, err.stack);
+            console.error(`Error detecting ${this.getType()} receiver: `, err.stack || err.message);
         }
 
         return false;
