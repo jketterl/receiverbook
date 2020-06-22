@@ -62,7 +62,7 @@ a.btn {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    flex: 0 0;
+    flex: 0 0 0px;
 }
 
 .receiver-list .recevier-details {
