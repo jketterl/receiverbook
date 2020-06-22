@@ -38,6 +38,8 @@ a.btn {
 .receiver-list .receiver-image {
     flex: 0 0 50px;
     margin-right: 0.75rem;
+    display: flex;
+    flex-direction: column;
 }
 
 @media(min-width: 576px) {
@@ -60,6 +62,7 @@ a.btn {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    flex: 0 0;
 }
 
 .receiver-list .recevier-details {
