@@ -85,7 +85,7 @@ class ReceiverAdapter {
         const user = await userService.getUserDetails(receiver.owner);
         return user.email_verified && user.email === email;
     }
-    getAvatarUrl(receiver) {
+    getAvatarUrl(receiver, status) {
         return false;
     }
     async downloadAvatar(receiver, status) {

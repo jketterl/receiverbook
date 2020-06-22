@@ -58,9 +58,9 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     getType() {
         return "OpenWebRX (classic)"
     }
-    getAvatarUrl(receiver) {
+    getAvatarUrl(receiver, status) {
         if (!receiver.hasVersion('0.18.0')) {
-            return super.getAvatarUrl(receiver);
+            return super.getAvatarUrl(receiver, status);
         }
 
         const avatarUrl = this.normalizeUrl(receiver.url);
