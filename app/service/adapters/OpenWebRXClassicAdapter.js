@@ -52,7 +52,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         return []
     }
     getAvatarUrl(receiver, status) {
-        if (status.avatar_ctime && receiver.avatar_ctime) {
+        if (status.avatar_ctime && receiver.avatar_ctime && receiver.avatar_hash) {
             const ref = new Date(parseFloat(status.avatar_ctime) * 1000);
             if (ref <= receiver.avatar_ctime) {
                 console.info('skipping avatar download since avatar_ctime indicates we have the latest');
