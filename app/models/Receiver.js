@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const KeyService = require('../service/KeyService');
-const semver = require('semver')
+const semver = require('semver');
 
 function generateKey() {
     keyService = new KeyService();
@@ -60,7 +60,8 @@ const receiverSchema = new mongoose.Schema({
         default: generateKey
     },
     bands: [BandSchema],
-    avatar_ctime: Date
+    avatar_ctime: Date,
+    avatar_hash: String
 });
 
 const docArray = receiverSchema.path('bands');

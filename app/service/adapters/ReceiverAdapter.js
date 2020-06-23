@@ -3,6 +3,7 @@ const axios = require('axios');
 const { S3 } = require('aws-sdk');
 const config = require('../../../config');
 const moment = require('moment');
+const crypto = require('crypto');
 
 class ReceiverAdapter {
     async getUrl(url, options={}) {
@@ -51,9 +52,10 @@ class ReceiverAdapter {
         }
 
         if (receiver.status == 'online') {
-            const ctime = await this.downloadAvatar(receiver, status);
-            if (ctime) {
-                receiver.avatar_ctime = ctime;
+            const result = await this.downloadAvatar(receiver, status);
+            if (result) {
+                receiver.avatar_ctime = result.ctime;
+                receiver.avatar_hash = result.hash;
             }
         }
 
@@ -94,7 +96,7 @@ class ReceiverAdapter {
         }
 
         const headers = {};
-        if (receiver.avatar_ctime) {
+        if (receiver.avatar_ctime && receiver.avatar_hash) {
             headers["If-Modified-Since"] = receiver.avatar_ctime.toUTCString();
         }
 
@@ -115,18 +117,32 @@ class ReceiverAdapter {
         }
 
         const s3 = new S3();
-        await s3.upload({
-            Bucket: config.avatars.bucket.name,
-            Region: config.avatars.bucket.region,
-            Body: response.data,
-            Key: `${receiver.id}-avatar.png`
-        }).promise();
+        const [_, hash] = await Promise.all([
+            s3.upload({
+                Bucket: config.avatars.bucket.name,
+                Region: config.avatars.bucket.region,
+                Body: response.data,
+                Key: `${receiver.id}-avatar.png`
+            }).promise(),
+            this.getMd5Hash(response.data)
+        ]);
 
+        const result = { hash }
         if (response.headers && response.headers['last-modified']) {
-            return moment(response.headers['last-modified']).toDate();
+            result.ctime = moment(response.headers['last-modified']).toDate();
         } else {
-            return new Date();
+            result.ctime = new Date();
         }
+
+        return result;
+    }
+    async getMd5Hash(stream) {
+        return new Promise((resolve, reject) =>{
+            const hash = crypto.createHash('md5');
+            stream.on('error', err => reject(err));
+            stream.on('data', chunk => hash.update(chunk));
+            stream.on('end', () => resolve(hash.digest('hex')));
+        })
     }
 }
 

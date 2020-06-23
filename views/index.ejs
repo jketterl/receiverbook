@@ -3,8 +3,8 @@
     <% receivers.forEach((receiver) => { %>
         <li class="list-group-item">
             <div class="receiver-image">
-                <% if (receiver.avatar_ctime) { %>
-                    <img alt="<%= receiver.label %> avatar" src="/images/<%= receiver._id %>/avatar.png">
+                <% if (receiver.avatar_hash) { %>
+                    <img alt="<%= receiver.label %> avatar" src="<%= receiver.avatarUrl %>">
                 <% } %>
             </div>
             <div class="receiver-details">
