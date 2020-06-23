@@ -20,7 +20,6 @@ class ReceiverService {
         return receivers.map(receiver => {
             const r = receiver.toObject();
             r.type = this.getPresentationType(receiver);
-            r.bands = this.getPresentationBands(receiver);
             r.avatarUrl = imageService.getAvatarImageUrl(receiver);
             return r
         });
