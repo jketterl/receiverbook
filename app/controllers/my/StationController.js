@@ -21,6 +21,10 @@ class StationController {
         if (!station) return res.status(404).send('station not found');
         res.render('my/editStation', { station });
     }
+    async deleteStation(req, res) {
+        await Station.deleteOne({owner: req.user, _id: req.params.id})
+        res.redirect('/my/stations');
+    }
 }
 
 module.exports = StationController;
