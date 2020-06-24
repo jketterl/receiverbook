@@ -6,7 +6,7 @@ class ReceiverController {
     async index(req, res) {
         const Receiver = mongoose.model('Receiver');
         const receivers = await Receiver.find({owner: req.user});
-        res.render('my/receivers', {receivers: receivers});
+        res.render('my/receivers', { receivers });
     }
     newReceiver(req, res) {
         res.render('my/newReceiver');
@@ -54,18 +54,16 @@ class ReceiverController {
         await receiver.save()
         res.redirect(`/my/receivers/${receiver.id}`);
     }
-    editReceiver(req, res) {
+    async editReceiver(req, res) {
         const Receiver = mongoose.model('Receiver');
-        Receiver.findOne({owner: req.user, _id: req.params.id}).then((receiver) => {
-            if (!receiver) return res.status(404).send('receiver not found');
-            res.render('my/editReceiver', { receiver });
-        });
+        const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id})
+        if (!receiver) return res.status(404).send('receiver not found');
+        res.render('my/editReceiver', { receiver });
     }
-    deleteReceiver(req, res) {
+    async deleteReceiver(req, res) {
         const Receiver = mongoose.model('Receiver');
-        Receiver.deleteOne({owner: req.user, _id: req.params.id}).then(() => {
-            res.redirect('/my/receivers');
-        });
+        await Receiver.deleteOne({owner: req.user, _id: req.params.id})
+        res.redirect('/my/receivers');
     }
     async regenerateKey(req, res) {
         const Receiver = mongoose.model('Receiver');

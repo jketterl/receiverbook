@@ -3,7 +3,6 @@ const Station = require('../../models/Station');
 class StationController {
     async index(req, res) {
         const stations = await Station.find({owner: req.user});
-        console.info(stations);
         res.render('my/stations.ejs', { stations });
     }
     newStation(req, res) {
@@ -16,6 +15,11 @@ class StationController {
         });
         await station.save();
         res.redirect(`/my/stations/${station.id}`);
+    }
+    async editStation(req, res) {
+        const station = await Station.findOne({owner: req.user, _id: req.params.id})
+        if (!station) return res.status(404).send('station not found');
+        res.render('my/editStation', { station });
     }
 }
 
