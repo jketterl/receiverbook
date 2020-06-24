@@ -4,9 +4,9 @@
         <tr>
             <th>Name</th>
         </tr>
-        <% stations.forEach((receiver) => { %>
+        <% stations.forEach((station) => { %>
             <tr>
-                <td><a href="/my/stations/<%= receiver.id %>"><%= receiver.label ? receiver.label : 'Unnamed receiver' %></a></td>
+                <td><a href="/my/stations/<%= receiver.id %>"><%= station.label ? station.label : 'Unnamed station' %></a></td>
             </tr>
         <% }); %>
     <% } else { %>

@@ -16,6 +16,7 @@ class MyRouter extends express.Router {
         this.get('/receivers/:id/regenerate_key', receiverController.regenerateKey);
         const stationController = new StationController();
         this.get('/stations', stationController.index);
+        this.get('/stations/new', stationController.newStation);
     }
 }
 

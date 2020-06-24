@@ -1,0 +1,19 @@
+<% if (typeof(errors) !== 'undefined') {
+    errors.forEach((error) => { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% });
+} %>
+<h1>Add a new station</h1>
+<form class="mt-5" method="POST">
+    <div class="form-group">
+        <label for="label">Station name</label>
+        <input type="text" class="form-control" name="label" id="label">
+    </div>
+    <div class="actions col-3">
+        <button type="submit" class="btn btn-primary">Submit new station...</div>
+    </div>
+<form>
+<%- contentFor('title') %>
+add new receiver
