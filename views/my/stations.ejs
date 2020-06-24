@@ -6,7 +6,7 @@
         </tr>
         <% stations.forEach((station) => { %>
             <tr>
-                <td><a href="/my/stations/<%= receiver.id %>"><%= station.label ? station.label : 'Unnamed station' %></a></td>
+                <td><a href="/my/stations/<%= station.id %>"><%= station.label ? station.label : 'Unnamed station' %></a></td>
             </tr>
         <% }); %>
     <% } else { %>

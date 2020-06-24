@@ -5,7 +5,7 @@ const ReceiverService = require('../../service/ReceiverService');
 class ReceiverController {
     async index(req, res) {
         const Receiver = mongoose.model('Receiver');
-        const receivers = Receiver.find({owner: req.user});
+        const receivers = await Receiver.find({owner: req.user});
         res.render('my/receivers', {receivers: receivers});
     }
     newReceiver(req, res) {

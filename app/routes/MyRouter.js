@@ -17,6 +17,7 @@ class MyRouter extends express.Router {
         const stationController = new StationController();
         this.get('/stations', stationController.index);
         this.get('/stations/new', stationController.newStation);
+        this.post('/stations/new', stationController.processNewStation);
     }
 }
 
