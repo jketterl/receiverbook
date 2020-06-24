@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
-const ReceiverService = require('../service/ReceiverService');
+const ReceiverService = require('../../service/ReceiverService');
 
-class MyController {
-    receivers(req, res) {
+class ReceiverController {
+    async index(req, res) {
         const Receiver = mongoose.model('Receiver');
-        Receiver.find({owner: req.user}).then((receivers) => {
-            res.render('my/receivers', {receivers: receivers});
-        });
+        const receivers = Receiver.find({owner: req.user});
+        res.render('my/receivers', {receivers: receivers});
     }
     newReceiver(req, res) {
         res.render('my/newReceiver');
@@ -78,4 +77,4 @@ class MyController {
     }
 }
 
-module.exports = MyController;
+module.exports = ReceiverController;

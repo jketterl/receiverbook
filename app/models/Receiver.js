@@ -94,4 +94,4 @@ receiverSchema.methods.hasVersion = function(version){
     return true;
 };
 
-mongoose.model('Receiver', receiverSchema);
+module.exports = mongoose.model('Receiver', receiverSchema);
