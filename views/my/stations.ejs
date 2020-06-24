@@ -1,1 +1,20 @@
 <h1>My Stations</h1>
+<table class="table">
+    <% if (stations.length) { %>
+        <tr>
+            <th>Name</th>
+        </tr>
+        <% stations.forEach((receiver) => { %>
+            <tr>
+                <td><a href="/my/stations/<%= receiver.id %>"><%= receiver.label ? receiver.label : 'Unnamed receiver' %></a></td>
+            </tr>
+        <% }); %>
+    <% } else { %>
+        <tr><td>No stations found</td></tr>
+    <% } %>
+</table>
+<div class="actions">
+    <a class="btn btn-primary" href="/my/stations/new">Add a new station</a>
+</div>
+<%- contentFor('title') %>
+My stations
