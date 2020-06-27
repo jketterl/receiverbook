@@ -4,6 +4,7 @@ const KiwiSdrAdapter = require('./adapters/KiwiSdrAdapter');
 const mongoose = require('mongoose');
 const BandService = require('./BandService');
 const ImageService = require('./ImageService');
+const Receiver = require('../models/Receiver');
 
 class ReceiverService {
     constructor(){
@@ -14,7 +15,6 @@ class ReceiverService {
         }
     }
     async getPublicReceivers() {
-        const Receiver = mongoose.model('Receiver');
         const receivers = await Receiver.find({status: 'online'})
         const imageService = new ImageService();
         return receivers.map(receiver => {

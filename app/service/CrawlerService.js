@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const ReceiverService = require('./ReceiverService');
+const Receiver = require('../models/Receiver');
 
 class CrawlerService {
     constructor() {
@@ -20,7 +21,6 @@ class CrawlerService {
     }
     async collectAll() {
         console.info('now updating all receivers...');
-        const Receiver = mongoose.model('Receiver');
         const receivers = await Receiver.find({})
         const receiverService = new ReceiverService();
         for (const receiver of receivers) {
