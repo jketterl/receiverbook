@@ -20,6 +20,7 @@ class MyRouter extends express.Router {
         this.post('/stations/new', stationController.processNewStation);
         this.get('/stations/:id', stationController.editStation);
         this.get('/stations/:id/delete', stationController.deleteStation);
+        this.post('/stations/:id/assignReceiver', stationController.assignReceiver);
     }
 }
 

@@ -18,16 +18,27 @@ class StationController {
         res.redirect(`/my/stations/${station.id}`);
     }
     async editStation(req, res) {
-        const [station, receivers] = await Promise.all([
+        const [station, receivers, unassignedReceivers] = await Promise.all([
             Station.findOne({owner: req.user, _id: req.params.id}),
+            Receiver.find({owner: req.user, station: req.params.id}),
             Receiver.find({owner: req.user, station: null})
         ])
         if (!station) return res.status(404).send('station not found');
-        res.render('my/editStation', { station, receivers });
+        res.render('my/editStation', { station, unassignedReceivers, receivers });
     }
     async deleteStation(req, res) {
         await Station.deleteOne({owner: req.user, _id: req.params.id})
         res.redirect('/my/stations');
+    }
+    async assignReceiver(req, res) {
+        const [receiver, station] = await Promise.all([
+            Receiver.findOne({owner: req.user, _id:req.body.receiver_id}),
+            Station.findOne({owner: req.user, _id:req.params.id})
+        ]);
+
+        receiver.station = station;
+        await receiver.save();
+        res.redirect(`/my/stations/${station.id}`)
     }
 }
 

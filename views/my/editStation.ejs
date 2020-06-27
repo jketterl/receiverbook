@@ -4,18 +4,30 @@
     each other).
 </p>
 <div>
-    <h3>Add a receiver to this station</h3>
+    <h3>Receivers in this station</h3>
     <div class="mt-3 container">
-        <form class="row" method="POST">
-            <select class="form-control col-9">
-                <% receivers.forEach(receiver => { %>
-                    <option value="<%= receiver.id %>"><%= receiver.label %></option>
-                <% }) %>
-            </select>
-            <div class="actions col-3">
-                <button type="submit" class="btn btn-primary">Add to station</button>
-            </div>
-        </form>
+        <ul class="list-group station-list">
+            <% receivers.forEach(receiver => { %>
+                <li class="row">
+                    <div class="col-9"><%= receiver.label %></div>
+                    <div class="col-3 actions">
+                        <a class="btn btn-danger">Remove from station</a>
+                    </div>
+                </li>
+            <% }) %>
+            <li>
+                <form class="row" method="POST" action="/my/stations/<%= station.id %>/assignReceiver">
+                    <select class="form-control col-9" name="receiver_id" id="receiver_id">
+                        <% unassignedReceivers.forEach(receiver => { %>
+                            <option value="<%= receiver.id %>"><%= receiver.label %></option>
+                        <% }) %>
+                    </select>
+                    <div class="actions col-3">
+                        <button type="submit" class="btn btn-primary">Add to station</button>
+                    </div>
+                </form>
+            </li>
+        </ul>
     </div>
 </div>
 <hr />
