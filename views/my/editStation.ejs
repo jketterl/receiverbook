@@ -1,5 +1,24 @@
 <h1><%= station.label ? station.label : 'Unnamed station' %></h1>
-<div class="mt-5">put some content here</div>
+<p class="mt-5">
+    Stations allow you to group multiple receivers that are in the same location (or at least in close proximity to
+    each other).
+</p>
+<div>
+    <h3>Add a receiver to this station</h3>
+    <div class="mt-3 container">
+        <form class="row" method="POST">
+            <select class="form-control col-9">
+                <% receivers.forEach(receiver => { %>
+                    <option value="<%= receiver.id %>"><%= receiver.label %></option>
+                <% }) %>
+            </select>
+            <div class="actions col-3">
+                <button type="submit" class="btn btn-primary">Add to station</button>
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
 <div class="alert alert-danger">
     <div class="actions mt-2">
         <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal">Delete station</a>

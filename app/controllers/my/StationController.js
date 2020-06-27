@@ -1,4 +1,5 @@
 const Station = require('../../models/Station');
+const Receiver = require('../../models/Receiver');
 
 class StationController {
     async index(req, res) {
@@ -17,9 +18,12 @@ class StationController {
         res.redirect(`/my/stations/${station.id}`);
     }
     async editStation(req, res) {
-        const station = await Station.findOne({owner: req.user, _id: req.params.id})
+        const [station, receivers] = await Promise.all([
+            Station.findOne({owner: req.user, _id: req.params.id}),
+            Receiver.find({owner: req.user, station: null})
+        ])
         if (!station) return res.status(404).send('station not found');
-        res.render('my/editStation', { station });
+        res.render('my/editStation', { station, receivers });
     }
     async deleteStation(req, res) {
         await Station.deleteOne({owner: req.user, _id: req.params.id})

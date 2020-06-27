@@ -6,13 +6,13 @@
     <% });
 } %>
 <h1>Add a new station</h1>
-<form class="mt-5" method="POST">
-    <div class="form-group">
-        <label for="label">Station name</label>
-        <input type="text" class="form-control" name="label" id="label">
+<form class="mt-5 row" method="POST">
+    <div class="form-group col-9 row mb-0">
+        <label for="label" class="col-3 col-form-label">Station name</label>
+        <input type="text" class="form-control col-9" name="label" id="label">
     </div>
     <div class="actions col-3">
-        <button type="submit" class="btn btn-primary">Submit new station...</div>
+        <button type="submit" class="btn btn-primary">Submit new station...</button>
     </div>
 <form>
 <%- contentFor('title') %>
