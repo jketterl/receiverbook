@@ -35,6 +35,27 @@ class ReceiverService {
             .map(r => this.transformReceiverForView(r));
         return stationEntries.concat(receiverEntries);
     }
+    async getPublicReceiversForMap() {
+        const receivers = await this.getPublicReceivers();
+        const receiversWithLocation = receivers.filter(r => r.location && r.location.coordinates);
+        return receiversWithLocation.map(r => this.transformReceiverForMap(r));
+    }
+    transformReceiverForMap(receiver) {
+        const out = {};
+        const receivers = receiver.receivers || [ receiver ];
+        ['label', 'location', 'url'].forEach(key => {
+            out[key] = receiver[key];
+        });
+        const receiverViewObjects = receivers.map(r => {
+            const out = {};
+            ['version', 'url', 'type'].forEach(key => {
+                out[key] = r[key];
+            });
+            return out;
+        });
+        out.receivers = receiverViewObjects;
+        return out;
+    }
     transformReceiverForView(receiver) {
         const imageService = new ImageService();
         const r = receiver.toObject();

@@ -17,11 +17,25 @@ $.fn.addReceivers = function(receivers) {
             map: map,
             title: r.label
         });
-        var info = '<div class="infobox">' +
-            '<a href="' + r.url + '" target="_blank">' +
+        var title;
+        if (r.url) {
+            title = '<a href="' + r.url + '" target="_blank">' +
                 '<h5><i class="mdi mdi-open-in-new"></i> ' + r.label + '</h5>' +
-            '</a>' +
-            '<div>' + r.type + (r.version ? ' ' + r.version : '') + '</div>' +
+            '</a>';
+        } else {
+            title = '<h5>' + r.label + '</h5>';
+        }
+        receiverSnippet = r.receivers.map(function(ro) {
+            return '<div>' +
+                '<a href="' + ro.url + '" target="_blank">' +
+                    '<i class="mdi mdi-open-in-new"></i> ' +
+                    ro.type + (ro.version ? ' ' + ro.version : '')
+                '</a>' +
+            '</div>';
+        }).join('');
+        var info = '<div class="infobox">' +
+            title +
+            receiverSnippet +
         '</div>';
         marker.addListener('click', function(){
             if (!infowindow) {
