@@ -1,6 +1,11 @@
 <h1>My Stations</h1>
-<table class="table">
-    <% if (stations.length) { %>
+<p class="mt-5">
+    Stations allow you to group multiple receivers into a single entry in the receiver list. This allows your station
+    to have a uniform appearance in the list, even if you are running multiple receivers or different kinds of
+    receiver software.
+</p>
+<% if (stations.length) { %>
+    <table class="table">
         <tr>
             <th>Name</th>
         </tr>
@@ -9,10 +14,12 @@
                 <td><a href="/my/stations/<%= station.id %>"><%= station.label ? station.label : 'Unnamed station' %></a></td>
             </tr>
         <% }); %>
-    <% } else { %>
-        <tr><td>No stations found</td></tr>
-    <% } %>
-</table>
+    </table>
+<% } else { %>
+    <p>
+        You can get started by creating your first station below:
+    </p>
+<% } %>
 <div class="actions">
     <a class="btn btn-primary" href="/my/stations/new">Add a new station</a>
 </div>
