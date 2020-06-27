@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const BandService = require('./BandService');
 const ImageService = require('./ImageService');
 const Receiver = require('../models/Receiver');
+const Station = require('../models/Station');
 
 class ReceiverService {
     constructor(){
@@ -15,14 +16,30 @@ class ReceiverService {
         }
     }
     async getPublicReceivers() {
-        const receivers = await Receiver.find({status: 'online'})
-        const imageService = new ImageService();
-        return receivers.map(receiver => {
-            const r = receiver.toObject();
-            r.type = this.getPresentationType(receiver);
-            r.avatarUrl = imageService.getAvatarImageUrl(receiver);
-            return r
+        const [receivers, stationsWithReceivers] = await Promise.all([
+            Receiver.find({status: 'online'}),
+            Receiver.aggregate()
+                .match({station: {$ne: null}, status: 'online'})
+                .group({_id: '$station', count: { $sum: 1 }, receivers: { $addToSet: "$_id"}})
+        ]);
+        const acceptedStations = stationsWithReceivers.filter(s => s.count > 1);
+        const stations = await Station.find().where('_id').in(acceptedStations.map(s => s._id));
+        const stationEntries = acceptedStations.map(s => {
+            const first = receivers.find(r => r.id = s.receivers[0]);
+            const station = stations.find(station => s._id.toString() === station._id.toString());
+            const receiverEntry = this.transformReceiverForView(first)
+            receiverEntry.label = station.label;
+            return receiverEntry;
         });
+        const receiverEntries = receivers.map(r => this.transformReceiverForView(r));
+        return stationEntries.concat(receiverEntries);
+    }
+    transformReceiverForView(receiver) {
+        const imageService = new ImageService();
+        const r = receiver.toObject();
+        r.type = this.getPresentationType(receiver);
+        r.avatarUrl = imageService.getAvatarImageUrl(receiver);
+        return r
     }
     getPresentationType(receiver) {
         switch (receiver.type) {
