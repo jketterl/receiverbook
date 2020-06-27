@@ -63,7 +63,7 @@ a.btn {
     max-height: 100%;
 }
 
-.receiver-list .recevier-details {
+.receiver-list .receiver-details {
     flex: 1;
 }
 
@@ -140,4 +140,15 @@ html.map .footer {
 
 .infobox {
     text-align: center;
+}
+
+/* Station style
+-------------------------------------------------- */
+
+.station-list {
+    list-style-type: none;
+}
+
+.station-list li {
+    margin-bottom: .5em;
 }

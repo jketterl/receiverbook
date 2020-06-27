@@ -5,15 +5,15 @@
         </div>
     <% });
 } %>
-<h1>Add a new receiver</h1>
+<h1>Add a new station</h1>
 <form class="mt-5 row" method="POST">
     <div class="form-group col-9 row mb-0">
-        <label for="url" class="col-3 col-form-label">URL</label>
-        <input type="url" class="col-9 form-control" name="url" id="url">
+        <label for="label" class="col-3 col-form-label">Station name</label>
+        <input type="text" class="form-control col-9" name="label" id="label">
     </div>
     <div class="actions col-3">
-        <button type="submit" class="btn btn-primary">Submit new receiver...</button>
+        <button type="submit" class="btn btn-primary">Submit new station...</button>
     </div>
 <form>
 <%- contentFor('title') %>
-add new receiver
+add new station

@@ -3,13 +3,7 @@
 <script src="/static/js/map.js"></script>
 <script>
     $(function(){
-        var receivers = <%- JSON.stringify(receivers.map(inp => {
-            var out = {};
-            ['label', 'location', 'version', 'url', 'type'].forEach(function(key){
-                out[key] = inp[key];
-            });
-            return out;
-        })) %>;
+        var receivers = <%- JSON.stringify(receivers) %>;
         $('.content-container').addReceivers(receivers);
     });
 </script>

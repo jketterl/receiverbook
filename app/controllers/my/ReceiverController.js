@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
-const ReceiverService = require('../service/ReceiverService');
+const ReceiverService = require('../../service/ReceiverService');
+const Receiver = require('../../models/Receiver');
+const Station = require('../../models/Station');
 
-class MyController {
-    receivers(req, res) {
-        const Receiver = mongoose.model('Receiver');
-        Receiver.find({owner: req.user}).then((receivers) => {
-            res.render('my/receivers', {receivers: receivers});
-        });
+class ReceiverController {
+    async index(req, res) {
+        const receivers = await Receiver.find({owner: req.user});
+        res.render('my/receivers', { receivers });
     }
     newReceiver(req, res) {
         res.render('my/newReceiver');
     }
     async processNewReceiver(req, res) {
-        const Receiver = mongoose.model('Receiver');
         const receiverUrl = new URL(req.body.url);
         // sanitize
         receiverUrl.hash = '';
@@ -55,27 +54,41 @@ class MyController {
         await receiver.save()
         res.redirect(`/my/receivers/${receiver.id}`);
     }
-    editReceiver(req, res) {
-        const Receiver = mongoose.model('Receiver');
-        Receiver.findOne({owner: req.user, _id: req.params.id}).then((receiver) => {
-            if (!receiver) return res.status(404).send('receiver not found');
-            res.render('my/editReceiver', { receiver });
-        });
+    async editReceiver(req, res) {
+        const [receiver, stations] = await Promise.all([
+            Receiver.findOne({owner: req.user, _id: req.params.id}).populate('station'),
+            Station.find({owner: req.user})
+        ]);
+        if (!receiver) return res.status(404).send('receiver not found');
+        res.render('my/editReceiver', { receiver, stations });
     }
-    deleteReceiver(req, res) {
-        const Receiver = mongoose.model('Receiver');
-        Receiver.deleteOne({owner: req.user, _id: req.params.id}).then(() => {
-            res.redirect('/my/receivers');
-        });
+    async deleteReceiver(req, res) {
+        await Receiver.deleteOne({owner: req.user, _id: req.params.id})
+        res.redirect('/my/receivers');
     }
     async regenerateKey(req, res) {
-        const Receiver = mongoose.model('Receiver');
         const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id});
         if (!receiver) return res.status(404).send("receiver not found");
         receiver.regenerateKey();
         await receiver.save();
         res.redirect(`/my/receivers/${receiver.id}`);
     }
+    async assignToStation(req, res) {
+        const [receiver, station] = await Promise.all([
+            Receiver.findOne({owner: req.user, _id:req.params.id}),
+            Station.findOne({owner: req.user, _id:req.body.station_id})
+        ]);
+
+        receiver.station = station;
+        await receiver.save();
+        res.redirect(`/my/receivers/${receiver.id}`)
+    }
+    async removeFromStation(req, res) {
+        const receiver = await Receiver.findOne({owner: req.user, _id:req.params.id})
+        receiver.station = null;
+        await receiver.save();
+        res.redirect(`/my/receivers/${receiver.id}`)
+    }
 }
 
-module.exports = MyController;
+module.exports = ReceiverController;

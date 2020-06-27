@@ -126,7 +126,36 @@ receiver_keys += ["<%=receiver.key %>"]
         <% } %>
     <% } %>
 </div>
-<hr>
+<hr />
+<% if (stations.length) { %>
+    <div>
+        <h3>Station membership</h3>
+        <div class="mt-3 container">
+            <% if (receiver.station) { %>
+                <p>
+                    This receiver is a member of the <a href="/my/stations/<%= receiver.station.id %>"><%= receiver.station.label %></a> station.
+                    <a href="/my/receivers/<%= receiver.id%>/removeFromStation">
+                        Click here
+                    </a>
+                    to remove it from the station.
+                </p>
+            <% } else { %>
+                <p>This receiver is not a member of a station yet. You can assign it to a station using the list below:</p>
+                <form class="row" method="POST" action="/my/receivers/<%= receiver.id %>/assignToStation">
+                    <select class="form-control col-9" name="station_id" id="station_id">
+                        <% stations.forEach(station => { %>
+                            <option value="<%= station.id %>"><%= station.label %></option>
+                        <% }) %>
+                    </select>
+                    <div class="actions col-3">
+                        <button type="submit" class="btn btn-primary">Add to station</button>
+                    </div>
+                </form>
+            <% } %>
+        </div>
+    </div>
+    <hr />
+<% } %>
 <div class="alert alert-danger">
     You can remove your receiver listing from this site by pressing the following button:
     <div class="actions mt-2">

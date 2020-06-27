@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const KeyService = require('../service/KeyService');
 const semver = require('semver');
+const Station = require('./Station');
 
 function generateKey() {
     keyService = new KeyService();
@@ -39,8 +40,14 @@ const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
     version: String,
-    url: String,
-    owner: String,
+    url: {
+        type: String,
+        unique: true
+    },
+    owner: {
+        type: String,
+        sparse: true
+    },
     location: {
         type:{
             type: String,
@@ -53,7 +60,8 @@ const receiverSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['new', 'pending', 'online', 'offline'],
-        default: 'new'
+        default: 'new',
+        index: true,
     },
     key: {
         type: String,
@@ -61,7 +69,12 @@ const receiverSchema = new mongoose.Schema({
     },
     bands: [BandSchema],
     avatar_ctime: Date,
-    avatar_hash: String
+    avatar_hash: String,
+    station: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Station',
+        sparse: true
+    }
 });
 
 const docArray = receiverSchema.path('bands');
@@ -94,4 +107,4 @@ receiverSchema.methods.hasVersion = function(version){
     return true;
 };
 
-mongoose.model('Receiver', receiverSchema);
+module.exports = mongoose.model('Receiver', receiverSchema);
