@@ -9,15 +9,21 @@
             </div>
             <div class="receiver-details">
                 <h5><%= receiver.label %></h5>
-                <div class="row">
-                    <% const localReceivers = receiver.receivers || [receiver] %>
-                    <% localReceivers.forEach(r => { %>
-                        <div class="col-3">
-                            <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.url %></a></div>
-                            <div><%= r.type %> <%= r.version %></div>
-                        </div>
-                    <% }) %>
-                </div>
+                <% const localReceivers = receiver.receivers || [receiver] %>
+                <% if (localReceivers.length > 1) { %>
+                    <div class="row">
+                        <% localReceivers.forEach(r => { %>
+                            <div class="col-3">
+                                <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.label %></a></div>
+                                <div><%= r.type %> <%= r.version %></div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <% const r = localReceivers[0] %>
+                    <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.url %></a></div>
+                    <div><%= r.type %> <%= r.version %></div>
+                <% } %>
             </div>
         </li>
     <% }); %>
