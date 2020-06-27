@@ -43,9 +43,16 @@ class ReceiverService {
         return r
     }
     transformReceiversOfStation(receivers, station) {
+        const imageService = new ImageService();
+        const avatarReceiver = receivers.filter(r => r.avatar_hash).shift();
+        let avatarUrl;
+        if (avatarReceiver) {
+            avatarUrl = imageService.getAvatarImageUrl(avatarReceiver);
+        }
         const receiverEntry = {
             label: station.label,
-            receivers: receivers.map(r => this.transformReceiverForView(r))
+            receivers: receivers.map(r => this.transformReceiverForView(r)),
+            avatarUrl
         }
         return receiverEntry;
     }
