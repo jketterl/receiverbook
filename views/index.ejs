@@ -3,14 +3,21 @@
     <% receivers.forEach((receiver) => { %>
         <li class="list-group-item">
             <div class="receiver-image">
-                <% if (receiver.avatar_hash) { %>
+                <% if (receiver.avatarUrl) { %>
                     <img alt="<%= receiver.label %> avatar" src="<%= receiver.avatarUrl %>">
                 <% } %>
             </div>
             <div class="receiver-details">
                 <h5><%= receiver.label %></h5>
-                <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a></div>
-                <div><%= receiver.type %> <%= receiver.version %></div>
+                <div class="row">
+                    <% const localReceivers = receiver.receivers || [receiver] %>
+                    <% localReceivers.forEach(r => { %>
+                        <div class="col-3">
+                            <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.url %></a></div>
+                            <div><%= r.type %> <%= r.version %></div>
+                        </div>
+                    <% }) %>
+                </div>
             </div>
         </li>
     <% }); %>

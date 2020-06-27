@@ -25,13 +25,14 @@ class ReceiverService {
         const acceptedStations = stationsWithReceivers.filter(s => s.count > 1);
         const stations = await Station.find().where('_id').in(acceptedStations.map(s => s._id));
         const stationEntries = acceptedStations.map(s => {
-            const first = receivers.find(r => r.id = s.receivers[0]);
             const station = stations.find(station => s._id.toString() === station._id.toString());
-            const receiverEntry = this.transformReceiverForView(first)
-            receiverEntry.label = station.label;
-            return receiverEntry;
+            const stationReceivers = s.receivers.map(rid => receivers.find(r => r.id.toString() == rid.toString()));
+            return this.transformReceiversOfStation(stationReceivers, station);
         });
-        const receiverEntries = receivers.map(r => this.transformReceiverForView(r));
+        const receiversInStations = acceptedStations.flatMap(s => s.receivers.map(id => id.toString()));
+        const receiverEntries = receivers
+            .filter(r => receiversInStations.indexOf(r.id.toString()) < 0)
+            .map(r => this.transformReceiverForView(r));
         return stationEntries.concat(receiverEntries);
     }
     transformReceiverForView(receiver) {
@@ -40,6 +41,13 @@ class ReceiverService {
         r.type = this.getPresentationType(receiver);
         r.avatarUrl = imageService.getAvatarImageUrl(receiver);
         return r
+    }
+    transformReceiversOfStation(receivers, station) {
+        const receiverEntry = {
+            label: station.label,
+            receivers: receivers.map(r => this.transformReceiverForView(r))
+        }
+        return receiverEntry;
     }
     getPresentationType(receiver) {
         switch (receiver.type) {
