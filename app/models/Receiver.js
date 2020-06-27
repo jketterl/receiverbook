@@ -40,8 +40,14 @@ const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
     version: String,
-    url: String,
-    owner: String,
+    url: {
+        type: String,
+        unique: true
+    },
+    owner: {
+        type: String,
+        sparse: true
+    },
     location: {
         type:{
             type: String,
@@ -54,7 +60,8 @@ const receiverSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['new', 'pending', 'online', 'offline'],
-        default: 'new'
+        default: 'new',
+        index: true,
     },
     key: {
         type: String,
@@ -65,7 +72,8 @@ const receiverSchema = new mongoose.Schema({
     avatar_hash: String,
     station: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Station'
+        ref: 'Station',
+        sparse: true
     }
 });
 
