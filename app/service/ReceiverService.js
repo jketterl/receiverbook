@@ -49,10 +49,16 @@ class ReceiverService {
         if (avatarReceiver) {
             avatarUrl = imageService.getAvatarImageUrl(avatarReceiver);
         }
+        const locationReceiver = receivers.filter(r => r.location && r.location.coordinates).shift();
+        let location;
+        if (locationReceiver) {
+            location = locationReceiver.location
+        }
         const receiverEntry = {
             label: station.label,
             receivers: receivers.map(r => this.transformReceiverForView(r)),
-            avatarUrl
+            avatarUrl,
+            location
         }
         return receiverEntry;
     }
