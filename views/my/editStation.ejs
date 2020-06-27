@@ -11,7 +11,7 @@
                 <li class="row">
                     <div class="col-9"><%= receiver.label %></div>
                     <div class="col-3 actions">
-                        <a class="btn btn-danger">Remove from station</a>
+                        <a class="btn btn-danger" href="/my/stations/<%= station.id %>/removeReceiver/<%= receiver.id %>">Remove from station</a>
                     </div>
                 </li>
             <% }) %>

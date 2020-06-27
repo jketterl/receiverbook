@@ -21,6 +21,7 @@ class MyRouter extends express.Router {
         this.get('/stations/:id', stationController.editStation);
         this.get('/stations/:id/delete', stationController.deleteStation);
         this.post('/stations/:id/assignReceiver', stationController.assignReceiver);
+        this.get('/stations/:id/removeReceiver/:receiver_id', stationController.removeReceiver);
     }
 }
 

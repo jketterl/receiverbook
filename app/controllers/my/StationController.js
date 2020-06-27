@@ -40,6 +40,12 @@ class StationController {
         await receiver.save();
         res.redirect(`/my/stations/${station.id}`)
     }
+    async removeReceiver(req, res) {
+        const receiver = await Receiver.findOne({owner: req.user, _id:req.params.receiver_id})
+        receiver.station = null;
+        await receiver.save();
+        res.redirect(`/my/stations/${req.params.id}`)
+    }
 }
 
 module.exports = StationController;
