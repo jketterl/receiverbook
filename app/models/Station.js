@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 
 const stationSchema = new mongoose.Schema({
     label: String,
-    owner: String,
-    receivers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Receiver'
-    }]
+    owner: String
 });
 
 module.exports = mongoose.model('Station', stationSchema);
