@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const axios = require('axios');
 const ReceiverService = require('../../service/ReceiverService');
 const Receiver = require('../../models/Receiver');
+const Station = require('../../models/Station');
 
 class ReceiverController {
     async index(req, res) {
@@ -54,9 +55,12 @@ class ReceiverController {
         res.redirect(`/my/receivers/${receiver.id}`);
     }
     async editReceiver(req, res) {
-        const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id})
+        const [receiver, stations] = await Promise.all([
+            Receiver.findOne({owner: req.user, _id: req.params.id}).populate('station'),
+            Station.find({owner: req.user})
+        ]);
         if (!receiver) return res.status(404).send('receiver not found');
-        res.render('my/editReceiver', { receiver });
+        res.render('my/editReceiver', { receiver, stations });
     }
     async deleteReceiver(req, res) {
         await Receiver.deleteOne({owner: req.user, _id: req.params.id})
@@ -68,6 +72,22 @@ class ReceiverController {
         receiver.regenerateKey();
         await receiver.save();
         res.redirect(`/my/receivers/${receiver.id}`);
+    }
+    async assignToStation(req, res) {
+        const [receiver, station] = await Promise.all([
+            Receiver.findOne({owner: req.user, _id:req.params.id}),
+            Station.findOne({owner: req.user, _id:req.body.station_id})
+        ]);
+
+        receiver.station = station;
+        await receiver.save();
+        res.redirect(`/my/receivers/${receiver.id}`)
+    }
+    async removeFromStation(req, res) {
+        const receiver = await Receiver.findOne({owner: req.user, _id:req.params.id})
+        receiver.station = null;
+        await receiver.save();
+        res.redirect(`/my/receivers/${receiver.id}`)
     }
 }
 
