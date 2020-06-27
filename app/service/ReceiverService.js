@@ -48,7 +48,7 @@ class ReceiverService {
         });
         const receiverViewObjects = receivers.map(r => {
             const out = {};
-            ['version', 'url', 'type'].forEach(key => {
+            ['label', 'version', 'url', 'type'].forEach(key => {
                 out[key] = r[key];
             });
             return out;

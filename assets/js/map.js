@@ -17,22 +17,32 @@ $.fn.addReceivers = function(receivers) {
             map: map,
             title: r.label
         });
+
         var title;
+        var receiverSnippet;
         if (r.url) {
             title = '<a href="' + r.url + '" target="_blank">' +
                 '<h5><i class="mdi mdi-open-in-new"></i> ' + r.label + '</h5>' +
             '</a>';
+            receiverSnippet = r.receivers.map(function(ro) {
+                return '<div>' +
+                    ro.type + (ro.version ? ' ' + ro.version : '') +
+                '</div>'
+            }).join('');
         } else {
             title = '<h5>' + r.label + '</h5>';
+            receiverSnippet = r.receivers.map(function(ro) {
+                return '<a href="' + ro.url + '" target="_blank">' +
+                     '<div>' +
+                        '<i class="mdi mdi-open-in-new"></i> ' +
+                        ro.label +
+                    '</div>' +
+                    '<div>' +
+                        ro.type + (ro.version ? ' ' + ro.version : '') +
+                    '</div>' +
+                '</a>';
+            }).join('');
         }
-        receiverSnippet = r.receivers.map(function(ro) {
-            return '<div>' +
-                '<a href="' + ro.url + '" target="_blank">' +
-                    '<i class="mdi mdi-open-in-new"></i> ' +
-                    ro.type + (ro.version ? ' ' + ro.version : '')
-                '</a>' +
-            '</div>';
-        }).join('');
         var info = '<div class="infobox">' +
             title +
             receiverSnippet +
