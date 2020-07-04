@@ -100,17 +100,17 @@ const receiverSchema = new mongoose.Schema({
     }
 });
 
-receiverSchema.pre('save', function(next) {
-    if (this.owner && this.key) {
-        console.info(`updating receiver schema on "${this.label}"`);
-        this.claims.push({
+receiverSchema.pre('init', function(receiver) {
+    if (receiver.owner && receiver.key) {
+        console.info(`implicit receiver schema migration on "${receiver.label}"`);
+        receiver.claims = receiver.claims || [];
+        receiver.claims.push({
             owner: this.owner,
             key: this.key
         });
-        this.owner = null;
-        this.key = null;
+        receiver.owner = undefined;
+        receiver.key = undefined;
     }
-    next();
 });
 
 const docArray = receiverSchema.path('bands');
