@@ -1,0 +1,29 @@
+<% if (typeof(errors) !== 'undefined') {
+    errors.forEach((error) => { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% });
+} %>
+<h1>Add a new receiver</h1>
+<form class="mt-5" method="POST">
+    <div class="form-group row">
+        <label for="url" class="col-3 col-form-label">URL</label>
+        <input type="url" class="col-9 form-control" name="url" id="url">
+    </div>
+    <% if (typeof(session) !== 'undefined') { %>
+        <div class="form-group row">
+            <div class="col-9 offset-3 form-check">
+                <input class="form-check-input" type="checkbox" id="claim" name="claim">
+                <label class="form-check-label" for="claim">
+                    I am the receiver operator and would like to claim this receiver
+                </label>
+            </div>
+        </div>
+    <% } %>
+    <div class="actions row">
+        <button type="submit" class="btn btn-primary">Submit new receiver...</button>
+    </div>
+<form>
+<%- contentFor('title') %>
+add new receiver

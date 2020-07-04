@@ -2,6 +2,7 @@ const express = require('express');
 const SessionRouter = require('./SessionRouter');
 const IndexController = require('../controllers/IndexController');
 const MapController = require('../controllers/MapController');
+const ReceiverController = require('../controllers/ReceiverController');
 const MyRouter = require('./MyRouter');
 const compression = require('compression');
 const ImageRouter = require('./ImageRouter');
@@ -18,6 +19,10 @@ class AppRouter extends express.Router {
             res.type('text/plain');
             res.send('User-Agent: *\nDisallow:');
         });
+
+        const receiverController = new ReceiverController();
+        this.get('/receivers/new', receiverController.newReceiver);
+
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
         this.use('/images', new ImageRouter());

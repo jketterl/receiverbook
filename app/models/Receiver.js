@@ -36,6 +36,14 @@ BandSchema.methods.asRange = function() {
     }
 };
 
+const ClaimSchema = new mongoose.Schema({
+    key: String,
+    owner: {
+        type: String,
+        sparse: true
+    }
+});
+
 const receiverSchema = new mongoose.Schema({
     label: String,
     type: String,
@@ -48,6 +56,7 @@ const receiverSchema = new mongoose.Schema({
         type: String,
         sparse: true
     },
+    claims: [ClaimSchema],
     location: {
         type:{
             type: String,

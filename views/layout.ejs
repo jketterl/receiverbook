@@ -37,6 +37,9 @@
                             <a class="dropdown-item" href="/map">Map view</a>
                         </div>
                     </div>
+                    <div class="nav-item">
+                        <a class="nav-link" href="/receivers/new"><i class="mdi mdi-plus-box"></i> Report a new receiver</a>
+                    </div>
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Receiver software
@@ -49,7 +52,7 @@
                     </div>
                 </div>
                 <div class="navbar-nav ml-auto">
-                    <%if (typeof(session) === 'undefined') { %>
+                    <% if (typeof(session) === 'undefined') { %>
                         <a href="/session/login">Login / Register</a>
                     <% } else { %>
                         <div class="nav-item dropdown">
