@@ -5,10 +5,11 @@ const Station = require('./Station');
 
 function generateKey() {
     keyService = new KeyService();
-    if (this.type === 'openwebrx') {
+    const receiver = this.parent()
+    if (receiver.type === 'openwebrx') {
         return keyService.generateKey().toString();
     }
-    if (this.type === 'websdr') {
+    if (receiver.type === 'websdr') {
         return keyService.generateSecret();
     }
 }
@@ -37,12 +38,20 @@ BandSchema.methods.asRange = function() {
 };
 
 const ClaimSchema = new mongoose.Schema({
-    key: String,
+    key: {
+        type: String,
+        default: generateKey
+    },
     owner: {
         type: String,
         sparse: true
     }
 });
+
+ClaimSchema.methods.regenerateKey = function(){
+    this.key = generateKey.call(this, []);
+    this.status = 'pending';
+};
 
 const receiverSchema = new mongoose.Schema({
     label: String,
@@ -73,8 +82,7 @@ const receiverSchema = new mongoose.Schema({
         index: true,
     },
     key: {
-        type: String,
-        default: generateKey
+        type: String
     },
     bands: [BandSchema],
     avatar_ctime: Date,
@@ -105,11 +113,6 @@ const CenteredSchema = new mongoose.Schema({
 });
 
 docArray.discriminator('centered', CenteredSchema);
-
-receiverSchema.methods.regenerateKey = function(){
-    this.key = generateKey.call(this, []);
-    this.status = 'pending';
-};
 
 receiverSchema.methods.hasVersion = function(version){
     return semver.gte(semver.parse(this.version), semver.parse(version));
