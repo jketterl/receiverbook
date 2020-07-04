@@ -5,10 +5,16 @@
         <p class="mt-3 alert alert-success">
             Your receiver is currently online and publicly listed on this site.
         </p>
-        <% if (receiver.type === 'openwebrx' || receiver.type === 'websdr') { %>
+        <% if (receiver.type === 'openwebrx' && receiver.hasVersion('0.19.1')) { %>
             <div class="actions mt-2">
                 <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
                     Generate a new receiver key
+                </a>
+            </div>
+        <% } else if (receiver.type === 'websdr') { %>
+            <div class="actions mt-2">
+                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                    Generate a new confirmation code
                 </a>
             </div>
         <% } %>
@@ -30,7 +36,7 @@
                 </li>
                 <li>
                     <h4>Key verification</h4>
-                    <%if (receiver.hasVersion('0.19.1')) { %>
+                    <% if (receiver.hasVersion('0.19.1')) { %>
                         <p class="mt-3">
                             You can verify confirm your receiver by configuring it with a receiver key, which
                             we can verify automatically. To do so, please add the following line to your
@@ -49,7 +55,7 @@ receiver_keys += ["<%=receiver.key %>"]
                             Please update your Receiver to version 0.19.1 or later to be able to be listed.
                         </p>
                         <p>
-                            Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage</> for instructions.
+                            Please visit <a href="https://www.openwebrx.de">the OpenWebRX homepage</a> for instructions.
                         </p>
                     <% } %>
                 </li>
@@ -58,20 +64,22 @@ receiver_keys += ["<%=receiver.key %>"]
                 We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
                 will be listed automatically once authentication is complete.
             </p>
-            <div class="alert alert-warning">
-                <div>
-                    Please keep your receiver key secret. Anybody who obtains your receiver key can potentially
-                    take over your receiver listings.
+            <% if (receiver.hasVersion('0.19.1')) { %>
+                <div class="alert alert-warning">
+                    <div>
+                        Please keep your receiver key secret. Anybody who obtains your receiver key can potentially
+                        take over your receiver listings.
+                    </div>
+                    <div>
+                        You can regenerate your receiver key with the button below in case it has been compromised:
+                    </div>
+                    <div class="actions mt-2">
+                        <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                            Generate a new receiver key
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    You can regenerate your receiver key with the button below in case it has been compromised:
-                </div>
-                <div class="actions mt-2">
-                    <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
-                        Generate a new receiver key
-                    </a>
-                </div>
-            </div>
+            <% } %>
         <% } else if (receiver.type === 'websdr') { %>
             <h3>WebSDR authentication</h3>
             <p class="mt-3">
