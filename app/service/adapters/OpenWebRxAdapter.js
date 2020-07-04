@@ -22,8 +22,11 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             const statusResponse = await this.getUrl(statusUrl.toString(), { headers })
             const sh = statusResponse.headers
             let validated = false
+            if (parsedKey && 'authorization' in sh) {
+                validated = keyService.validateHeader(sh['authorization'], challenge, parsedKey);
+            }
             if (parsedKey && 'signature' in sh && 'time' in sh) {
-                validated = keyService.validateSignature({signature: sh.signature, time: sh.time}, challenge, parsedKey);
+                validated = keyService.validateSignature(sh.signature, sh.time, challenge, parsedKey);
             }
             const data = statusResponse.data;
             const version = this.parseVersion(data.version);
