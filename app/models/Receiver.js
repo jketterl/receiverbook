@@ -45,7 +45,13 @@ const ClaimSchema = new mongoose.Schema({
     owner: {
         type: String,
         sparse: true
-    }
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'verified'],
+        default: 'pending',
+        index: true,
+    },
 });
 
 ClaimSchema.methods.regenerateKey = function(){
@@ -77,8 +83,8 @@ const receiverSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['new', 'pending', 'online', 'offline'],
-        default: 'new',
+        enum: ['online', 'offline'],
+        default: 'offline',
         index: true,
     },
     key: {
@@ -92,6 +98,19 @@ const receiverSchema = new mongoose.Schema({
         ref: 'Station',
         sparse: true
     }
+});
+
+receiverSchema.pre('save', function(next) {
+    if (this.owner && this.key) {
+        console.info(`updating receiver schema on "${this.label}"`);
+        this.claims.push({
+            owner: this.owner,
+            key: this.key
+        });
+        this.owner = null;
+        this.key = null;
+    }
+    next();
 });
 
 const docArray = receiverSchema.path('bands');
