@@ -13,7 +13,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         // longitude first!!
         return[parseFloat(matches[2]), parseFloat(matches[1])]
     }
-    async matches(baseUrl, key) {
+    async matches(baseUrl) {
         const normalized = this.normalizeUrl(baseUrl);
 
         try {

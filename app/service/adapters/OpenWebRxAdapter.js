@@ -3,17 +3,23 @@ const KeyService = require('../KeyService');
 const semver = require('semver');
 
 class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
-    async matches(baseUrl, key) {
+    async matches(baseUrl, claims) {
         const normalized = this.normalizeUrl(baseUrl);
 
         const headers = {};
         const keyService = new KeyService();
-        let challenge;
-        let parsedKey;
-        if (key) {
-            parsedKey = keyService.parse(key);
-            challenge = keyService.generateChallenge(parsedKey);
-            headers['Authorization'] = keyService.getAuthorizationHeader(challenge);
+
+        let challenges;
+        if (claims) {
+            challenges = claims.map(claim => {
+                const key = keyService.parse(claim.key);
+                return {
+                    claim,
+                    key,
+                    challenge: keyService.generateChallenge(key)
+                }
+            })
+            headers['Authorization'] = 'ReceiverId ' + challenges.map(c => c.challenge.toString()).join(',');
         }
 
         try {
@@ -22,11 +28,32 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             const statusResponse = await this.getUrl(statusUrl.toString(), { headers })
             const sh = statusResponse.headers
             let validated = false
-            if (parsedKey && 'authorization' in sh) {
-                validated = keyService.validateHeader(sh['authorization'], challenge, parsedKey);
+            // new responses in OpenWebRX develop
+            if (challenges && 'authorization' in sh) {
+                const responses = keyService.parseResponse(sh['authorization']);
+                challenges.forEach(challenge => {
+                    const response = responses.find(r => r.source === challenge.key.source && r.id === challenge.key.id);
+                    if (response && keyService.validateSignature(
+                        response.signature,
+                        response.time,
+                        challenge.challenge,
+                        challenge.key
+                    )) {
+                        challenge.claim.status = 'verified';
+                    } else {
+                        challenge.claim.status = 'pending';
+                    }
+                });
             }
-            if (parsedKey && 'signature' in sh && 'time' in sh) {
-                validated = keyService.validateSignature(sh.signature, sh.time, challenge, parsedKey);
+            // code for parsing response headers in OpenWebRX 0.19.1
+            if ('signature' in sh && 'time' in sh) {
+                challenges.forEach(challenge => {
+                    if (keyService.validateSignature(sh.signature, sh.time, challenge.challenge, challenge.key)) {
+                        challenge.claim.status = 'verified';
+                    } else {
+                        challenge.claim.status = 'pending';
+                    }
+                });
             }
             const data = statusResponse.data;
             const version = this.parseVersion(data.version);
@@ -38,7 +65,6 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                     version,
                     // longitude first !!
                     location: [data.receiver.gps.lon, data.receiver.gps.lat],
-                    validated,
                     bands
                 }
             }
@@ -46,7 +72,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             console.error('Error detecting OpenWebRX receiver: ', err.stack || err.message);
         }
 
-        return await super.matches(baseUrl, key);
+        return await super.matches(baseUrl);
     }
     parseVersion(versionString) {
         const matches = /^v(.*)$/.exec(versionString)

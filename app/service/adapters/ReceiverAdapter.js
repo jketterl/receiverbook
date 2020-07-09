@@ -20,7 +20,7 @@ class ReceiverAdapter {
         }
         return normalized
     }
-    async matches(baseUrl, key) {
+    async matches(baseUrl, claims) {
         return false;
     }
     async updateReceiver(receiver) {
@@ -75,7 +75,7 @@ class ReceiverAdapter {
         receiver.bands = data.bands;
     }
     async getReceiverData(receiver) {
-        const status = await this.matches(receiver.url, receiver.key);
+        const status = await this.matches(receiver.url, receiver.claims);
         if (status.email) {
             status.validated = status.validated || await this.validateEMail(receiver, status.email);
         }

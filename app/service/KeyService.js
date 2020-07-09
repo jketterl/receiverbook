@@ -18,15 +18,13 @@ class KeyService {
         return new Key(matches[1], matches[2], matches[3]);
     }
     parseResponse(responseHeader) {
-        const headerMatches = /^Time=(.*), Response=(.*)$/.exec(responseHeader)
-        if (!headerMatches) {
-            throw new KeyError("Invalid header format");
-        }
-        const responseMatches = /^([a-zA-Z]+)-([0-9a-f]{32})-([0-9a-f]{64})$/.exec(headerMatches[2]);
-        if (!responseMatches) {
-            throw new KeyError("Invalid key response format");
-        }
-        return new KeyResponse(responseMatches[1], responseMatches[2], responseMatches[3], headerMatches[1]);
+        return responseHeader.split(',').map(snippet => {
+            const responseMatches = /^([a-zA-Z]+)-([0-9a-f]{32})-([0-9a-f]{8})-([0-9a-f]{64})$/.exec(snippet);
+            if (!responseMatches) {
+                throw new KeyError("Invalid key response format");
+            }
+            return new KeyResponse(responseMatches[1], responseMatches[2], responseMatches[3], responseMatches[4]);
+        })
     }
     generateChallenge(key) {
         const challengeString = crypto.randomBytes(16).toString('hex');
@@ -35,22 +33,27 @@ class KeyService {
     getAuthorizationHeader(challenge) {
         return `ReceiverId ${challenge.toString()}`;
     }
-    validateHeader(header, challenge, key) {
-        const response = this.parseResponse(header);
-        return challenge.source === response.source &&
-            challenge.id === response.id &&
-            this.validateSignature(response.signature, response.time, challenge, key);
-    }
     validateSignature(signature, time, challenge, key) {
-        const timestamp = moment.utc(time);
+        let timestamp;
+        let timestamp_bytes;
+        const useHexTimestamp = /[0-9a-z]{8}/.test(time)
+        if (useHexTimestamp) {
+            timestamp_bytes = Buffer.from(time, 'hex');
+            timestamp = moment.unix(timestamp_bytes.readUIntBE(0, 4)).utc();
+        } else {
+            timestamp = moment.utc(time);
+        }
         if (moment().diff(timestamp, 'minutes') > 5) {
             return false;
         }
-        const hash = crypto.createHmac('sha256', Buffer.from(key.secret, 'hex'))
-            .update(Buffer.from(challenge.challenge, 'hex'))
-            .update(time, 'utf8')
-            .digest('hex');
-        return hash === signature;
+        const hmac = crypto.createHmac('sha256', Buffer.from(key.secret, 'hex'))
+            .update(Buffer.from(challenge.challenge, 'hex'));
+        if (useHexTimestamp) {
+            hmac.update(timestamp_bytes);
+        } else {
+            hmac.update(time, 'utf8');
+        }
+        return hmac.digest('hex') === signature;
     }
     generateSecret() {
         return crypto.randomBytes(32).toString('hex');

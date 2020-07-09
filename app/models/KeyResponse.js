@@ -1,9 +1,9 @@
 class KeyResponse {
-    constructor(source, id, signature, time) {
+    constructor(source, id, time, signature) {
         this.source = source;
         this.id = id;
-        this.signature = signature;
         this.time = time;
+        this.signature = signature;
     }
 }
 

@@ -3,14 +3,14 @@ const Maidenhead = require('maidenhead');
 const { JSDOM } = require('jsdom');
 
 class WebSdrAdapter extends ReceiverAdapter {
-    async matches(baseUrl, key) {
+    async matches(baseUrl, claims) {
         const normalized = this.normalizeUrl(baseUrl);
 
-        var calls = [
+        let calls = [
             this.getStatus(normalized)
         ]
-        if (key) {
-            calls.push(this.getAuth(normalized, key));
+        if (claims) {
+            calls = calls.concat(claims.map(c => this.getAuth(normalized, c.key)));
         }
         try {
             const [status, auth] = await Promise.all(calls);
