@@ -83,8 +83,14 @@ class ReceiverAdapter {
     }
     async validateEMail(receiver, email) {
         const userService = new UserService();
-        const user = await userService.getUserDetails(receiver.owner);
-        return user.email_verified && user.email === email;
+        return await Promise.all(receiver.claims.map(async claim => {
+            const user = await userService.getUserDetails(claim.owner);
+            if (user.email_verified && user.email === email) {
+                // TODO: this will overwrite the status set by the key verification.
+                // needs to be a separate field, or combined in a useful manner.
+                claim.status = 'verified';
+            }
+        }));
     }
     getAvatarUrl(receiver, status) {
         return false;
