@@ -10,7 +10,6 @@ class MyRouter extends express.Router {
         const receiverController = new ReceiverController();
         this.get('/receivers', receiverController.index);
         this.get('/receivers/:id', receiverController.editReceiver);
-        this.get('/receivers/:id/delete', receiverController.deleteReceiver);
         this.get('/receivers/:id/regenerate_key', receiverController.regenerateKey);
         this.get('/receivers/:id/removeFromStation', receiverController.removeFromStation);
         this.post('/receivers/:id/assignToStation', receiverController.assignToStation);

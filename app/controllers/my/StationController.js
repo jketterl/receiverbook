@@ -20,8 +20,8 @@ class StationController {
     async editStation(req, res) {
         const [station, receivers, unassignedReceivers] = await Promise.all([
             Station.findOne({owner: req.user, _id: req.params.id}),
-            Receiver.find({owner: req.user, station: req.params.id}),
-            Receiver.find({owner: req.user, station: null})
+            Receiver.find({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, station: req.params.id}),
+            Receiver.find({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, station: null})
         ])
         if (!station) return res.status(404).send('station not found');
         res.render('my/editStation', { station, unassignedReceivers, receivers });
@@ -32,7 +32,7 @@ class StationController {
     }
     async assignReceiver(req, res) {
         const [receiver, station] = await Promise.all([
-            Receiver.findOne({owner: req.user, _id:req.body.receiver_id}),
+            Receiver.findOne({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, _id:req.body.receiver_id}),
             Station.findOne({owner: req.user, _id:req.params.id})
         ]);
 
@@ -41,7 +41,7 @@ class StationController {
         res.redirect(`/my/stations/${station.id}`)
     }
     async removeReceiver(req, res) {
-        const receiver = await Receiver.findOne({owner: req.user, _id:req.params.receiver_id})
+        const receiver = await Receiver.findOne({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, _id:req.params.receiver_id})
         receiver.station = null;
         await receiver.save();
         res.redirect(`/my/stations/${req.params.id}`)

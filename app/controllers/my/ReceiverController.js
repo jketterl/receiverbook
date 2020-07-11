@@ -11,26 +11,24 @@ class ReceiverController {
     }
     async editReceiver(req, res) {
         const [receiver, stations] = await Promise.all([
-            Receiver.findOne({owner: req.user, _id: req.params.id}).populate('station'),
+            Receiver.findOne({claims: {$elemMatch: {owner: req.user}}, _id: req.params.id}).populate('station'),
             Station.find({owner: req.user})
         ]);
         if (!receiver) return res.status(404).send('receiver not found');
         res.render('my/editReceiver', { receiver, stations });
     }
-    async deleteReceiver(req, res) {
-        await Receiver.deleteOne({owner: req.user, _id: req.params.id})
-        res.redirect('/my/receivers');
-    }
     async regenerateKey(req, res) {
         const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id});
         if (!receiver) return res.status(404).send("receiver not found");
+
+        // TODO regenerate claim key
         receiver.regenerateKey();
         await receiver.save();
         res.redirect(`/my/receivers/${receiver.id}`);
     }
     async assignToStation(req, res) {
         const [receiver, station] = await Promise.all([
-            Receiver.findOne({owner: req.user, _id:req.params.id}),
+            Receiver.findOne({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, _id:req.params.id}),
             Station.findOne({owner: req.user, _id:req.body.station_id})
         ]);
 
@@ -39,7 +37,7 @@ class ReceiverController {
         res.redirect(`/my/receivers/${receiver.id}`)
     }
     async removeFromStation(req, res) {
-        const receiver = await Receiver.findOne({owner: req.user, _id:req.params.id})
+        const receiver = await Receiver.findOne({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, _id:req.params.id})
         receiver.station = null;
         await receiver.save();
         res.redirect(`/my/receivers/${receiver.id}`)
