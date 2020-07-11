@@ -6,7 +6,7 @@ const Station = require('../../models/Station');
 
 class ReceiverController {
     async index(req, res) {
-        const receivers = await Receiver.find({owner: req.user});
+        const receivers = await Receiver.find({claims: {$elemMatch: {owner: req.user}}});
         res.render('my/receivers', { receivers });
     }
     async editReceiver(req, res) {

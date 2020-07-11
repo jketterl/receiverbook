@@ -1,4 +1,4 @@
-<h1>My receivers</h1>
+<h1>My claimed receivers</h1>
 <table class="table">
     <% if (receivers.length) { %>
         <tr>
@@ -7,6 +7,7 @@
             <th>Type</th>
             <th>Version</th>
             <th>Status</th>
+            <th>Claim status</th>
         </tr>
         <% receivers.forEach((receiver) => { %>
             <tr>
@@ -15,6 +16,7 @@
                 <td><%= receiver.type %></a>
                 <td><%= receiver.version %></a>
                 <td><%= receiver.status %><% if (receiver.status !== 'online') { %> <i class="mdi mdi-information"></i><% } %></td>
+                <td><%= receiver.claims.find(c => c.owner === session.username).status %></td>
             </tr>
         <% }); %>
     <% } else { %>
