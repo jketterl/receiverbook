@@ -75,6 +75,14 @@ a.btn {
     border-top-width: 1px;
 }
 
+.receiver-list .list-group-item .actions {
+    display: none;
+}
+
+.receiver-list .list-group-item:hover .actions {
+    display: inline;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

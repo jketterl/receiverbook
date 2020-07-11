@@ -33,13 +33,23 @@ class ReceiverController {
 
         receiver.station = station;
         await receiver.save();
-        res.redirect(`/my/receivers/${receiver.id}`)
+        res.redirect(`/my/receivers/${receiver.id}`);
     }
     async removeFromStation(req, res) {
         const receiver = await Receiver.findOne({claims: {$elemMatch: {owner: req.user, status: 'verified'}}, _id:req.params.id})
         receiver.station = null;
         await receiver.save();
-        res.redirect(`/my/receivers/${receiver.id}`)
+        res.redirect(`/my/receivers/${receiver.id}`);
+    }
+    async claimReceiver(req, res) {
+        const receiver = await Receiver.findOne({_id: req.params.id});
+        if (!receiver.claims.some(c => c.owner === req.user)) {
+            receiver.claims.create({
+                owner: req.user
+            });
+            await receiver.save();
+        }
+        res.redirect(`/my/receivers/${receiver.id}`);
     }
 }
 

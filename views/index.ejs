@@ -23,6 +23,11 @@
                     <div><%= receiver.type %> <%= receiver.version %></div>
                 <% } %>
             </div>
+            <div class="actions">
+                <% if (typeof(session) !== 'undefined') { %>
+                    <a class="btn btn-sm btn-secondary" href="/my/receivers/<%= receiver._id %>/claim">Claim...</a>
+                <% } %>
+            </div>
         </li>
     <% }); %>
 </ul>
