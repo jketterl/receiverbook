@@ -1,30 +1,13 @@
+<% const claim = receiver.claims.find(c => c.owner === session.username); %>
 <h1><%= receiver.label ? receiver.label : 'Unnamed receiver' %></h1>
 <div class="mt-5">
-    <% if (receiver.status === 'online') { %>
-        <h3>Receiver Status</h3>
-        <p class="mt-3 alert alert-success">
-            Your receiver is currently online and publicly listed on this site.
+    <% if(claim.status !== 'verified') { %>
+        <h3>Claim status</h3>
+        <p class="mt-3">
+            Your claim for this receiver is still being verified, so your interactions with the receiver are
+            currently limited. To verify your claim, please choose one of the following options:
         </p>
-        <% if (receiver.type === 'openwebrx' && receiver.hasVersion('0.19.1')) { %>
-            <div class="actions mt-2">
-                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
-                    Generate a new receiver key
-                </a>
-            </div>
-        <% } else if (receiver.type === 'websdr') { %>
-            <div class="actions mt-2">
-                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
-                    Generate a new confirmation code
-                </a>
-            </div>
-        <% } %>
-    <% } else { %>
         <% if (receiver.type === 'openwebrx') { %>
-            <h3>OpenWebRX receiver authentication</h3>
-            <p class="mt-3">
-                We need to authenticate you as the operator of this receiver listing. There is currently two
-                methods available:
-            </p>
             <ul>
                 <li>
                     <h4>E-Mail validation</h4>
@@ -43,7 +26,7 @@
                             <span class="inline-code">config_webrx.py</span>:
                         </p>
 <pre class="block mt-2">
-receiver_keys += ["<%=receiver.key %>"]
+receiver_keys += ["<%= claim.key %>"]
 </pre>
                         <p>
                             Please restart OpenWebRX after editing the configuration.
@@ -61,8 +44,8 @@ receiver_keys += ["<%=receiver.key %>"]
                 </li>
             </ul>
             <p>
-                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
-                will be listed automatically once authentication is complete.
+                We will poll your receiver in regular intervals. Please allow a few hours to pass before your claim
+                will become verified.
             </p>
             <% if (receiver.hasVersion('0.19.1')) { %>
                 <div class="alert alert-warning">
@@ -81,11 +64,6 @@ receiver_keys += ["<%=receiver.key %>"]
                 </div>
             <% } %>
         <% } else if (receiver.type === 'websdr') { %>
-            <h3>WebSDR authentication</h3>
-            <p class="mt-3">
-                We need to authenticate you as the operator of this receiver listing. There is currently two
-                methods available:
-            </p>
             <ul>
                 <li>
                     <h4>E-Mail validation</h4>
@@ -101,7 +79,7 @@ receiver_keys += ["<%=receiver.key %>"]
                         Please paste the following code at the top of your <span class="inline-code">pub2/websdr-head.html</span> file:
                     </p>
 <pre class="block">
-&lt;meta name="receiverbook-confirmation" content="<%= receiver.key %>"&gt;
+&lt;meta name="receiverbook-confirmation" content="<%= claim.key %>"&gt;
 </pre>
                     <div class="actions mt-2">
                         <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
@@ -111,31 +89,74 @@ receiver_keys += ["<%=receiver.key %>"]
                 </li>
             </ul>
             <p>
-                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
-                will be listed automatically once authentication is complete.
+                We will poll your receiver in regular intervals. Please allow a few hours to pass before your claim
+                will become verified.
             </p>
         <% } else if (receiver.type === 'kiwisdr') { %>
-            <h3>KiwiSDR authentication</h3>
-            <p class="mt-3">
-                We need to authenticate you as the operator of this receiver listing. For KiwiSDR listings, we can
-                currently only verify your receiver if the receiver admin E-Mail address matches the one you used
-                to sign up here.
-            </p>
+            <ul>
+                <li>
+                    <h4>E-Mail validation</h4>
+                    <p class="mt-3">
+                        If the <span class="inline-code">receiver_admin</span> setting in your receiver
+                        configuration is set to the same address you used to sign up here, your receiver
+                        should be verified automatically within the next hour.
+                    </p>
+                </li>
+            </ul>
             <p>
-                We will poll your receiver in regular intervals. Please allow a few hours to pass, your receiver
-                will be listed automatically once authentication is complete.
+                We will poll your receiver in regular intervals. Please allow a few hours to pass before your claim
+                will become verified.
             </p>
-        <% } else { %>
-            <h3>Receiver authentication</h3>
+        <$ } else { %>
             <p class="mt-3">
-                We currently have no means to authenticate you as the operator of this receiver. Please check back
-                in the future as we update our software.
+                We currently have no means to verify your receiver claim. Please check back in the future as we update
+                our software.
             </p>
+        <% } %>
+    <% } else { %>
+        <h3>Claim Status</h3>
+        <p class="mt-3 alert alert-success">
+            Your receiver claim is valid.
+        </p>
+        <% if (receiver.type === 'openwebrx' && receiver.hasVersion('0.19.1')) { %>
+            <p>
+                If you think your receiver credentials have been compromised, you can generate a new receiver key here.
+                Regenerating will invalidate your receiver claim until your credentials have been re-verified.
+            </p>
+            <div class="actions mt-2">
+                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                    Generate a new receiver key
+                </a>
+            </div>
+        <% } else if (receiver.type === 'websdr') { %>
+            <p>
+                If you think your receiver credentials have been compromised, you can generate a new confirmation code
+                here. Regenerating will invalidate your receiver claim until your credentials have been re-verified.
+            </p>
+            <div class="actions mt-2">
+                <a class="btn btn-primary" href="/my/receivers/<%= receiver.id %>/regenerate_key">
+                    Generate a new confirmation code
+                </a>
+            </div>
         <% } %>
     <% } %>
 </div>
 <hr />
-<% if (stations.length) { %>
+<div>
+    <h3>Receiver Status</h3>
+    <% if (receiver.status === 'online') { %>
+        <p class="mt-3 alert alert-success">
+            This receiver is currently online and publicly listed on this site.
+        </p>
+    <% } else { %>
+        <p class="mt-3 alert alert-warning">
+            This receiver has been unreachable during our last scheduled status update. Please check if your receiver
+            is running and available to the public to make it available on this site.
+        </p>
+    <% } %>
+</div>
+<% if (claim.status === 'verified' && stations.length) { %>
+    <hr />
     <div>
         <h3>Station membership</h3>
         <div class="mt-3 container">
