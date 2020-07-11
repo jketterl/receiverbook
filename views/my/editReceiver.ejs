@@ -140,6 +140,13 @@ receiver_keys += ["<%= claim.key %>"]
             </div>
         <% } %>
     <% } %>
+    <div class="alert alert-danger mt-3">
+        If you do no longer claim to be the operator of this receiver, you can surrender your claim with the button
+        below. Please note that removing your claim will not remove this receiver from our site.
+        <div class="actions mt-2">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#deleteModal">Delete receiver claim</button>
+        </div>
+    </div>
 </div>
 <hr />
 <div>
@@ -186,5 +193,24 @@ receiver_keys += ["<%= claim.key %>"]
     </div>
     <hr />
 <% } %>
+<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Please confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Please confirm that you would really like to delete your receiver claim:</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a type="button" class="btn btn-danger" href="/my/receivers/<%= receiver.id %>/unclaim">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 <%- contentFor('title') %>
 edit <%= receiver.label ? receiver.label : 'Unnamed receiver' %>
