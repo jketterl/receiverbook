@@ -18,11 +18,10 @@ class ReceiverController {
         res.render('my/editReceiver', { receiver, stations });
     }
     async regenerateKey(req, res) {
-        const receiver = await Receiver.findOne({owner: req.user, _id: req.params.id});
+        const receiver = await Receiver.findOne({claims: {$elemMatch: {owner: req.user}}, _id: req.params.id});
         if (!receiver) return res.status(404).send("receiver not found");
 
-        // TODO regenerate claim key
-        receiver.regenerateKey();
+        receiver.claims.find(c => c.owner === req.user).regenerateKey();
         await receiver.save();
         res.redirect(`/my/receivers/${receiver.id}`);
     }

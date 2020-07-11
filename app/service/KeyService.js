@@ -18,7 +18,7 @@ class KeyService {
         return new Key(matches[1], matches[2], matches[3]);
     }
     parseResponse(responseHeader) {
-        return responseHeader.split(',').map(snippet => {
+        return responseHeader.split(',').filter(s => s.length > 0).map(snippet => {
             const responseMatches = /^([a-zA-Z]+)-([0-9a-f]{32})-([0-9a-f]{8})-([0-9a-f]{64})$/.exec(snippet);
             if (!responseMatches) {
                 throw new KeyError("Invalid key response format");

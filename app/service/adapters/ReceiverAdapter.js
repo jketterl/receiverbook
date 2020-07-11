@@ -68,7 +68,7 @@ class ReceiverAdapter {
         if (status.email) {
             status.validated = status.validated || {};
             await Promise.all(receiver.claims.map(async claim => {
-                status.validated[claim.id] = status.validated[claim.id] || await this.validateEmail(claim, status.email);
+                status.validated[claim.id] = status.validated[claim.id] || await this.validateEMail(claim, status.email);
             }));
         }
         return status;
