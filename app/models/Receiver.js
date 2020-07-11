@@ -67,10 +67,6 @@ const receiverSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    owner: {
-        type: String,
-        sparse: true
-    },
     claims: {
         type: [ClaimSchema],
         default: []
@@ -90,9 +86,6 @@ const receiverSchema = new mongoose.Schema({
         default: 'offline',
         index: true,
     },
-    key: {
-        type: String
-    },
     bands: [BandSchema],
     avatar_ctime: Date,
     avatar_hash: String,
@@ -100,26 +93,6 @@ const receiverSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Station',
         sparse: true
-    }
-});
-
-receiverSchema.post('init', function(receiver) {
-    if (receiver.owner && receiver.key) {
-        console.info(`implicit receiver schema migration on "${receiver.label}"`);
-        receiver.claims = receiver.claims || [];
-        receiver.claims.push({
-            owner: receiver.owner,
-            key: receiver.key
-        });
-        receiver.owner = undefined;
-        receiver.key = undefined;
-    } else if (receiver.owner) {
-        console.info(`implicit receiver schema migration (owner only) on "${receiver.label}"`);
-        receiver.claims = receiver.claims || [];
-        receiver.claims.push({
-            owner: receiver.owner,
-        });
-        receiver.owner = undefined;
     }
 });
 
