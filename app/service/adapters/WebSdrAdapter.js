@@ -10,7 +10,7 @@ class WebSdrAdapter extends ReceiverAdapter {
             this.getStatus(normalized)
         ]
         if (claims) {
-            calls = calls.concat(this.getAuth(normalized, claims));
+            calls.push(this.getAuth(normalized, claims));
         }
         try {
             const [status, auth] = await Promise.all(calls);
