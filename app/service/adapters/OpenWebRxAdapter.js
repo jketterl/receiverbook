@@ -30,19 +30,23 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             let validated;
             // new responses in OpenWebRX develop
             if (challenges && 'authorization' in sh) {
-                const responses = keyService.parseResponse(sh['authorization']);
-                validated = Object.fromEntries(challenges.map(challenge => {
-                    const response = responses.find(r => r.source === challenge.key.source && r.id === challenge.key.id);
-                    return [
-                        challenge.claim.id,
-                        response && keyService.validateSignature(
-                            response.signature,
-                            response.time,
-                            challenge.challenge,
-                            challenge.key
-                        )
-                    ];
-                }))
+                try {
+                    const responses = keyService.parseResponse(sh['authorization']);
+                    validated = Object.fromEntries(challenges.map(challenge => {
+                        const response = responses.find(r => r.source === challenge.key.source && r.id === challenge.key.id);
+                        return [
+                            challenge.claim.id,
+                            response && keyService.validateSignature(
+                                response.signature,
+                                response.time,
+                                challenge.challenge,
+                                challenge.key
+                            )
+                        ];
+                    }))
+                } catch (err) {
+                    console.error('Error checking OpenWebRX claim responses: ', err.stack || err.message);
+                }
             }
             // code for parsing response headers in OpenWebRX 0.19.1
             else if (challenges && 'signature' in sh && 'time' in sh) {
