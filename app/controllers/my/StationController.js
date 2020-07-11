@@ -27,6 +27,11 @@ class StationController {
         res.render('my/editStation', { station, unassignedReceivers, receivers });
     }
     async deleteStation(req, res) {
+        const receivers = await Receiver.find({station: req.params.id});
+        await Promise.all(receivers.map(r => {
+            r.station = undefined;
+            r.save();
+        }));
         await Station.deleteOne({owner: req.user, _id: req.params.id})
         res.redirect('/my/stations');
     }
