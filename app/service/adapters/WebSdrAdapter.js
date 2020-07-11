@@ -6,7 +6,7 @@ class WebSdrAdapter extends ReceiverAdapter {
     async matches(baseUrl, claims) {
         const normalized = this.normalizeUrl(baseUrl);
 
-        let calls = [
+        const calls = [
             this.getStatus(normalized)
         ]
         if (claims) {
