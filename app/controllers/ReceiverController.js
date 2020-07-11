@@ -6,11 +6,12 @@ class ReceiverController {
         res.render('newReceiver', { claim: !!req.query.claim });
     }
     async processNewReceiver(req, res) {
+        const claim = req.body.claim && req.user;
         let receiverUrl;
         try {
             receiverUrl = new URL(req.body.url);
         } catch (e) {
-            return res.render('newReceiver', {errors: ["Receiver URL could not be parsed."]})
+            return res.render('newReceiver', {errors: ["Receiver URL could not be parsed."], claim})
         }
         // sanitize
         receiverUrl.hash = '';
@@ -31,16 +32,25 @@ class ReceiverController {
         // OpenWebRX classic wants us to upgrade our browser. Little hack to omit that part...
         resolvedUrl.pathname = resolvedUrl.pathname.replace(/upgrade.html$/, '');
 
-        const existing = await Receiver.find({ url: resolvedUrl.toString() })
-        if (existing.length) {
-            return res.render('newReceiver', {errors: ["Receiver URL already exists in database."]})
+        const existing = await Receiver.findOne({ url: resolvedUrl.toString() })
+        if (existing) {
+            if (claim) {
+                return res.redirect(`/my/receivers/${existing.id}/claim`);
+            }
+            let error = "Receiver URL already exists in database. ";
+            if (req.user) {
+                error += "Would you like to claim that receiver?"
+            } else {
+                error += "Please register or log in to be able to claim that receiver."
+            }
+            return res.render('newReceiver', {errors: [error], claim})
         }
 
         const receiverService = new ReceiverService();
         const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
 
         if (!detectionResult) {
-            return res.render('newReceiver', {errors: ["Unable to detect the receiver type"]})
+            return res.render('newReceiver', {errors: ["Unable to detect the receiver type"], claim})
         }
 
         const receiver = new Receiver({
@@ -50,7 +60,7 @@ class ReceiverController {
 
         receiverService.applyCrawlingResult(receiver, detectionResult);
 
-        if (req.body.claim && req.user) {
+        if (claim) {
             receiver.claims = [{
                 owner: req.user
             }];
@@ -58,7 +68,7 @@ class ReceiverController {
 
         await receiver.save()
 
-        if (req.body.claim && req.user) {
+        if (claim) {
             res.redirect(`/my/receivers/${receiver.id}`);
         } else {
             res.redirect(`/receivers/addedsuccessfully`);

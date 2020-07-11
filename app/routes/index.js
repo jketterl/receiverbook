@@ -6,7 +6,7 @@ const ReceiverController = require('../controllers/ReceiverController');
 const MyRouter = require('./MyRouter');
 const compression = require('compression');
 const ImageRouter = require('./ImageRouter');
-const authenticatedUser = require('../middleware/authenticated').authenticatedUser
+const authenticationAware = require('../middleware/authenticated').authenticationAware
 
 class AppRouter extends express.Router {
     constructor() {
@@ -23,7 +23,7 @@ class AppRouter extends express.Router {
 
         const receiverController = new ReceiverController();
         this.get('/receivers/new', receiverController.newReceiver);
-        this.post('/receivers/new', authenticatedUser, receiverController.processNewReceiver);
+        this.post('/receivers/new', authenticationAware, receiverController.processNewReceiver);
         this.get('/receivers/addedsuccessfully', receiverController.addedSuccessfully);
 
         this.use('/session', new SessionRouter());
