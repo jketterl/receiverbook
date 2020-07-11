@@ -11,7 +11,7 @@ class ReceiverController {
         try {
             receiverUrl = new URL(req.body.url);
         } catch (e) {
-            return res.render('newReceiver', {errors: ["Receiver URL could not be parsed."], claim})
+            return res.render('newReceiver', {errors: ["Receiver URL could not be parsed."], claim, url: req.body.url})
         }
         // sanitize
         receiverUrl.hash = '';
@@ -43,14 +43,14 @@ class ReceiverController {
             } else {
                 error += "Please register or log in to be able to claim that receiver."
             }
-            return res.render('newReceiver', {errors: [error], claim})
+            return res.render('newReceiver', {errors: [error], claim, url: receiverUrl})
         }
 
         const receiverService = new ReceiverService();
         const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
 
         if (!detectionResult) {
-            return res.render('newReceiver', {errors: ["Unable to detect the receiver type"], claim})
+            return res.render('newReceiver', {errors: ["Unable to detect the receiver type"], claim, url: receiverUrl})
         }
 
         const receiver = new Receiver({

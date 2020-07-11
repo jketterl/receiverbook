@@ -9,7 +9,7 @@
 <form class="mt-5" method="POST">
     <div class="form-group row">
         <label for="url" class="col-3 col-form-label">URL</label>
-        <input type="url" class="col-9 form-control" name="url" id="url">
+        <input type="url" class="col-9 form-control" name="url" id="url" <% if (typeof(url) !== 'undefined') { %>value="<%= url %>"<% } %>}>
     </div>
     <% if (typeof(session) !== 'undefined') { %>
         <div class="form-group row">
