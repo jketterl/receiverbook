@@ -26,37 +26,26 @@ class ReceiverAdapter {
     async updateReceiver(receiver) {
         console.info(`updating "${receiver.label}"`);
         const status = await this.getReceiverData(receiver);
-        if (receiver.status === 'pending' || receiver.status === 'new') {
-            if (status && status.validated) {
-                // switch receiver online if validated
-                console.info(`"${receiver.label}" has passed verification, setting online`)
-                receiver.status = 'online'
-            } else {
-                receiver.status = 'pending';
-            }
-        } else {
-            if (status) {
-                if (status.validated) {
-                    receiver.status = 'online';
-                } else {
-                    // switch back to pending if validation failed
-                    console.info(`"${receiver.label}" has failed verifiation, setting pending`)
-                    receiver.status = 'pending';
-                }
-            } else {
-                receiver.status = 'offline';
-            }
-        }
         if (status) {
-            this.applyCrawlingResult(receiver, status);
-        }
+            receiver.status = "online";
 
-        if (receiver.status == 'online') {
+            receiver.claims.forEach(claim => {
+                if (status.validated && status.validated[claim.id]) {
+                    claim.status = "verified";
+                } else {
+                    claim.status = "pending";
+                }
+            });
+
+            this.applyCrawlingResult(receiver, status);
+
             const result = await this.downloadAvatar(receiver, status);
             if (result) {
                 receiver.avatar_ctime = result.ctime;
                 receiver.avatar_hash = result.hash;
             }
+        } else {
+            receiver.status = "offline";
         }
 
         await receiver.save();
@@ -77,20 +66,17 @@ class ReceiverAdapter {
     async getReceiverData(receiver) {
         const status = await this.matches(receiver.url, receiver.claims);
         if (status.email) {
-            status.validated = status.validated || await this.validateEMail(receiver, status.email);
+            status.validated = status.validated || {};
+            await Promise.all(receiver.claims.map(async claim => {
+                status.validated[claim.id] = status.validated[claim.id] || await this.validateEmail(claim, status.email);
+            }));
         }
         return status;
     }
-    async validateEMail(receiver, email) {
+    async validateEMail(claim, email) {
         const userService = new UserService();
-        return await Promise.all(receiver.claims.map(async claim => {
-            const user = await userService.getUserDetails(claim.owner);
-            if (user.email_verified && user.email === email) {
-                // TODO: this will overwrite the status set by the key verification.
-                // needs to be a separate field, or combined in a useful manner.
-                claim.status = 'verified';
-            }
-        }));
+        const user = await userService.getUserDetails(claim.owner);
+        return user.email_verified && user.email === email;
     }
     getAvatarUrl(receiver, status) {
         return false;

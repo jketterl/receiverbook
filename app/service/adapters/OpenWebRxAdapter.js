@@ -25,35 +25,33 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         try {
             const statusUrl = new URL(normalized);
             statusUrl.pathname += 'status.json';
-            const statusResponse = await this.getUrl(statusUrl.toString(), { headers })
-            const sh = statusResponse.headers
-            let validated = false
+            const statusResponse = await this.getUrl(statusUrl.toString(), { headers });
+            const sh = statusResponse.headers;
+            let validated;
             // new responses in OpenWebRX develop
             if (challenges && 'authorization' in sh) {
                 const responses = keyService.parseResponse(sh['authorization']);
-                challenges.forEach(challenge => {
+                validated = Object.fromEntries(challenges.map(challenge => {
                     const response = responses.find(r => r.source === challenge.key.source && r.id === challenge.key.id);
-                    if (response && keyService.validateSignature(
-                        response.signature,
-                        response.time,
-                        challenge.challenge,
-                        challenge.key
-                    )) {
-                        challenge.claim.status = 'verified';
-                    } else {
-                        challenge.claim.status = 'pending';
-                    }
-                });
+                    return [
+                        challenge.claim.id,
+                        response && keyService.validateSignature(
+                            response.signature,
+                            response.time,
+                            challenge.challenge,
+                            challenge.key
+                        )
+                    ];
+                }))
             }
             // code for parsing response headers in OpenWebRX 0.19.1
-            if ('signature' in sh && 'time' in sh) {
-                challenges.forEach(challenge => {
-                    if (keyService.validateSignature(sh.signature, sh.time, challenge.challenge, challenge.key)) {
-                        challenge.claim.status = 'verified';
-                    } else {
-                        challenge.claim.status = 'pending';
-                    }
-                });
+            else if (challenges && 'signature' in sh && 'time' in sh) {
+                validated = Object.fromEntries(challenges.map(challenge => {
+                    return [
+                        challenge.claim.id,
+                        keyService.validateSignature(sh.signature, sh.time, challenge.challenge, challenge.key)
+                    ]
+                }));
             }
             const data = statusResponse.data;
             const version = this.parseVersion(data.version);
@@ -65,7 +63,8 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                     version,
                     // longitude first !!
                     location: [data.receiver.gps.lon, data.receiver.gps.lat],
-                    bands
+                    bands,
+                    validated
                 }
             }
         } catch (err) {

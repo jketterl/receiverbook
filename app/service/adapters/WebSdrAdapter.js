@@ -10,7 +10,7 @@ class WebSdrAdapter extends ReceiverAdapter {
             this.getStatus(normalized)
         ]
         if (claims) {
-            calls = calls.concat(claims.map(c => this.getAuth(normalized, c.key)));
+            calls = calls.concat(this.getAuth(normalized, claims));
         }
         try {
             const [status, auth] = await Promise.all(calls);
@@ -42,15 +42,16 @@ class WebSdrAdapter extends ReceiverAdapter {
             bands: parsed['Bands']
         }
     }
-    async getAuth(normalized, key) {
+    async getAuth(normalized, claims) {
         const response = await this.getUrl(normalized.toString());
         const dom = new JSDOM(response.data);
         const tags = dom.window.document.querySelectorAll('meta[name=receiverbook-confirmation]');
-        if (tags) {
-            const results = Array.prototype.map.call(tags, tag => tag.content === key);
-            return results.reduce((acc, v) => acc || v, false);
-        }
-        return false;
+        return Object.fromEntries(claims.map(claim => {
+            return [
+                claim.id,
+                tags && Array.prototype.some.call(tags, tag => tag.content === claim.key)
+            ];
+        }));
     }
     parseResponse(response) {
         const parsed = response.split('\n').map((line) => {

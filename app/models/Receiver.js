@@ -71,7 +71,10 @@ const receiverSchema = new mongoose.Schema({
         type: String,
         sparse: true
     },
-    claims: [ClaimSchema],
+    claims: {
+        type: [ClaimSchema],
+        default: []
+    },
     location: {
         type:{
             type: String,
@@ -100,13 +103,13 @@ const receiverSchema = new mongoose.Schema({
     }
 });
 
-receiverSchema.pre('init', function(receiver) {
+receiverSchema.post('init', function(receiver) {
     if (receiver.owner && receiver.key) {
         console.info(`implicit receiver schema migration on "${receiver.label}"`);
         receiver.claims = receiver.claims || [];
         receiver.claims.push({
-            owner: this.owner,
-            key: this.key
+            owner: receiver.owner,
+            key: receiver.key
         });
         receiver.owner = undefined;
         receiver.key = undefined;
