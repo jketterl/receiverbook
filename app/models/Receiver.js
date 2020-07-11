@@ -113,6 +113,13 @@ receiverSchema.post('init', function(receiver) {
         });
         receiver.owner = undefined;
         receiver.key = undefined;
+    } else if (receiver.owner) {
+        console.info(`implicit receiver schema migration (owner only) on "${receiver.label}"`);
+        receiver.claims = receiver.claims || [];
+        receiver.claims.push({
+            owner: receiver.owner,
+        });
+        receiver.owner = undefined;
     }
 });
 
