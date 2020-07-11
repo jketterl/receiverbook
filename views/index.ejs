@@ -15,6 +15,11 @@
                             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                 <div><a href="<%= r.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.label %></a></div>
                                 <div><%= r.type %> <%= r.version %></div>
+                                <div class="actions">
+                                    <% if (typeof(session) !== 'undefined') { %>
+                                        <a class="btn btn-sm btn-secondary" href="/my/receivers/<%= r._id %>/claim">Claim...</a>
+                                    <% } %>
+                                </div>
                             </div>
                         <% }) %>
                     </div>
@@ -24,7 +29,7 @@
                 <% } %>
             </div>
             <div class="actions">
-                <% if (typeof(session) !== 'undefined') { %>
+                <% if (!receiver.receivers && typeof(session) !== 'undefined') { %>
                     <a class="btn btn-sm btn-secondary" href="/my/receivers/<%= receiver._id %>/claim">Claim...</a>
                 <% } %>
             </div>

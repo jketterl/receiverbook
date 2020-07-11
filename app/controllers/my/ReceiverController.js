@@ -44,7 +44,7 @@ class ReceiverController {
     async claimReceiver(req, res) {
         const receiver = await Receiver.findOne({_id: req.params.id});
         if (!receiver.claims.some(c => c.owner === req.user)) {
-            receiver.claims.create({
+            receiver.claims.push({
                 owner: req.user
             });
             await receiver.save();
