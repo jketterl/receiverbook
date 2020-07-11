@@ -57,7 +57,15 @@ class ReceiverController {
         };
 
         await receiver.save()
-        res.redirect(`/my/receivers/${receiver.id}`);
+
+        if (req.body.claim && req.user) {
+            res.redirect(`/my/receivers/${receiver.id}`);
+        } else {
+            res.redirect(`/receivers/addedsuccessfully`);
+        }
+    }
+    addedSuccessfully(req, res) {
+        res.render('addedSuccessfully');
     }
 }
 

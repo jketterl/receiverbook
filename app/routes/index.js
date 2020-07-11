@@ -24,6 +24,7 @@ class AppRouter extends express.Router {
         const receiverController = new ReceiverController();
         this.get('/receivers/new', receiverController.newReceiver);
         this.post('/receivers/new', authenticatedUser, receiverController.processNewReceiver);
+        this.get('/receivers/addedsuccessfully', receiverController.addedSuccessfully);
 
         this.use('/session', new SessionRouter());
         this.use('/my', new MyRouter());
