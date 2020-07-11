@@ -14,7 +14,7 @@
     <% if (typeof(session) !== 'undefined') { %>
         <div class="form-group row">
             <div class="col-9 offset-3 form-check">
-                <input class="form-check-input" type="checkbox" id="claim" name="claim">
+                <input class="form-check-input" type="checkbox" id="claim" name="claim" <% if (claim) { %>checked="checked"<% } %>>
                 <label class="form-check-label" for="claim">
                     I am the receiver operator and would like to claim this receiver
                 </label>

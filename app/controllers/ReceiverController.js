@@ -3,7 +3,7 @@ const ReceiverService = require('../service/ReceiverService');
 
 class ReceiverController {
     newReceiver(req, res) {
-        res.render('newReceiver');
+        res.render('newReceiver', { claim: !!req.query.claim });
     }
     async processNewReceiver(req, res) {
         let receiverUrl;
