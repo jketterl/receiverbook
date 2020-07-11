@@ -10,7 +10,7 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         const keyService = new KeyService();
 
         let challenges;
-        if (claims) {
+        if (claims && claims.length) {
             challenges = claims.map(claim => {
                 const key = keyService.parse(claim.key);
                 return {
