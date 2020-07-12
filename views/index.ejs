@@ -8,29 +8,35 @@
                 <% } %>
             </div>
             <div class="receiver-details">
-                <h5><%= receiver.label %></h5>
+                <div class="receiver-details-headline">
+                    <h5><%= receiver.label %></h5>
+                    <% if (typeof(session) !== 'undefined') { %>
+                        <div class="dropdown">
+                            <button class="menu-button btn btn-xs btn-secondary ml-2 dropdown-toggle" type="button" data-toggle="dropdown" id="receiver-<%= receiver._id %>-dropdown-button" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu" aria-labelledby="#receiver-<%= receiver._id %>-dropdown-button">
+                                <% if (receiver.receivers) { %>
+                                    <% receiver.receivers.forEach(r => { %>
+                                        <a class="dropdown-item" href="/my/receivers/<%= r._id %>/claim">Claim "<%= r.label %>"...</a>
+                                    <% }) %>
+                                <% } else { %>
+                                    <a class="dropdown-item" href="/my/receivers/<%= receiver._id %>/claim">Claim "<%= receiver.label %>"...</a>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
                 <% if (receiver.receivers) { %>
                     <div class="row">
                         <% receiver.receivers.forEach(r => { %>
                             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                 <div><a href="<%= r.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.label %></a></div>
                                 <div><%= r.type %> <%= r.version %></div>
-                                <div class="actions">
-                                    <% if (typeof(session) !== 'undefined') { %>
-                                        <a class="btn btn-sm btn-secondary" href="/my/receivers/<%= r._id %>/claim">Claim...</a>
-                                    <% } %>
-                                </div>
                             </div>
                         <% }) %>
                     </div>
                 <% } else { %>
                     <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a></div>
                     <div><%= receiver.type %> <%= receiver.version %></div>
-                <% } %>
-            </div>
-            <div class="actions">
-                <% if (!receiver.receivers && typeof(session) !== 'undefined') { %>
-                    <a class="btn btn-sm btn-secondary" href="/my/receivers/<%= receiver._id %>/claim">Claim...</a>
                 <% } %>
             </div>
         </li>

@@ -76,6 +76,7 @@ class ReceiverService {
             location = locationReceiver.location
         }
         const receiverEntry = {
+            _id: station.id,
             label: station.label,
             receivers: receivers.map(r => this.transformReceiverForView(r)),
             avatarUrl,

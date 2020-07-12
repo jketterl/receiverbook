@@ -75,12 +75,29 @@ a.btn {
     border-top-width: 1px;
 }
 
-.receiver-list .list-group-item .actions {
+.btn-xs {
+    padding: 0 0.25rem;
+}
+
+.menu-button {
+    vertical-align: text-bottom;
+}
+
+.receiver-list .list-group-item .menu-button {
     display: none;
 }
 
-.receiver-list .list-group-item:hover .actions {
+.receiver-list .list-group-item:hover .menu-button {
     display: inline;
+}
+
+.receiver-details-headline {
+    display: flex;
+    flex-direction: row;
+}
+
+.receiver-details-headline * {
+    flex: 0 0 auto;
 }
 
 /* Sticky footer styles
