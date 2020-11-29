@@ -27,6 +27,9 @@ class WebSdrAdapter extends ReceiverAdapter {
         statusUrl.pathname += '~~orgstatus';
         const statusResponse = await this.getUrl(statusUrl.toString())
         const parsed = this.parseResponse(statusResponse.data);
+        if (typeof(parsed['Description']) == 'undefined') {
+            throw new Error('invalid response: Description missing');
+        }
         let location;
         if ('Qth' in parsed) {
             location = this.parseLocator(parsed['Qth'])

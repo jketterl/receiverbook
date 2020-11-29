@@ -58,6 +58,12 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
                 }));
             }
             const data = statusResponse.data;
+            if (typeof(data.sdrs) == 'undefined') {
+                throw new Error('invalid response: sdrs missing');
+            }
+            if (typeof(data.receiver) == 'undefined' || typeof(data.receiver.name) == 'undefined') {
+                throw new Error('invalid response: receiver data missing');
+            }
             const version = this.parseVersion(data.version);
             const bands = data.sdrs.flatMap(sdr => sdr.profiles).map(sdr => Object.assign(sdr, {'type': 'centered'}));
             if (version) {
