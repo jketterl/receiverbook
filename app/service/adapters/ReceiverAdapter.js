@@ -10,8 +10,15 @@ class ReceiverAdapter {
         const timeout = 10000;
         const source = axios.CancelToken.source();
         options.cancelToken = source.token;
-        setTimeout(() => source.cancel("Connection Timeout"), timeout);
-        return await axios.create({ timeout }).get(url, options);
+        return await Promise.race([
+            axios.create({ timeout }).get(url, options),
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    source.cancel('Connection Timeout');
+                    reject({message: 'Connection Timeout'});
+                }, timeout);
+            })
+        ]);
     }
     normalizeUrl(url) {
         const normalized = new URL(url);
