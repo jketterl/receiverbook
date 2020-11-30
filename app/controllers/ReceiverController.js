@@ -1,5 +1,6 @@
 const Receiver = require('../models/Receiver');
 const ReceiverService = require('../service/ReceiverService');
+const axios = require('axios');
 
 class ReceiverController {
     newReceiver(req, res) {
