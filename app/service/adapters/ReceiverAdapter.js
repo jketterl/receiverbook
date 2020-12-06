@@ -10,10 +10,13 @@ class ReceiverAdapter {
         const timeout = 10000;
         const source = axios.CancelToken.source();
         options.cancelToken = source.token;
+        let timer;
         return await Promise.race([
-            axios.create({ timeout }).get(url, options),
+            axios.create({ timeout }).get(url, options).finally(() => {
+                clearTimeout(timer);
+            }),
             new Promise((resolve, reject) => {
-                setTimeout(() => {
+                timer = setTimeout(() => {
                     console.info("manual timeout triggered");
                     source.cancel('Connection Timeout');
                     reject({message: 'Connection Timeout'});
