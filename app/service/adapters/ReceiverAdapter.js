@@ -13,8 +13,8 @@ class ReceiverAdapter {
         return await Promise.race([
             axios.create({ timeout }).get(url, options),
             new Promise((resolve, reject) => {
-                console.info("manual timeout triggered");
                 setTimeout(() => {
+                    console.info("manual timeout triggered");
                     source.cancel('Connection Timeout');
                     reject({message: 'Connection Timeout'});
                 }, timeout);
@@ -56,6 +56,7 @@ class ReceiverAdapter {
             receiver.status = "offline";
         }
 
+        console.info(`saving "${receiver.label}"`);
         await receiver.save();
     }
     applyCrawlingResult(receiver, data) {
