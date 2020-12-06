@@ -13,6 +13,7 @@ class ReceiverAdapter {
         return await Promise.race([
             axios.create({ timeout }).get(url, options),
             new Promise((resolve, reject) => {
+                console.info("manual timeout triggered");
                 setTimeout(() => {
                     source.cancel('Connection Timeout');
                     reject({message: 'Connection Timeout'});
