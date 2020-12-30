@@ -39,6 +39,8 @@ class ReceiverAdapter {
         try {
             const status = await this.getReceiverData(receiver);
             receiver.status = "online";
+            receiver.statusReason = undefined;
+            receiver.lastSeen = new Date();
 
             receiver.claims.forEach(claim => {
                 if (status.validated && status.validated[claim.id]) {
@@ -56,8 +58,10 @@ class ReceiverAdapter {
                 receiver.avatar_hash = result.hash;
             }
         } catch (err) {
-            console.error(`error updating "${receiver.label}": ${err.message || "unknown error"}`);
+            const message = err.message || "unknown error";
+            console.error(`error updating "${receiver.label}": ${message}`);
             receiver.status = "offline";
+            receiver.statusReason = message;
         }
 
         console.info(`saving "${receiver.label}"`);

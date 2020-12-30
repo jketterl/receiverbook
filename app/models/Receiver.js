@@ -86,6 +86,8 @@ const receiverSchema = new mongoose.Schema({
         default: 'offline',
         index: true,
     },
+    statusReason: String,
+    lastSeen: Date,
     bands: [BandSchema],
     avatar_ctime: Date,
     avatar_hash: String,
