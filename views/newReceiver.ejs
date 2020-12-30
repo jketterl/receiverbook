@@ -1,10 +1,11 @@
-<% if (typeof(errors) !== 'undefined') {
-    errors.forEach((error) => { %>
-        <div class="alert alert-danger">
-            <%= error %>
-        </div>
-    <% });
-} %>
+<% if (typeof(errors) !== 'undefined') { %>
+    <div class="alert alert-danger">
+        <div>The following error(s) occured while querying the receiver:</div>
+        <% errors.forEach((error) => { %>
+            <div><%= error %></div>
+        <% }); %>
+    </div>
+<% } %>
 <h1>Add a new receiver</h1>
 <form class="mt-5" method="POST">
     <div class="form-group row">

@@ -12,15 +12,9 @@ class WebSdrAdapter extends ReceiverAdapter {
         if (claims) {
             calls.push(this.getAuth(normalized, claims));
         }
-        try {
-            const [status, auth] = await Promise.all(calls);
-            status.validated = auth;
-            return status
-        } catch (err) {
-            console.error('Error detecting Websdr receiver: ', err.stack || err.message);
-        }
-
-        return false;
+        const [status, auth] = await Promise.all(calls);
+        status.validated = auth;
+        return status
     }
     async getStatus(normalized) {
         const statusUrl = new URL(normalized);
@@ -31,17 +25,19 @@ class WebSdrAdapter extends ReceiverAdapter {
             throw new Error('invalid response: Description missing');
         }
         let location;
+        if (
+            typeof(parsed['Description']) == 'undefined' ||
+            typeof(parsed['Email']) == 'undefined'
+        ) {
+            throw new Error('invalid response: receiver data missing');
+        }
         if ('Qth' in parsed) {
             location = this.parseLocator(parsed['Qth'])
-        }
-        let email;
-        if ('Email' in parsed) {
-            email = this.parseEmail(parsed['Email'])
         }
         return {
             name: parsed['Description'],
             location,
-            email,
+            email: this.parseEmail(parsed['Email']),
             bands: parsed['Bands']
         }
     }

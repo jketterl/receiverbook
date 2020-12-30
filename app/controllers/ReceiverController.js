@@ -48,18 +48,23 @@ class ReceiverController {
         }
 
         const receiverService = new ReceiverService();
-        const detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
+        let detectionResult;
+        try {
+            detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
+        } catch (error) {
+            return res.render('newReceiver', {errors: [error.message || 'unknown error'], claim, url: receiverUrl})
+        }
 
-        if (!detectionResult) {
-            return res.render('newReceiver', {errors: ["Unable to detect the receiver type"], claim, url: receiverUrl})
+        if (detectionResult.status != 'fulfilled') {
+            return res.render('newReceiver', {errors: detectionResult.errors, claim, url: receiverUrl})
         }
 
         const receiver = new Receiver({
-            type: detectionResult.type,
+            type: detectionResult.value.type,
             url: resolvedUrl.toString()
         });
 
-        receiverService.applyCrawlingResult(receiver, detectionResult);
+        receiverService.applyCrawlingResult(receiver, detectionResult.value);
 
         if (claim) {
             receiver.claims = [{

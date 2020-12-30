@@ -99,14 +99,45 @@ class ReceiverService {
         const resultArray = await Promise.all(
             Object.entries(this.adapters).map(async ([type, detectorCls]) => {
                 const detector = new detectorCls();
-                return [type, await detector.matches(url)];
+                try {
+                    const result = await detector.matches(url);
+                    return [
+                        type,
+                        {
+                            status: 'fulfilled',
+                            value: result
+                        }
+                    ];
+                } catch (err) {
+                    return [
+                        type,
+                        {
+                            status: 'rejected',
+                            reason: err
+                        }
+                    ]
+                }
             })
         );
-        const matches = resultArray.filter(e => e[1])
-        if (!matches.length) return false;
-        const firstResult = matches[0][1]
-        firstResult.type = matches[0][0]
-        return firstResult
+
+        const matches = resultArray.filter(e => e.status == 'fulfilled');
+        if (matches.length) {
+            const firstResult = matches[0].value[1]
+            firstResult.type = matches[0].value[0]
+            return {
+                status: 'fulfilled',
+                value: firstResult
+            }
+        }
+
+        return {
+            status: 'rejected',
+            errors: resultArray.map(e => {
+                const type = e[0];
+                const error = e[1].reason;
+                return `${type} receiver type: ${error.message || "unknown error"}`
+            })
+        }
     }
     getAdapter(receiver) {
         const adatperCls = this.adapters[receiver.type];

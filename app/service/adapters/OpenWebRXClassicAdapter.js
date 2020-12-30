@@ -4,7 +4,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
     parseResponse(response) {
         return Object.fromEntries(response.split('\n').map((line) => {
             const items = line.split('=');
-            return [items[0], items.slice(1).join(': ')];
+            return [items[0], items.slice(1).join('=')];
         }));
     }
     parseCoordinates(gpsString) {
@@ -16,29 +16,35 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
     async matches(baseUrl) {
         const normalized = this.normalizeUrl(baseUrl);
 
-        try {
-            const statusUrl = new URL(normalized);
-            statusUrl.pathname += 'status';
-            const statusResponse = await this.getUrl(statusUrl.toString())
-            const parsed = this.parseResponse(statusResponse.data);
-            const version = this.parseVersion(parsed.sw_version);
-            const location = this.parseCoordinates(parsed.gps);
-            const bands = this.parseBands(parsed.bands);
-            if (version) {
-                return {
-                    name: parsed.name,
-                    email: parsed.op_email,
-                    version,
-                    location,
-                    bands,
-                    avatar_ctime: parsed.avatar_ctime
-                }
-            }
-        } catch (err) {
-            console.error(`Error detecting ${this.getType()} receiver: `, err.stack || err.message);
+        const statusUrl = new URL(normalized);
+        statusUrl.pathname += 'status';
+        const statusResponse = await this.getUrl(statusUrl.toString());
+
+        const parsed = this.parseResponse(statusResponse.data);
+        const version = this.parseVersion(parsed.sw_version);
+        if (!version) {
+            throw new Error('receiver version information not available');
         }
 
-        return false;
+        const location = this.parseCoordinates(parsed.gps);
+        const bands = this.parseBands(parsed.bands);
+
+        if (
+            typeof(parsed.name) == 'undefined' ||
+            typeof(parsed.op_email) == 'undefined' ||
+            typeof(parsed.avatar_ctime) == 'undefined'
+        ) {
+            throw new Error('invalid response: receiver data missing');
+        }
+
+        return {
+            name: parsed.name,
+            email: parsed.op_email,
+            version,
+            location,
+            bands,
+            avatar_ctime: parsed.avatar_ctime
+        }
     }
     parseBands(bandString) {
         const matches = /^([0-9]+)-([0-9]+)$/.exec(bandString)

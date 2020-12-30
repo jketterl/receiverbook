@@ -36,8 +36,8 @@ class ReceiverAdapter {
     }
     async updateReceiver(receiver) {
         console.info(`updating "${receiver.label}"`);
-        const status = await this.getReceiverData(receiver);
-        if (status) {
+        try {
+            const status = await this.getReceiverData(receiver);
             receiver.status = "online";
 
             receiver.claims.forEach(claim => {
@@ -55,7 +55,8 @@ class ReceiverAdapter {
                 receiver.avatar_ctime = result.ctime;
                 receiver.avatar_hash = result.hash;
             }
-        } else {
+        } catch (err) {
+            console.error(`error updating "${receiver.label}": ${err.message || "unknown error"}`);
             receiver.status = "offline";
         }
 
