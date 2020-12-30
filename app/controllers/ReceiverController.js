@@ -52,6 +52,7 @@ class ReceiverController {
         try {
             detectionResult = await receiverService.detectReceiverType(resolvedUrl.toString());
         } catch (error) {
+            console.error(error.stack);
             return res.render('newReceiver', {errors: [error.message || 'unknown error'], claim, url: receiverUrl})
         }
 

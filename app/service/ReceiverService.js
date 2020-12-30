@@ -59,7 +59,7 @@ class ReceiverService {
     transformReceiverForView(receiver) {
         const imageService = new ImageService();
         const r = receiver.toObject();
-        r.type = this.getPresentationType(receiver);
+        r.type = this.getPresentationType(receiver.type);
         r.avatarUrl = imageService.getAvatarImageUrl(receiver);
         return r
     }
@@ -84,8 +84,8 @@ class ReceiverService {
         }
         return receiverEntry;
     }
-    getPresentationType(receiver) {
-        switch (receiver.type) {
+    getPresentationType(type) {
+        switch (type) {
             case 'openwebrx':
                 return 'OpenWebRX';
             case 'websdr':
@@ -101,29 +101,25 @@ class ReceiverService {
                 const detector = new detectorCls();
                 try {
                     const result = await detector.matches(url);
-                    return [
+                    return {
+                        status: 'fulfilled',
                         type,
-                        {
-                            status: 'fulfilled',
-                            value: result
-                        }
-                    ];
+                        value: result
+                    };
                 } catch (err) {
-                    return [
+                    return {
+                        status: 'rejected',
                         type,
-                        {
-                            status: 'rejected',
-                            reason: err
-                        }
-                    ]
+                        reason: err
+                    };
                 }
             })
         );
 
         const matches = resultArray.filter(e => e.status == 'fulfilled');
         if (matches.length) {
-            const firstResult = matches[0].value[1]
-            firstResult.type = matches[0].value[0]
+            const firstResult = matches[0].value;
+            firstResult.type = matches[0].type;
             return {
                 status: 'fulfilled',
                 value: firstResult
@@ -133,8 +129,8 @@ class ReceiverService {
         return {
             status: 'rejected',
             errors: resultArray.map(e => {
-                const type = e[0];
-                const error = e[1].reason;
+                const type = this.getPresentationType(e.type);
+                const error = e.reason;
                 return `${type} receiver type: ${error.message || "unknown error"}`
             })
         }
