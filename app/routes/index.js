@@ -34,6 +34,8 @@ class AppRouter extends express.Router {
         };
         this.use('/static', compression(), express.static('assets', staticOptions));
         this.use('/static/mdi', compression(), express.static('node_modules/@mdi/font', staticOptions));
+        this.use('/static/jquery', compression(), express.static('node_modules/jquery/dist', staticOptions));
+        this.use('/static/popper', compression(), express.static('node_modules/popper.js/dist/umd', staticOptions));
         this.use('/static/bootstrap', compression(), express.static('node_modules/bootstrap/dist', staticOptions));
     }
 }

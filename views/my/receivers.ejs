@@ -15,7 +15,12 @@
                 <td><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a>
                 <td><%= receiver.type %></a>
                 <td><%= receiver.version %></a>
-                <td><%= receiver.status %><% if (receiver.status !== 'online') { %> <i class="mdi mdi-information"></i><% } %></td>
+                <td>
+                    <%= receiver.status %>
+                    <% if (receiver.status !== 'online') { %>
+                        <i class="mdi mdi-information" data-toggle="tooltip" title="<%= receiver.statusReason%>"></i>
+                    <% } %>
+                </td>
                 <td><%= receiver.claims.find(c => c.owner === session.username).status %></td>
             </tr>
         <% }); %>
@@ -26,5 +31,12 @@
 <div class="actions">
     <a class="btn btn-primary" href="/receivers/new?claim=1">Add a new receiver</a>
 </div>
+<%- contentFor('head') %>
+<script src="/static/popper/popper.min.js"></script>
+<script>
+    $(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 <%- contentFor('title') %>
 My receivers
