@@ -14,6 +14,11 @@ class ReceiverController {
         } catch (e) {
             return res.render('newReceiver', {errors: ["Receiver URL could not be parsed."], claim, url: req.body.url})
         }
+
+        if (!['http:', 'https:'].includes(receiverUrl.protocol)) {
+            return res.render('newReceiver', {errors: ["Receiver URL protocol not supported."], claim, url: req.body.url})
+        }
+
         // sanitize
         receiverUrl.hash = '';
         receiverUrl.search = '';
