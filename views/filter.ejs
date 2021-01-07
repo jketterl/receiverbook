@@ -1,0 +1,16 @@
+<form class="container receiverfilter">
+    <div class="row">
+        <select class="form-control form-control-sm col-12 col-md-6" name="type">
+            <option value="">Filter by receiver type...</option>
+            <% Object.entries(filters.types).forEach(([id, name]) => { %>
+                <option value="<%= id %>"><%= name %></option>
+            <% }); %>
+        </select>
+        <select class="form-control form-control-sm col-12 col-md-6" name="band">
+            <option value="">Filter by band...</option>
+            <% Object.entries(filters.bands).forEach(([id, name]) => { %>
+                <option value="<%= id %>"><%= name %></option>
+            <% }); %>
+        </select>
+    </div>
+</form>

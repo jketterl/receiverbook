@@ -8,6 +8,9 @@ const bodyParser = require('body-parser');
 
 const AppRouter = require('./app/routes');
 
+const TypeService = require('./app/service/TypeService');
+const BandService = require('./app/service/BandService');
+
 Promise.all([
     require('./app/passport').setup(),
     require('./app/mongoose').setup()
@@ -16,6 +19,14 @@ Promise.all([
     const app = express();
 
     app.locals.rootUrl = config.rootUrl;
+
+    // filter options
+    const bandService = new BandService();
+    const typeService = new TypeService();
+    app.locals.filters = {
+        bands: bandService.getFilterBands(),
+        types: typeService.getNames()
+    }
 
     const store = new MongoDBStore({
         uri: mongo_params.mongoUrl.toString(),

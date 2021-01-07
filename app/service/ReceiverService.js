@@ -1,20 +1,11 @@
-const OpenWebRxAdapter = require('./adapters/OpenWebRxAdapter');
-const WebSdrAdapter = require('./adapters/WebSdrAdapter');
-const KiwiSdrAdapter = require('./adapters/KiwiSdrAdapter');
 const mongoose = require('mongoose');
 const BandService = require('./BandService');
 const ImageService = require('./ImageService');
 const Receiver = require('../models/Receiver');
 const Station = require('../models/Station');
+const TypeService = require('./TypeService');
 
 class ReceiverService {
-    constructor(){
-        this.adapters = {
-            'openwebrx': OpenWebRxAdapter,
-            'websdr': WebSdrAdapter,
-            'kiwisdr': KiwiSdrAdapter
-        }
-    }
     async getPublicReceivers() {
         const [receivers, stationsWithReceivers] = await Promise.all([
             Receiver.find({status: 'online'}),
@@ -86,19 +77,13 @@ class ReceiverService {
         return receiverEntry;
     }
     getPresentationType(type) {
-        switch (type) {
-            case 'openwebrx':
-                return 'OpenWebRX';
-            case 'websdr':
-                return 'WebSDR';
-            case 'kiwisdr':
-                return 'KiwiSDR';
-        }
-        return 'Other';
+        const typeService = new TypeService();
+        return typeService.getName(type);
     }
     async detectReceiverType(url) {
+        const typeService = new TypeService();
         const resultArray = await Promise.all(
-            Object.entries(this.adapters).map(async ([type, detectorCls]) => {
+            Object.entries(typeService.getAdapters()).map(async ([type, detectorCls]) => {
                 const detector = new detectorCls();
                 try {
                     const result = await detector.matches(url);
@@ -137,8 +122,8 @@ class ReceiverService {
         }
     }
     getAdapter(receiver) {
-        const adatperCls = this.adapters[receiver.type];
-        return new adatperCls();
+        const typeService = new TypeService();
+        return typeService.getAdapter(receiver.type);
     }
     async updateReceiver(receiver) {
         await this.getAdapter(receiver).updateReceiver(receiver);
