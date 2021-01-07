@@ -60,6 +60,7 @@ class ReceiverService {
         const imageService = new ImageService();
         const r = receiver.toObject();
         r.type = this.getPresentationType(receiver.type);
+        r.bands = this.getPresentationBands(receiver);
         r.avatarUrl = imageService.getAvatarImageUrl(receiver);
         return r
     }
