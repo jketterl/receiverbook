@@ -145,7 +145,7 @@ class ReceiverService {
     }
     getPresentationBands(receiver) {
         const bandService = new BandService();
-        return bandService.getMatchingBands(receiver.bands).map(b => b.name);
+        return bandService.getMatchingBands(receiver.bands);
     }
     applyCrawlingResult(receiver, result) {
         return this.getAdapter(receiver).applyCrawlingResult(receiver, result);

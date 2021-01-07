@@ -1,3 +1,14 @@
+<% var receiverDetails = function(receiver, linkTitle) { %>
+    <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= linkTitle %></a></div>
+    <div><%= receiver.type %> <%= receiver.version %></div>
+    <div class="receiverbands">
+        <% receiver.bands.forEach(band => { %>
+            <span class="badge bandtag <%= band.tags.map(t => "bandtag-" + t).join(" "); %>">
+                <%= band.name %>
+            </span>
+        <% }) %>
+    </div>
+<% } %>
 <h1>Receiver list</h1>
 <ul class="list-group list-group-flush receiver-list mt-5">
     <% receivers.forEach((receiver) => { %>
@@ -26,27 +37,15 @@
                     <% } %>
                 </div>
                 <% if (receiver.receivers) { %>
-                    <div class="row">
-                        <% receiver.receivers.forEach(r => { %>
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                <div><a href="<%= r.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= r.label %></a></div>
-                                <div><%= r.type %> <%= r.version %></div>
-                                <div>
-                                    <% r.bands.forEach(band => { %>
-                                        <span class="badge badge-info"><%= band %></span>
-                                    <% }) %>
-                                </div>
-                            </div>
-                        <% }) %>
-                    </div>
+                    <ul class="stationreceiverlist">
+                    <% receiver.receivers.forEach(r => { %>
+                        <li>
+                            <% receiverDetails(r, r.label); %>
+                        </li>
+                    <% }) %>
+                    </ul>
                 <% } else { %>
-                    <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= receiver.url %></a></div>
-                    <div><%= receiver.type %> <%= receiver.version %></div>
-                    <div>
-                        <% receiver.bands.forEach(band => { %>
-                            <span class="badge badge-info"><%= band %></span>
-                        <% }) %>
-                    </div>
+                    <% receiverDetails(receiver, receiver.url); %>
                 <% } %>
             </div>
         </li>

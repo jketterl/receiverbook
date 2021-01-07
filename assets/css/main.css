@@ -75,6 +75,41 @@ a.btn {
     border-top-width: 1px;
 }
 
+.stationreceiverlist {
+    list-style-type: none;
+    padding: 0;
+}
+
+.stationreceiverlist li {
+    margin-top: 1rem;
+}
+
+.stationreceiverlist li:first-child {
+    margin-top: 0;
+}
+
+.receiverbands {
+    display: none;
+}
+
+.bandtag-hamradio {
+    background-color: #34dba3;
+}
+
+.bandtag-broadcast {
+    background-color: #dba934;
+}
+
+.bandtag-public {
+    background-color: #db3463;
+}
+
+@media(min-width: 768px) {
+    .receiverbands {
+        display: block;
+    }
+}
+
 .btn-xs {
     padding: 0 0.25rem;
 }
