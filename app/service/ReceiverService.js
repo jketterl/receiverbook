@@ -6,11 +6,12 @@ const Station = require('../models/Station');
 const TypeService = require('./TypeService');
 
 class ReceiverService {
-    async getPublicReceivers() {
+    async getPublicReceivers(filter) {
+        const mongoQuery = this.getMongoQuery(filter);
         const [receivers, stationsWithReceivers] = await Promise.all([
-            Receiver.find({status: 'online'}),
+            Receiver.find({...mongoQuery, status: 'online'}),
             Receiver.aggregate()
-                .match({station: {$ne: null}, status: 'online'})
+                .match({...mongoQuery, station: {$ne: null}, status: 'online'})
                 .group({_id: '$station', count: { $sum: 1 }, receivers: { $addToSet: "$_id"}})
         ]);
         const acceptedStations = stationsWithReceivers.filter(s => s.count > 1);
@@ -25,6 +26,13 @@ class ReceiverService {
             .filter(r => receiversInStations.indexOf(r.id.toString()) < 0)
             .map(r => this.transformReceiverForView(r));
         return stationEntries.concat(receiverEntries);
+    }
+    getMongoQuery(filter) {
+        return Object.fromEntries(
+            Object.entries(filter).filter(([key, value]) => {
+                return key == 'type';
+            })
+        );
     }
     async getPublicReceiversForMap() {
         const receivers = await this.getPublicReceivers();

@@ -3,13 +3,13 @@
         <select class="form-control form-control-sm col-12 col-md-6" name="type">
             <option value="">Filter by receiver type...</option>
             <% Object.entries(filters.types).forEach(([id, name]) => { %>
-                <option value="<%= id %>"><%= name %></option>
+                <option value="<%= id %>" <% if (filter.type == id) { %>selected="selected"<% } %>><%= name %></option>
             <% }); %>
         </select>
         <select class="form-control form-control-sm col-12 col-md-6" name="band">
             <option value="">Filter by band...</option>
             <% Object.entries(filters.bands).forEach(([id, name]) => { %>
-                <option value="<%= id %>"><%= name %></option>
+                <option value="<%= id %>" <% if (filter.band == id) { %>selected="selected"<% } %>><%= name %></option>
             <% }); %>
         </select>
     </div>
