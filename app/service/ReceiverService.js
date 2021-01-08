@@ -16,13 +16,16 @@ class ReceiverService {
         ]);
         const acceptedStations = stationsWithReceivers.filter(s => s.count > 1);
         const stations = await Station.find().where('_id').in(acceptedStations.map(s => s._id));
+        const filteredReceivers = filter.band ? this.filterByBand(receivers, filter.band) : receivers;
         const stationEntries = acceptedStations.map(s => {
             const station = stations.find(station => s._id.toString() === station._id.toString());
-            const stationReceivers = s.receivers.map(rid => receivers.find(r => r.id.toString() == rid.toString()));
+            const stationReceivers = s.receivers
+                .map(rid => filteredReceivers.find(r => r.id.toString() == rid.toString()))
+                .filter(r => typeof(r) != 'undefined');
             return this.transformReceiversOfStation(stationReceivers, station);
         });
         const receiversInStations = acceptedStations.flatMap(s => s.receivers.map(id => id.toString()));
-        const receiverEntries = receivers
+        const receiverEntries = filteredReceivers
             .filter(r => receiversInStations.indexOf(r.id.toString()) < 0)
             .map(r => this.transformReceiverForView(r));
         return stationEntries.concat(receiverEntries);
@@ -33,6 +36,12 @@ class ReceiverService {
                 return key == 'type';
             })
         );
+    }
+    filterByBand(receivers, band) {
+        const bandService = new BandService();
+        return receivers.filter((r) => {
+            return bandService.getMatchingBands(r.bands).map(b => b.id).includes(band);
+        });
     }
     async getPublicReceiversForMap() {
         const receivers = await this.getPublicReceivers();
