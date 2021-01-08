@@ -15,7 +15,7 @@ class TypeService {
             },
             'kiwisdr': {
                 name: 'KiwiSDR',
-                adapter: 'KiwiSdrAdapter'
+                adapter: KiwiSdrAdapter
             }
         }
     }
