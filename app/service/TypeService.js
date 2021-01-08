@@ -20,7 +20,7 @@ class TypeService {
         }
     }
     getAdapter(type) {
-        const adapterCls = this.types[receiver.type].adapter;
+        const adapterCls = this.types[type].adapter;
         return new adapterCls();
     }
     getAdapters() {
