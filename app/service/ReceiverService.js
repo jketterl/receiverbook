@@ -23,7 +23,7 @@ class ReceiverService {
                 .map(rid => filteredReceivers.find(r => r.id.toString() == rid.toString()))
                 .filter(r => typeof(r) != 'undefined');
             return this.transformReceiversOfStation(stationReceivers, station);
-        });
+        }).filter(s => s.receivers.length);
         const receiversInStations = acceptedStations.flatMap(s => s.receivers.map(id => id.toString()));
         const receiverEntries = filteredReceivers
             .filter(r => receiversInStations.indexOf(r.id.toString()) < 0)
