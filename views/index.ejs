@@ -55,7 +55,9 @@
             <% }); %>
         </ul>
     <% } else { %>
-        <div class="mt-2">No matching receivers found.</div>
+        <div class="alert alert-primary mt-2">
+            <i class="mdi mdi-information"></i> No matching receivers found.
+        </div>
     <% } %>
 </div>
 <%- contentFor('title') %>
