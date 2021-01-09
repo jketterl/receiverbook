@@ -7,27 +7,33 @@ const TypeService = require('./TypeService');
 
 class ReceiverService {
     async getPublicReceivers(filter) {
-        const mongoQuery = this.getMongoQuery(filter);
-        const [receivers, stationsWithReceivers] = await Promise.all([
-            Receiver.find({...mongoQuery, status: 'online'}),
-            Receiver.aggregate()
-                .match({...mongoQuery, station: {$ne: null}, status: 'online'})
-                .group({_id: '$station', count: { $sum: 1 }, receivers: { $addToSet: "$_id"}})
+        const [receivers, stations] = await Promise.all([
+            this.getFilteredReceivers(filter),
+            Station.find()
         ]);
-        const acceptedStations = stationsWithReceivers.filter(s => s.count > 1);
-        const stations = await Station.find().where('_id').in(acceptedStations.map(s => s._id));
-        const filteredReceivers = filter.band ? this.filterByBand(receivers, filter.band) : receivers;
+
+        // perform station -> receivers relation lookup in bulk
+        const stationsWithReceivers = stations.map(s => {
+            return {
+                station: s,
+                receivers: receivers.filter(r => r.station && r.station.toString() == s._id.toString())
+            }
+        })
+        // only stations with at least 2 receivers will be shown as such
+        const acceptedStations = stationsWithReceivers.filter(s => s.receivers.length > 1);
+
+        const receiversInStations = acceptedStations.flatMap(s => s.receivers)
+
+        // transform stations for view
         const stationEntries = acceptedStations.map(s => {
-            const station = stations.find(station => s._id.toString() === station._id.toString());
-            const stationReceivers = s.receivers
-                .map(rid => filteredReceivers.find(r => r.id.toString() == rid.toString()))
-                .filter(r => typeof(r) != 'undefined');
-            return this.transformReceiversOfStation(stationReceivers, station);
-        }).filter(s => s.receivers.length);
-        const receiversInStations = acceptedStations.flatMap(s => s.receivers.map(id => id.toString()));
-        const receiverEntries = filteredReceivers
-            .filter(r => receiversInStations.indexOf(r.id.toString()) < 0)
+            return this.transformReceiversOfStation(s.receivers, s.station);
+        });
+
+        // transform stations for view
+        const receiverEntries = receivers
+            .filter(r => !receiversInStations.includes(r))
             .map(r => this.transformReceiverForView(r));
+
         return stationEntries.concat(receiverEntries);
     }
     getMongoQuery(filter) {
@@ -37,14 +43,19 @@ class ReceiverService {
             })
         );
     }
-    filterByBand(receivers, band) {
+    async getFilteredReceivers(filter) {
+        const mongoQuery = this.getMongoQuery(filter);
+        const receivers = await Receiver.find({...mongoQuery, status: 'online'})
+        return this.applyLocalFilters(receivers, filter);
+    }
+    applyLocalFilters(receivers, filter) {
         const bandService = new BandService();
-        return receivers.filter((r) => {
-            return bandService.getMatchingBands(r.bands).map(b => b.id).includes(band);
+        return receivers.filter(receiver => {
+            return !filter.band || bandService.getMatchingBands(receiver.bands).map(b => b.id).includes(filter.band);
         });
     }
     async getPublicReceiversForMap() {
-        const receivers = await this.getPublicReceivers();
+        const receivers = await this.getPublicReceivers({});
         const receiversWithLocation = receivers.filter(r => r.location && r.location.coordinates);
         return receiversWithLocation.map(r => this.transformReceiverForMap(r));
     }
