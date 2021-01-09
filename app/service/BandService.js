@@ -6,6 +6,11 @@ class BandService {
         this.bands.forEach((band, index) => {
             band.id = this.toId(band.name);
         });
+        this.tags = {
+            "hamradio": "HAM radio",
+            "broadcast": "Broadcast services",
+            "public": "Public two-way radio"
+        };
     }
     toId(name) {
         return Array.from(name.toLowerCase()).filter((c) => {
@@ -22,17 +27,22 @@ class BandService {
         });
     }
     getFilterBands() {
-        return Object.fromEntries(
-            this.bands.map((band) => [band.id, band.name])
-        );
+        return this.bands.reduce((res, band) => {
+            band.tags.forEach((t) => {
+                res[t] = res[t] || {
+                    name: this.getTagDisplayName(t),
+                    bands: []
+                }
+                res[t].bands.push(band);
+            });
+            return res;
+        }, {});
+    }
+    getFilterTags() {
+        return this.tags;
     }
     getTagDisplayName(tag) {
-        const tagDisplayNames = {
-            "hamradio": "HAM radio",
-            "broadcast": "Broadcast services",
-            "public": "Public two-way radio"
-        }
-        return tagDisplayNames[tag] || 'Other';
+        return this.tags[tag] || 'Other';
     }
 }
 

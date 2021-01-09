@@ -7,9 +7,14 @@
             <% }); %>
         </select>
         <select class="form-control form-control-sm col-12 col-md-6" name="band">
-            <option value="">Filter by band...</option>
-            <% Object.entries(filters.bands).forEach(([id, name]) => { %>
-                <option value="<%= id %>" <% if (filter.band == id) { %>selected="selected"<% } %>><%= name %></option>
+            <option value="">Filter by frequency or band...</option>
+            <% Object.entries(filters.bands).forEach(([tag, tagInfo]) => { %>
+                <optgroup label="<%= tagInfo.name %>">
+                <option value="any-<%= tag %>" <% if (filter.band == "any-" + tag) { %>selected="selected"<% } %>>any <%= tagInfo.name %></option>
+                <% tagInfo.bands.forEach(band => {%>
+                    <option value="<%= band.id %>" <% if (filter.band == band.id) { %>selected="selected"<% } %>><%= band.name %></option>
+                <% }); %>
+                </optgroup>
             <% }); %>
         </select>
     </div>

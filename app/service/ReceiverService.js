@@ -5,6 +5,26 @@ const Receiver = require('../models/Receiver');
 const Station = require('../models/Station');
 const TypeService = require('./TypeService');
 
+class ReceiverFilterService {
+    constructor() {
+        const bandService = new BandService();
+        this.filters = {
+            band: (receiver, band) => {
+                if (band.startsWith('any-')) {
+                    const service = band.substr(4);
+                    return bandService.getMatchingBands(receiver.bands).flatMap(b => b.tags).includes(service);
+                }
+                return bandService.getMatchingBands(receiver.bands).map(b => b.id).includes(band)
+            }
+        }
+    }
+    filter(receivers, filter) {
+        return receivers.filter(receiver => {
+            return !filter.band || this.filters.band(receiver, filter.band);
+        });
+    }
+}
+
 class ReceiverService {
     async getPublicReceivers(filter) {
         const [receivers, stations] = await Promise.all([
@@ -46,13 +66,8 @@ class ReceiverService {
     async getFilteredReceivers(filter) {
         const mongoQuery = this.getMongoQuery(filter);
         const receivers = await Receiver.find({...mongoQuery, status: 'online'})
-        return this.applyLocalFilters(receivers, filter);
-    }
-    applyLocalFilters(receivers, filter) {
-        const bandService = new BandService();
-        return receivers.filter(receiver => {
-            return !filter.band || bandService.getMatchingBands(receiver.bands).map(b => b.id).includes(filter.band);
-        });
+        const filterService = new ReceiverFilterService();
+        return filterService.filter(receivers, filter);
     }
     async getPublicReceiversForMap() {
         const receivers = await this.getPublicReceivers({});
