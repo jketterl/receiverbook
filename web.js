@@ -24,6 +24,7 @@ Promise.all([
     const bandService = new BandService();
     const typeService = new TypeService();
     app.locals.filters = {
+        ranges: bandService.getFilterRanges(),
         bands: bandService.getFilterBands(),
         types: typeService.getNames()
     }

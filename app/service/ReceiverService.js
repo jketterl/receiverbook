@@ -14,6 +14,13 @@ class ReceiverFilterService {
                     const service = band.substr(4);
                     return bandService.getMatchingBands(receiver.bands).flatMap(b => b.tags).includes(service);
                 }
+                if (band.startsWith('fr-')) {
+                    const range = bandService.getRange(band.substr(3));
+                    const receiverRanges = receiver.bands.map(rb => rb.asRange());
+                    return receiverRanges.some(rb => {
+                        return rb.start <= range.upper_bound && rb.end >= range.lower_bound;
+                    });
+                }
                 return bandService.getMatchingBands(receiver.bands).map(b => b.id).includes(band)
             }
         }

@@ -8,6 +8,11 @@
         </select>
         <select class="form-control form-control-sm col-12 col-md-6" name="band">
             <option value="">Filter by frequency or band...</option>
+            <optgroup label="Frequency ranges">
+                <% Object.entries(filters.ranges).forEach(([id, name]) => { %>
+                    <option value="fr-<%= id %>" <% if (filter.band == "fr-" + id) { %>selected="selected"<% } %>><%= name %></option>
+                <% }) %>
+            </optgroup>
             <% Object.entries(filters.bands).forEach(([tag, tagInfo]) => { %>
                 <optgroup label="<%= tagInfo.name %>">
                 <option value="any-<%= tag %>" <% if (filter.band == "any-" + tag) { %>selected="selected"<% } %>>any <%= tagInfo.name %></option>
