@@ -1,14 +1,24 @@
-<% var receiverDetails = function(receiver, linkTitle) { %>
+<% const renderBands = function(bands) { %>
+    <ul>
+        <% bands.forEach(band => { %>
+            <li><%= band %></li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<% const receiverDetails = function(receiver, linkTitle) { %>
     <div><a href="<%= receiver.url %>" target="_blank"><i class="mdi mdi-open-in-new"></i> <%= linkTitle %></a></div>
     <div><%= receiver.type %> <%= receiver.version %></div>
     <div class="receiverbands">
-        <% receiver.bands.forEach(band => { %>
-            <span class="badge bandtag <%= band.tags.map(t => "bandtag-" + t).join(" "); %>">
-                <%= band.name %>
+        <% Object.entries(receiver.bands).forEach(([tag, tagInfo]) => { %>
+            <span class="badge bandtag bandtag-<%= tag %>" data-toggle="tooltip" data-html="true" title="<%= renderBands(tagInfo.bands) %>">
+                <i class="mdi mdi-information"></i>
+                <%= tagInfo.name %>
             </span>
         <% }) %>
     </div>
 <% } %>
+
 <h1>Receiver list</h1>
     <div class="mt-5">
     <%- include('filter'); %>
@@ -64,3 +74,9 @@
 online receiver directory | Home
 <%- contentFor('head') %>
 <script src="/static/js/filter.js"></script>
+<script src="/static/popper/popper.min.js"></script>
+<script>
+    $(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

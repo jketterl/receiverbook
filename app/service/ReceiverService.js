@@ -147,7 +147,17 @@ class ReceiverService {
     }
     getPresentationBands(receiver) {
         const bandService = new BandService();
-        return bandService.getMatchingBands(receiver.bands);
+        // group by tags
+        return bandService.getMatchingBands(receiver.bands).reduce((res, b) => {
+            b.tags.forEach((t) => {
+                res[t] = res[t] || {
+                    name: bandService.getTagDisplayName(t),
+                    bands: []
+                }
+                res[t].bands.push(b.name);
+            });
+            return res;
+        }, {});
     }
     applyCrawlingResult(receiver, result) {
         return this.getAdapter(receiver).applyCrawlingResult(receiver, result);

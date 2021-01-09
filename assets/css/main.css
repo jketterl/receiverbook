@@ -92,6 +92,10 @@ a.btn {
     display: none;
 }
 
+.bandtag {
+    cursor: pointer;
+}
+
 .bandtag-hamradio {
     background-color: #34dba3;
 }
@@ -102,6 +106,12 @@ a.btn {
 
 .bandtag-public {
     background-color: #db3463;
+}
+
+.tooltip ul {
+    list-style-type: none;
+    padding: .2em;
+    margin: 0;
 }
 
 @media(min-width: 768px) {

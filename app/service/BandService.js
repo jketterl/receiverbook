@@ -26,6 +26,14 @@ class BandService {
             this.bands.map((band) => [band.id, band.name])
         );
     }
+    getTagDisplayName(tag) {
+        const tagDisplayNames = {
+            "hamradio": "HAM radio",
+            "broadcast": "Broadcast services",
+            "public": "Public two-way radio"
+        }
+        return tagDisplayNames[tag] || 'Other';
+    }
 }
 
 module.exports = BandService
