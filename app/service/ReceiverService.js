@@ -49,7 +49,7 @@ class ReceiverService {
         const stationsWithReceivers = stations.map(s => {
             return {
                 station: s,
-                receivers: stationMap[s._id.toString()]
+                receivers: stationMap[s._id.toString()] || []
             }
         })
         // only stations with at least 2 receivers will be shown as such
