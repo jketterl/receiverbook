@@ -39,11 +39,17 @@ class ReceiverService {
             Station.find()
         ]);
 
+        const stationMap = receivers.reduce((agg, receiver) => {
+            if (!receiver.station) return agg;
+            (agg[receiver.station] = agg[receiver.station] || []).push(receiver);
+            return agg;
+        }, {});
+
         // perform station -> receivers relation lookup in bulk
         const stationsWithReceivers = stations.map(s => {
             return {
                 station: s,
-                receivers: receivers.filter(r => r.station && r.station.toString() == s._id.toString())
+                receivers: stationMap[s._id.toString()]
             }
         })
         // only stations with at least 2 receivers will be shown as such
@@ -56,12 +62,12 @@ class ReceiverService {
             return this.transformReceiversOfStation(s.receivers, s.station);
         });
 
-        // transform stations for view
+        // transform receivers for view
         const receiverEntries = receivers
             .filter(r => !receiversInStations.includes(r))
             .map(r => this.transformReceiverForView(r));
 
-        return stationEntries.concat(receiverEntries);
+        return [...stationEntries, ...receiverEntries];
     }
     getMongoQuery(filter) {
         return Object.fromEntries(
