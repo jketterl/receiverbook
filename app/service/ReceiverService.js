@@ -82,8 +82,8 @@ class ReceiverService {
         const filterService = new ReceiverFilterService();
         return filterService.filter(receivers, filter);
     }
-    async getPublicReceiversForMap() {
-        const receivers = await this.getPublicReceivers({});
+    async getPublicReceiversForMap(filter) {
+        const receivers = await this.getPublicReceivers(filter);
         const receiversWithLocation = receivers.filter(r => r.location && r.location.coordinates);
         return receiversWithLocation.map(r => this.transformReceiverForMap(r));
     }

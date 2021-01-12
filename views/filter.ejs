@@ -1,26 +1,24 @@
-<form class="container receiverfilter">
-    <div class="row">
-        <select class="form-control form-control-sm col-12 col-md-6" name="type">
-            <option value="">Filter by receiver type...</option>
-            <% Object.entries(filters.types).forEach(([id, name]) => { %>
-                <option value="<%= id %>" <% if (filter.type == id) { %>selected="selected"<% } %>><%= name %></option>
+<form class="receiverfilter row">
+    <select class="form-control form-control-sm <% if (columns) { %>col-12 col-md-6<% } %>" name="type">
+        <option value="">Filter by receiver type...</option>
+        <% Object.entries(filters.types).forEach(([id, name]) => { %>
+            <option value="<%= id %>" <% if (filter.type == id) { %>selected="selected"<% } %>><%= name %></option>
+        <% }); %>
+    </select>
+    <select class="form-control form-control-sm <% if (columns) { %>col-12 col-md-6<% } %>" name="band">
+        <option value="">Filter by frequency or band...</option>
+        <optgroup label="Frequency ranges">
+            <% Object.entries(filters.ranges).forEach(([id, name]) => { %>
+                <option value="fr-<%= id %>" <% if (filter.band == "fr-" + id) { %>selected="selected"<% } %>><%= name %></option>
+            <% }) %>
+        </optgroup>
+        <% Object.entries(filters.bands).forEach(([tag, tagInfo]) => { %>
+            <optgroup label="<%= tagInfo.name %>">
+            <option value="any-<%= tag %>" <% if (filter.band == "any-" + tag) { %>selected="selected"<% } %>>any <%= tagInfo.name %></option>
+            <% tagInfo.bands.forEach(band => {%>
+                <option value="<%= band.id %>" <% if (filter.band == band.id) { %>selected="selected"<% } %>><%= band.name %></option>
             <% }); %>
-        </select>
-        <select class="form-control form-control-sm col-12 col-md-6" name="band">
-            <option value="">Filter by frequency or band...</option>
-            <optgroup label="Frequency ranges">
-                <% Object.entries(filters.ranges).forEach(([id, name]) => { %>
-                    <option value="fr-<%= id %>" <% if (filter.band == "fr-" + id) { %>selected="selected"<% } %>><%= name %></option>
-                <% }) %>
             </optgroup>
-            <% Object.entries(filters.bands).forEach(([tag, tagInfo]) => { %>
-                <optgroup label="<%= tagInfo.name %>">
-                <option value="any-<%= tag %>" <% if (filter.band == "any-" + tag) { %>selected="selected"<% } %>>any <%= tagInfo.name %></option>
-                <% tagInfo.bands.forEach(band => {%>
-                    <option value="<%= band.id %>" <% if (filter.band == band.id) { %>selected="selected"<% } %>><%= band.name %></option>
-                <% }); %>
-                </optgroup>
-            <% }); %>
-        </select>
-    </div>
+        <% }); %>
+    </select>
 </form>

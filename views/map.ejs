@@ -1,10 +1,13 @@
+<%- include('filter', {columns: false}); %>
+<div class="map-container"></div>
 <%- contentFor('head') %>
 <script src="https://maps.googleapis.com/maps/api/js?key=<%= google_maps_api_key %>"></script>
 <script src="/static/js/map.js"></script>
+<script src="/static/js/filter.js"></script>
 <script>
     $(function(){
         var receivers = <%- JSON.stringify(receivers) %>;
-        $('.content-container').addReceivers(receivers);
+        $('.map-container').addReceivers(receivers);
     });
 </script>
 <%- contentFor('title') %>

@@ -1,11 +1,12 @@
 $.fn.addReceivers = function(receivers) {
     if (!this.data('map')) {
-        this.data('map', new google.maps.Map($('.map .content-container')[0], {
+        this.data('map', new google.maps.Map($(this)[0], {
             center: { lat: 30, lng: 0 },
             zoom: 3
         }));
     };
     var map = this.data('map');
+    map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($(".receiverfilter")[0]);
     var infowindow;
     var bounds = new google.maps.LatLngBounds();
     receivers.forEach(function(r) {

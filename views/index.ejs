@@ -19,57 +19,55 @@
     </div>
 <% } %>
 
-<h1>Receiver list</h1>
-    <div class="mt-5">
-    <%- include('filter'); %>
-    <% if (receivers.length) { %>
-        <ul class="list-group list-group-flush receiver-list mt-2">
-            <% receivers.forEach((receiver) => { %>
-                <li class="list-group-item">
-                    <div class="receiver-image">
-                        <% if (receiver.avatarUrl) { %>
-                            <img alt="<%= receiver.label %> avatar" src="<%= receiver.avatarUrl %>">
-                        <% } %>
-                    </div>
-                    <div class="receiver-details">
-                        <div class="receiver-details-headline">
-                            <h5><%= receiver.label %></h5>
-                            <% if (typeof(session) !== 'undefined') { %>
-                                <div class="dropdown">
-                                    <button class="menu-button btn btn-xs btn-secondary ml-2 dropdown-toggle" type="button" data-toggle="dropdown" id="receiver-<%= receiver._id %>-dropdown-button" aria-haspopup="true" aria-expanded="false"></button>
-                                    <div class="dropdown-menu" aria-labelledby="#receiver-<%= receiver._id %>-dropdown-button">
-                                        <% if (receiver.receivers) { %>
-                                            <% receiver.receivers.forEach(r => { %>
-                                                <a class="dropdown-item" href="/my/receivers/<%= r._id %>/claim">Claim "<%= r.label %>"...</a>
-                                            <% }) %>
-                                        <% } else { %>
-                                            <a class="dropdown-item" href="/my/receivers/<%= receiver._id %>/claim">Claim "<%= receiver.label %>"...</a>
-                                        <% } %>
-                                    </div>
+<h1 class="row">Receiver list</h1>
+<%- include('filter', {columns: true}); %>
+<% if (receivers.length) { %>
+    <ul class="row list-group list-group-flush receiver-list mt-2">
+        <% receivers.forEach((receiver) => { %>
+            <li class="list-group-item">
+                <div class="receiver-image">
+                    <% if (receiver.avatarUrl) { %>
+                        <img alt="<%= receiver.label %> avatar" src="<%= receiver.avatarUrl %>">
+                    <% } %>
+                </div>
+                <div class="receiver-details">
+                    <div class="receiver-details-headline">
+                        <h5><%= receiver.label %></h5>
+                        <% if (typeof(session) !== 'undefined') { %>
+                            <div class="dropdown">
+                                <button class="menu-button btn btn-xs btn-secondary ml-2 dropdown-toggle" type="button" data-toggle="dropdown" id="receiver-<%= receiver._id %>-dropdown-button" aria-haspopup="true" aria-expanded="false"></button>
+                                <div class="dropdown-menu" aria-labelledby="#receiver-<%= receiver._id %>-dropdown-button">
+                                    <% if (receiver.receivers) { %>
+                                        <% receiver.receivers.forEach(r => { %>
+                                            <a class="dropdown-item" href="/my/receivers/<%= r._id %>/claim">Claim "<%= r.label %>"...</a>
+                                        <% }) %>
+                                    <% } else { %>
+                                        <a class="dropdown-item" href="/my/receivers/<%= receiver._id %>/claim">Claim "<%= receiver.label %>"...</a>
+                                    <% } %>
                                 </div>
-                            <% } %>
-                        </div>
-                        <% if (receiver.receivers) { %>
-                            <ul class="stationreceiverlist">
-                            <% receiver.receivers.forEach(r => { %>
-                                <li>
-                                    <% receiverDetails(r, r.label); %>
-                                </li>
-                            <% }) %>
-                            </ul>
-                        <% } else { %>
-                            <% receiverDetails(receiver, receiver.url); %>
+                            </div>
                         <% } %>
                     </div>
-                </li>
-            <% }); %>
-        </ul>
-    <% } else { %>
-        <div class="alert alert-primary mt-2">
-            <i class="mdi mdi-information"></i> No matching receivers found.
-        </div>
-    <% } %>
-</div>
+                    <% if (receiver.receivers) { %>
+                        <ul class="stationreceiverlist">
+                        <% receiver.receivers.forEach(r => { %>
+                            <li>
+                                <% receiverDetails(r, r.label); %>
+                            </li>
+                        <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <% receiverDetails(receiver, receiver.url); %>
+                    <% } %>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+<% } else { %>
+    <div class="row alert alert-primary mt-2">
+        <i class="mdi mdi-information"></i> No matching receivers found.
+    </div>
+<% } %>
 <%- contentFor('title') %>
 online receiver directory | Home
 <%- contentFor('head') %>
