@@ -7,6 +7,7 @@ $.fn.addReceivers = function(receivers) {
     };
     var map = this.data('map');
     var infowindow;
+    var bounds = new google.maps.LatLngBounds();
     receivers.forEach(function(r) {
         var position = {
             lng: r.location.coordinates[0],
@@ -17,6 +18,7 @@ $.fn.addReceivers = function(receivers) {
             map: map,
             title: r.label
         });
+        bounds.extend(position);
 
         var title;
         var receiverSnippet;
@@ -55,4 +57,7 @@ $.fn.addReceivers = function(receivers) {
             infowindow.open(map, marker);
         });
     });
+
+    // zoom and center map to show all markers
+    map.fitBounds(bounds);
 }
