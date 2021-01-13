@@ -65,9 +65,7 @@ class ReceiverService {
         const receiversInStations = acceptedStations.flatMap(s => s.receivers)
 
         // transform stations for view
-        const stationEntries = acceptedStations.map(s => {
-            return this.transformReceiversOfStation(s.receivers, s.station);
-        });
+        const stationEntries = acceptedStations.map(s => this.transformReceiversOfStation(s));
 
         // transform receivers for view
         const receiverEntries = receivers
@@ -120,22 +118,24 @@ class ReceiverService {
         r.avatarUrl = imageService.getAvatarImageUrl(receiver);
         return r
     }
-    transformReceiversOfStation(receivers, station) {
+    transformReceiversOfStation(s) {
+        const dehydratedReceivers = s.receivers.map(r => r.toObject());
+
         const imageService = new ImageService();
-        const avatarReceiver = receivers.filter(r => r.avatar_hash).shift();
+        const avatarReceiver = dehydratedReceivers.filter(r => r.avatar_hash).shift();
         let avatarUrl;
         if (avatarReceiver) {
             avatarUrl = imageService.getAvatarImageUrl(avatarReceiver);
         }
-        const locationReceiver = receivers.filter(r => r.location && r.location.coordinates).shift();
+        const locationReceiver = dehydratedReceivers.filter(r => r.location && r.location.coordinates).shift();
         let location;
         if (locationReceiver) {
             location = locationReceiver.location
         }
         const receiverEntry = {
-            _id: station.id,
-            label: station.label,
-            receivers: receivers.map(r => this.transformReceiverForView(r)),
+            _id: s.station.id,
+            label: s.station.label,
+            receivers: s.receivers.map(r => this.transformReceiverForView(r)),
             avatarUrl,
             location
         }
