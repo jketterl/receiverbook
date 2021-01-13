@@ -4,7 +4,6 @@ const IndexController = require('../controllers/IndexController');
 const MapController = require('../controllers/MapController');
 const ReceiverController = require('../controllers/ReceiverController');
 const MyRouter = require('./MyRouter');
-const compression = require('compression');
 const ImageRouter = require('./ImageRouter');
 const authenticationAware = require('../middleware/authenticated').authenticationAware
 
@@ -32,11 +31,11 @@ class AppRouter extends express.Router {
         const staticOptions = {
            maxAge: 3600000
         };
-        this.use('/static', compression(), express.static('assets', staticOptions));
-        this.use('/static/mdi', compression(), express.static('node_modules/@mdi/font', staticOptions));
-        this.use('/static/jquery', compression(), express.static('node_modules/jquery/dist', staticOptions));
-        this.use('/static/popper', compression(), express.static('node_modules/popper.js/dist/umd', staticOptions));
-        this.use('/static/bootstrap', compression(), express.static('node_modules/bootstrap/dist', staticOptions));
+        this.use('/static', express.static('assets', staticOptions));
+        this.use('/static/mdi', express.static('node_modules/@mdi/font', staticOptions));
+        this.use('/static/jquery', express.static('node_modules/jquery/dist', staticOptions));
+        this.use('/static/popper', express.static('node_modules/popper.js/dist/umd', staticOptions));
+        this.use('/static/bootstrap', express.static('node_modules/bootstrap/dist', staticOptions));
     }
 }
 

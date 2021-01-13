@@ -5,6 +5,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const config = require('./config');
 const sessionMiddleware = require('./app/middleware/session');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 
 const AppRouter = require('./app/routes');
 
@@ -55,6 +56,8 @@ Promise.all([
     app.use(expressLayouts);
 
     app.use(bodyParser.urlencoded({ extended: true }));
+
+    app.use(compression());
 
     app.use('/', new AppRouter());
 
