@@ -66,13 +66,15 @@
     <div class="row">
         <ul class="pagination">
             <% if (pagination.page > 0) { %>
-                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page - 1) %>">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(0) %>"><i class="mdi mdi-page-first"></i></a></li>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page - 1) %>"><i class="mdi mdi-chevron-left"></i></a></li>
             <% } %>
             <% for (let i = 0; i < pagination.total; i++) { %>
                 <li class="page-item <% if (pagination.page == i) { %>active<% } %>"><a class="page-link" href="<%= pagination.buildPageLink(i) %>"><%= i + 1 %></a></li>
             <% } %>
             <% if (pagination.page + 1 < pagination.total) { %>
-                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page + 1) %>">Next</a></li>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page + 1) %>"><i class="mdi mdi-chevron-right"></i></a></li>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.total - 1) %>"><i class="mdi mdi-page-last"></i></a></li>
             <% } %>
         </ul>
     </div>

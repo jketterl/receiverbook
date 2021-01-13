@@ -153,6 +153,10 @@ a.btn {
     margin: 1rem auto 0;
 }
 
+.pagination .mdi:before {
+    font-size: .9em;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
