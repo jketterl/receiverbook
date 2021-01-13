@@ -5,6 +5,10 @@ const Receiver = require('../models/Receiver');
 const Station = require('../models/Station');
 const TypeService = require('./TypeService');
 
+const NodeCache = require('node-cache');
+const receiverCache = new NodeCache({stdTTL: 3600});
+const querystring = require('querystring');
+
 class ReceiverFilterService {
     constructor() {
         const bandService = new BandService();
@@ -34,6 +38,9 @@ class ReceiverFilterService {
 
 class ReceiverService {
     async getPublicReceivers(filter) {
+        const cacheKey = `receivers-${querystring.stringify(filter)}`;
+        const fromCache = receiverCache.get(cacheKey);
+        if (fromCache != undefined) return fromCache;
         const [receivers, stations] = await Promise.all([
             this.getFilteredReceivers(filter),
             Station.find()
@@ -67,7 +74,9 @@ class ReceiverService {
             .filter(r => !receiversInStations.includes(r))
             .map(r => this.transformReceiverForView(r));
 
-        return [...stationEntries, ...receiverEntries];
+        const result = [...stationEntries, ...receiverEntries];
+        receiverCache.set(cacheKey, result);
+        return result;
     }
     getMongoQuery(filter) {
         return Object.fromEntries(
