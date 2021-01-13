@@ -63,6 +63,19 @@
             </li>
         <% }); %>
     </ul>
+    <div class="row">
+        <ul class="pagination">
+            <% if (pagination.page > 0) { %>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page - 1) %>">Previous</a></li>
+            <% } %>
+            <% for (let i = 0; i < pagination.total; i++) { %>
+                <li class="page-item <% if (pagination.page == i) { %>active<% } %>"><a class="page-link" href="<%= pagination.buildPageLink(i) %>"><%= i + 1 %></a></li>
+            <% } %>
+            <% if (pagination.page + 1 < pagination.total) { %>
+                <li class="page-item"><a class="page-link" href="<%= pagination.buildPageLink(pagination.page + 1) %>">Next</a></li>
+            <% } %>
+        </ul>
+    </div>
 <% } else { %>
     <div class="row alert alert-primary mt-2">
         <i class="mdi mdi-information"></i> No matching receivers found.

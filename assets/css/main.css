@@ -149,6 +149,10 @@ a.btn {
     max-width: 100%;
 }
 
+.pagination {
+    margin: 1rem auto 0;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
