@@ -128,12 +128,12 @@ a.btn {
     vertical-align: text-bottom;
 }
 
-.receiver-list .list-group-item .menu-button {
+.receiver-list .list-group-item .dropdown {
     display: none;
 }
 
-.receiver-list .list-group-item:hover .menu-button {
-    display: inline;
+.receiver-list .list-group-item:hover .dropdown {
+    display: block;
 }
 
 .receiver-details-headline {

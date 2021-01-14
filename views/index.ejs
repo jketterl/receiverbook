@@ -24,7 +24,7 @@
 <% if (receivers.length) { %>
     <ul class="row list-group list-group-flush receiver-list mt-2">
         <% receivers.forEach((receiver) => { %>
-            <li class="list-group-item">
+            <li class="list-group-item col-12">
                 <div class="receiver-image">
                     <% if (receiver.avatarUrl) { %>
                         <img alt="<%= receiver.label %> avatar" src="<%= receiver.avatarUrl %>">
