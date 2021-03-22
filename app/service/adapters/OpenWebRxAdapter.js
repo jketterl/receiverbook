@@ -80,7 +80,12 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         ) {
             throw new Error('invalid response: receiver data missing');
         }
-        if (data.receiver.name == "[Callsign]") {
+
+        if (data.receiver.name == '') {
+            throw new Error('receiver name is empty');
+        }
+
+        if (data.receiver.name == '[Callsign]') {
             throw new Error('receiver uses default name');
         }
 
