@@ -27,6 +27,10 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         }
 
         const location = this.parseCoordinates(parsed.gps);
+        if (!location) {
+            throw new Error('receiver gps could not be parsed');
+        }
+
         const bands = this.parseBands(parsed.bands);
 
         if (
