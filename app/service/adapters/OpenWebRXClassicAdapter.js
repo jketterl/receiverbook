@@ -8,7 +8,7 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         }));
     }
     parseCoordinates(gpsString) {
-        const matches = /^\(([-0-9.]+), ([-0-9.]+)\)$/.exec(gpsString)
+        const matches = /^\(([-0-9.]+), ?([-0-9.]+)\)$/.exec(gpsString)
         if (!matches) return false;
         // longitude first!!
         return[parseFloat(matches[2]), parseFloat(matches[1])]
