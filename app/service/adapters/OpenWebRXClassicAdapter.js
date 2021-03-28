@@ -9,9 +9,19 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
     }
     parseCoordinates(gpsString) {
         const matches = /^\(([-0-9.]+), ?([-0-9.]+)\)$/.exec(gpsString)
-        if (!matches) return false;
+        if (!matches) {
+            throw new Error('receiver gps could not be parsed');
+        }
+
+        var lat = parseFloat(matches[1]);
+        var lon = parseFloat(matches[2]);
+
+        // validate gps coordinates
+        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+            throw new Error('invalid gps coordinates');
+        }
         // longitude first!!
-        return[parseFloat(matches[2]), parseFloat(matches[1])]
+        return[lon, lat]
     }
     async matches(baseUrl) {
         const normalized = this.normalizeUrl(baseUrl);
@@ -27,9 +37,6 @@ class OpenWebRXClassicAdapter extends ReceiverAdapter {
         }
 
         const location = this.parseCoordinates(parsed.gps);
-        if (!location) {
-            throw new Error('receiver gps could not be parsed');
-        }
 
         const bands = this.parseBands(parsed.bands);
 

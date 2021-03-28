@@ -81,6 +81,11 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             throw new Error('invalid response: receiver data missing');
         }
 
+        // validate gps coordinates
+        if (data.receiver.gps.lat < -90 || data.receiver.gps.lat > 90 || data.receiver.gps.lon < -180 || data.receiver.gps.lon > 180) {
+            throw new Error('invalid gps coordinates');
+        }
+
         if (data.receiver.name == '') {
             throw new Error('receiver name is empty');
         }

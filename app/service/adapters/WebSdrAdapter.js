@@ -67,11 +67,15 @@ class WebSdrAdapter extends ReceiverAdapter {
     parseLocator(locatorString) {
         const locator = new Maidenhead();
         locator.locator = locatorString;
-        if (locator.lat && locator.lon) {
-            // longitude first!!
-            return [locator.lon, locator.lat];
+        if (!locator.lat || !locator.lon) {
+            return false;
         }
-        return false;
+        // validate gps coordinates
+        if (locator.lat < -90 || locator.lat > 90 || locator.lon < -180 || locator.lon > 180) {
+            return false;
+        }
+        // longitude first!!
+        return [locator.lon, locator.lat];
     }
     parseBand(bandInfo) {
         const [_, bandString] = bandInfo;
