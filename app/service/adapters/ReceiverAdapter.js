@@ -17,7 +17,6 @@ class ReceiverAdapter {
             }),
             new Promise((resolve, reject) => {
                 timer = setTimeout(() => {
-                    console.info("manual timeout triggered");
                     source.cancel('Connection Timeout');
                     reject({message: 'Connection Timeout'});
                 }, timeout);
@@ -64,7 +63,6 @@ class ReceiverAdapter {
             receiver.statusReason = message;
         }
 
-        console.info(`saving "${receiver.label}"`);
         await receiver.save();
     }
     applyCrawlingResult(receiver, data) {
