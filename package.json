@@ -29,7 +29,7 @@
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.1",
     "jquery": "^3.5.1",
-    "jsdom": "^16.2.2",
+    "jsdom": "^16.5.3",
     "jsonwebtoken": "^8.5.1",
     "jwk-to-pem": "^2.0.3",
     "maidenhead": "^1.0.7",

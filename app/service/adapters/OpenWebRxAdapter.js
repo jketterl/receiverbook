@@ -1,6 +1,7 @@
 const OpenWebRXClassicAdapter = require('./OpenWebRXClassicAdapter');
 const KeyService = require('../KeyService');
 const semver = require('semver');
+const { JSDOM } = require('jsdom');
 
 class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
     async matches(baseUrl, claims) {
@@ -105,6 +106,32 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
         const version = this.parseVersion(data.version);
         if (!version) {
             throw new Error('receiver version information not available');
+        }
+
+        if (semver.prerelease(version)) {
+            const bodyResponse = await this.getUrl(normalized.toString())
+            if (bodyResponse.status != 200) {
+                throw new Error('Error downloading receiver body');
+            }
+            const dom = new JSDOM(bodyResponse.data);
+
+            // check if the "under construction" element is present
+            const underConstructionEl = dom.window.document.querySelector('div[data-panel-name=client-under-devel]');
+            if (!underConstructionEl) {
+                throw new Error('development receiver without "under construction" notice element');
+            }
+
+            // check if element is visible
+            const styles = dom.window.getComputedStyle(underConstructionEl);
+            if (styles.display === "none" || styles.visibility === "hidden") {
+                throw new Error('"under construction" notice is not visible');
+            }
+
+            // check if the "under construction" element actually contains "under construction"
+            const pattern = /under\sconstruction/i;
+            if (!pattern.test(underConstructionEl.textContent)) {
+                throw new Error('development receiver without "under construction" notice')
+            }
         }
 
         const bands = data.sdrs.flatMap(sdr => sdr.profiles).map(sdr => Object.assign(sdr, {'type': 'centered'}));
