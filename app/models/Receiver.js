@@ -52,6 +52,7 @@ const ClaimSchema = new mongoose.Schema({
         default: 'pending',
         index: true,
     },
+    lastVerified: Date,
 });
 
 ClaimSchema.methods.regenerateKey = function(){

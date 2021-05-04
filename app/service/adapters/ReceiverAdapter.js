@@ -44,6 +44,7 @@ class ReceiverAdapter {
             receiver.claims.forEach(claim => {
                 if (status.validated && status.validated[claim.id]) {
                     claim.status = "verified";
+                    claim.lastVerified = new Date();
                 } else {
                     claim.status = "pending";
                 }
