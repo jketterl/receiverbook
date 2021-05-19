@@ -53,6 +53,10 @@ const ClaimSchema = new mongoose.Schema({
         index: true,
     },
     lastVerified: Date,
+    created: {
+        type: Date,
+        default: () => new Date(),
+    },
 });
 
 ClaimSchema.methods.regenerateKey = function(){
