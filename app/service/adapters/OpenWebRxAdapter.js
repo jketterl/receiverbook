@@ -108,13 +108,25 @@ class OpenWebRxAdapter extends OpenWebRXClassicAdapter {
             throw new Error('receiver version information not available');
         }
 
-        if (semver.prerelease(version)) {
-            const bodyResponse = await this.getUrl(normalized.toString())
-            if (bodyResponse.status != 200) {
-                throw new Error('Error downloading receiver body');
-            }
-            const dom = new JSDOM(bodyResponse.data);
+        const bodyResponse = await this.getUrl(normalized.toString())
+        if (bodyResponse.status != 200) {
+            throw new Error('Error downloading receiver body');
+        }
+        const dom = new JSDOM(bodyResponse.data);
 
+        [
+            '#webrx-page-container',
+            '#openwebrx-frequency-container',
+            '#webrx-canvas-background',
+            '#openwebrx-panels-container',
+            '#openwebrx-panel-receiver',
+        ].forEach(function(s) {
+            if (!dom.window.document.querySelector(s)) {
+                throw new Error('Missing OpenWebRX page elements');
+            }
+        });
+
+        if (semver.prerelease(version)) {
             // check if the "under construction" element is present
             const underConstructionEl = dom.window.document.querySelector('div[data-panel-name=client-under-devel]');
             if (!underConstructionEl) {
