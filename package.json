@@ -18,7 +18,7 @@
   "homepage": "https://github.com/jketterl/receiverbook#readme",
   "dependencies": {
     "@mdi/font": "^5.3.45",
-    "aws-sdk": "^2.696.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.5.0",
