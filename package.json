@@ -37,7 +37,7 @@
     "mongoose": "^5.11.9",
     "node-cache": "^5.1.2",
     "passport": "^0.4.1",
-    "passport-oauth2": "^1.5.0",
+    "passport-oauth2": "^1.6.1",
     "popper.js": "^1.16.1",
     "semver": "^7.3.2",
     "si-prefix": "^0.2.0"
