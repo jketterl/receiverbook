@@ -34,7 +34,7 @@
     "jwk-to-pem": "^2.0.3",
     "maidenhead": "^1.0.7",
     "moment": "^2.26.0",
-    "mongoose": "^5.11.9",
+    "mongoose": "^5.13.15",
     "node-cache": "^5.1.2",
     "passport": "^0.4.1",
     "passport-oauth2": "^1.5.0",
