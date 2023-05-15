@@ -12,16 +12,31 @@
                 <li>
                     <h4>E-Mail validation</h4>
                     <p class="mt-3">
-                        If the <span class="inline-code">receiver_admin</span> setting in your receiver
-                        configuration is set to the same address you used to sign up here, your receiver
-                        should be verified automatically within the next hour.
+                        <% if (receiver.hasVersion('1.0.0')) { %>
+                            If the "Receiver Admin" setting in your receiver's web configuration is set to the same
+                            address you used to sign up here, your receiver should be verified automatically within
+                            the next hour.
+                        <% } else { %>
+                            If the <span class="inline-code">receiver_admin</span> setting in your receiver
+                            configuration is set to the same address you used to sign up here, your receiver
+                            should be verified automatically within the next hour.
+                        <% } %>
                     </p>
                 </li>
                 <li>
                     <h4>Key verification</h4>
-                    <% if (receiver.hasVersion('0.19.1')) { %>
+                    <% if (receiver.hasVersion('1.0.0')) { %>
+                        <p class="mt-3" >
+                            You can verify your receiver by configuring it with a receiver key, which
+                            we can verify automatically. To do so, please add the following key to the "Receiver keys"
+                            setting of your receiver's web configuration:
+                        </p>
+<pre class="block mt-2">
+<%= claim.key %>
+</pre>
+                    <% } else if (receiver.hasVersion('0.19.1')) { %>
                         <p class="mt-3">
-                            You can verify confirm your receiver by configuring it with a receiver key, which
+                            You can verify your receiver by configuring it with a receiver key, which
                             we can verify automatically. To do so, please add the following line to your
                             <span class="inline-code">config_webrx.py</span>:
                         </p>
