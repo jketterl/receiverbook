@@ -1,10 +1,18 @@
 $.fn.addReceivers = function(receivers) {
+    var escapeHtml = function(input) {
+        return document
+            .createElement('div')
+            .appendChild(document.createTextNode(input))
+            .parentNode
+            .innerHTML;
+    }
+
     if (!this.data('map')) {
         this.data('map', new google.maps.Map($(this)[0], {
             center: { lat: 30, lng: 0 },
             zoom: 3
         }));
-    };
+    }
     var map = this.data('map');
     map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($(".receiverfilter")[0]);
     var infowindow;
@@ -25,7 +33,7 @@ $.fn.addReceivers = function(receivers) {
         var receiverSnippet;
         if (r.url) {
             title = '<a href="' + r.url + '" target="_blank">' +
-                '<h5><i class="mdi mdi-open-in-new"></i> ' + r.label + '</h5>' +
+                '<h5><i class="mdi mdi-open-in-new"></i> ' + escapeHtml(r.label) + '</h5>' +
             '</a>';
             receiverSnippet = r.receivers.map(function(ro) {
                 return '<div>' +
@@ -33,12 +41,12 @@ $.fn.addReceivers = function(receivers) {
                 '</div>'
             }).join('');
         } else {
-            title = '<h5>' + r.label + '</h5>';
+            title = '<h5>' + escapeHtml(r.label) + '</h5>';
             receiverSnippet = r.receivers.map(function(ro) {
                 return '<a href="' + ro.url + '" target="_blank">' +
                      '<div>' +
                         '<i class="mdi mdi-open-in-new"></i> ' +
-                        ro.label +
+                        escapeHtml(ro.label) +
                     '</div>' +
                     '<div>' +
                         ro.type + (ro.version ? ' ' + ro.version : '') +
