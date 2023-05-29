@@ -1,6 +1,3 @@
-const mongoose = require('mongoose');
-const axios = require('axios');
-const ReceiverService = require('../../service/ReceiverService');
 const Receiver = require('../../models/Receiver');
 const Station = require('../../models/Station');
 

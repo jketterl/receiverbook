@@ -24,5 +24,6 @@ module.exports = {
             name: process.env['AVATARS_BUCKET_NAME'],
             region: process.env['AVATARS_BUCKET_REGION']
         }
-    }
+    },
+    userAgent: 'ReceiverbookCrawler/1.0 (+https://www.receiverbook.de)'
 };

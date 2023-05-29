@@ -11,6 +11,8 @@ class ReceiverAdapter {
         const source = axios.CancelToken.source();
         options.cancelToken = source.token;
         let timer;
+        options.headers = options.headers || {}
+        options.headers['User-Agent'] = config.userAgent
         return await Promise.race([
             axios.create({ timeout }).get(url, options).finally(() => {
                 clearTimeout(timer);

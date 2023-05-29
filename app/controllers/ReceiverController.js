@@ -1,6 +1,7 @@
 const Receiver = require('../models/Receiver');
 const ReceiverService = require('../service/ReceiverService');
 const axios = require('axios');
+const config = require('../../config');
 
 class ReceiverController {
     newReceiver(req, res) {
@@ -26,7 +27,7 @@ class ReceiverController {
         // follow any redirects
         let resolvedUrl;
         try {
-            const response = await axios.get(receiverUrl.toString())
+            const response = await axios.get(receiverUrl.toString(), {headers: {'User-Agent': config.userAgent}})
             resolvedUrl = new URL(response.request.res.responseUrl);
         } catch (error) {
             //console.error(error)
