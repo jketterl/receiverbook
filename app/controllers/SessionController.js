@@ -13,7 +13,9 @@ class SessionController {
         res.redirect('/');
     }
     async logout(req, res) {
-        req.logout();
+        await new Promise(resolve => {
+            req.logout(resolve);
+        });
         await req.session.save();
         res.redirect('/');
     }
